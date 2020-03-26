@@ -11,10 +11,8 @@ This is a sample readme file
 
 # Authors
 
-## Core
-
-  * SE UNRC
-  * SE UNRC 2
+  * Luca Carignano
+  * Federico Gutierrez
 
 # Licence
 (link)[licence]

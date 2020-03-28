@@ -43,59 +43,85 @@ Table of Contents
 |      |         |                     |           |
 |      |         |                     |           |
 
+
 ## 1. Introduction
-This is a SRS from the proyect from "Análisis y Diseño de Algoritmos".
+This section gives a description and a overview of everything included in this SRS document. Also, the purpose for this document is described and a list of abbreviations and definitions is provided.
 
 ### 1.1 Document Purpose
-The purpose of this document is to give a detailed description of the requirements for the "<proyect name>" software. It will illustrate the purpose and complete declaration for the development of system. It will also explain system constraints, interface and interactions with the users. This document is primarily intended to be proposed to a professor for its approval and a reference for developing the system for the development team.
+The purpose of this document is to give a detailed description of the requirements for the "D.A.N.S" (Document administration & notification system) software. It will illustrate the purpose and complete declaration for the development of system. It will also explain system constraints, interface and interactions with the users. This document is primarily intended to be proposed to a professor for its approval and a reference for developing the system for the development team.
 
 
 ### 1.2 Product Scope
-<incompleto>
-Identify the product whose software requirements are specified in this document, including the revision or release number. Explain what the product that is covered by this SRS will do, particularly if this SRS describes only part of the system or a single subsystem. Provide a short description of the software being specified and its purpose, including relevant benefits, objectives, and goals. Relate the software to corporate goals or business strategies. If a separate vision and scope document is available, refer to it rather than duplicating its contents here.
-<!--Pequeña descripcion del software y que hace-->
+<t traducir >
+
+Este sotfware se basa en realizar un sistema que notifique a sus usuarios cuando un "admin" suba un documento. Este estara implementado en una aplicacion web.
+El sistema emitira una notificacion cuando alguien suba un acta de elevada importancia o sea de interes para ciertos usuarios, los cuales estaran suscritos a dicho tema de interes. 
+El uso de este software es totalmente libre y gratuito.
 
 ### 1.3 Definitions, Acronyms and Abbreviations
-<incompleto>
-Admin : Personas que suben documentos y taguean
-Documentos : actas subidas
-Usuarios : Personas que entran al sistema
+<t traducir>
+
+|   Term        |                      Definitions                                           | 
+| :-----------: | :------------------------------------------------------------------------: | 
+| Admin         | Personas que suben documentos y tagean a los involucrados                  |                                
+| Documents     | Actas de la U.N.R.C (Universidad Nacional de Rio Cuarto)subidas al sistema |                                 
+| Users         | Personas que entran al sistema                                             |  
+| Invited Users | Usuarios que ingresan sin registro previo                                  |                             
 
 
 ### 1.4 References 
-<incompleto>
-List any other documents or Web addresses to which this SRS refers. These may include user interface style guides, contracts, standards, system requirements specifications, use case documents, or a vision and scope document. Provide enough information so that the reader could access a copy of each reference, including title, author, version number, date, and source or location.
+
+* The srs example from https://github.com/jam01/SRS-Template.
+* Arsaute A., Brusatti F., Solivellas D., Uva M., "srs". Unpublished slideshow.
+
 
 ### 1.5 Document Overview
-<incompleto>
-Describe what the rest of the document contains and how it is organized.
+
+The remainder of this document includes two more chapters and an appendixes. The second one provides an overview of the system functionality and system interaction with other systems. This chapter also introduces different types of stakeholders and their interaction with the system. Further, the chapter also mentions the system constraints andassumptions about the product.The third chapter provides the requirements specification in detailed terms and a description ofthe different system interfaces.
 
 ## 2. Product Overview
 
 ### 2.1 Product Perspective
-<incompleto>
-Describe the context and origin of the product being specified in this SRS. For example, state whether this product is a follow-on member of a product family, a replacement for certain existing systems, or a new, self-contained product. If the SRS defines a component of a larger system, relate the requirements of the larger system to the functionality of this software and identify interfaces between the two. A simple diagram that shows the major components of the overall system, subsystem interconnections, and external interfaces can be helpful.
+<t traducir>
+
+Este software es un producto nuevo y autocontenido que nace de la necesidad de tener un sistema eficiente para la correcta informacion y notificacion de nuevas actas. Este sistema constara de un portal web donde se administrarán Documentos y usuarios (users and admins) guardados en una base de datos. Los documentos seran subidos y al mismo tiempo, tanto los involucrados como los suscritos al tema de interés, seran notificados. 
 
 ### 2.2 Product Functions
-<incompleto>
-Summarize the major functions the product must perform or must let the user perform. Details will be provided in Section 3, so only a high level summary (such as a bullet list) is needed here. Organize the functions to make them understandable to any reader of the SRS. A picture of the major groups of related requirements and how they relate, such as a top level data flow diagram or object class diagram, is often effective.
+<cambiar, traducir>
+
+-listado funciones principales del software-
+
+Con el portal web los admins podran administrar los documentos, ya sea subirlos, editaros, clasificarlos o eliminaros, mientras que los usuarios podran ver y buscar estos, suscribirse a temas de interes, y ademas seran notificados cuando corresponda. Tambien existira la posibilidad de ingresar como invitado, el cual solo podra ver y/o buscar las actas.
+
+
 
 ### 2.3 Product Constraints
-<incompleto>
-This subsection should provide a general description of any other items that will limit the developer’s options. These may include:  
+<t traducir>
+Esta seccion provee una vision de las restricciones o limitaciones de nuestro software, las cuales son:  
 
-* Interfaces to users, other applications or hardware.  
-* Quality of service constraints.  
-* Standards compliance.  
-* Constraints around design or implementation.
+* Las actas solo estaran ordenadas por orden cronologico.
+* Solo se podran etiquetar personas que contengan cuenta.
+* Las actas solo podran ser buscadas por fecha, categoria y/o etiquetados.
+* Los documentos a subir deben cumplir restricciones de formato.
+
 
 ### 2.4 User Characteristics
-<incompleto>
-Identify the various user classes that you anticipate will use this product. User classes may be differentiated based on frequency of use, subset of product functions used, technical expertise, security or privilege levels, educational level, or experience. Describe the pertinent characteristics of each user class. Certain requirements may pertain only to certain user classes. Distinguish the most important user classes for this product from those who are less important to satisfy.
+
+In this system there will be three types of users that interact with it:
+
+| Name          | Permission    |                   What they can do                             | 
+| :-----------: | :-----------: | :------------------------------------------------------------: |                    
+| Invited User  |   None        | See and browse for documents                                   | 
+| User          |   None        | Invited User + subscribe to topics of interest and be notified |  
+| Admin         |   All         | User + load, edit, classify and eliminate documents            |          
+
 
 ### 2.5 Assumptions and Dependencies
-<incompleto>
-List any assumed factors (as opposed to known facts) that could affect the requirements stated in the SRS. These could include third-party or commercial components that you plan to use, issues around the development or operating environment, or constraints. The project could be affected if these assumptions are incorrect, are not shared, or change. Also identify any dependencies the project has on external factors, such as software components that you intend to reuse from another project, unless they are already documented elsewhere (for example, in the vision and scope document or the project plan).
+<incompleto, traducir>
+
+* El software funcionara para cualquier navegador
+* El usuario deberá tener conexion a internet
+
 
 
 ## 3. Requirements
@@ -174,5 +200,3 @@ Specify the requirements derived from existing standards or regulations, includi
 For example, this could specify the requirement for software to trace processing activity. Such traces are needed for some applications to meet minimum regulatory or financial standards. An audit trace requirement may, for example, state that all changes to a payroll database shall be recorded in a trace file with before and after values.
 
 ### 3.5 Atributes
-
-## 4. Appendixes

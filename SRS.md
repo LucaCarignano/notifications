@@ -53,20 +53,19 @@ The purpose of this document is to give a detailed description of the requiremen
 
 ### 1.2 Product Scope
 <t traducir >
-
-Este sotfware se basa en realizar un sistema que notifique a sus usuarios cuando un "admin" suba un documento. Este estara implementado en una aplicacion web.
-El sistema emitira una notificacion cuando alguien suba un acta de elevada importancia o sea de interes para ciertos usuarios, los cuales estaran suscritos a dicho tema de interes. 
-El uso de este software es totalmente libre y gratuito.
+This software is based in a notification system that emits an alert when an admin add a document. It will be implement using a web aplication.
+The program emits a notification via e-mail when an admin uploead a document with lot of priorarity or when the user show some interest in a theme, previusly suscribed.
+The software should be free to use for all the users.
 
 ### 1.3 Definitions, Acronyms and Abbreviations
 <t traducir>
 
 |   Term        |                      Definitions                                           | 
 | :-----------: | :------------------------------------------------------------------------: | 
-| Admin         | Personas que suben documentos y tagean a los involucrados                  |                                
-| Documents     | Actas de la U.N.R.C (Universidad Nacional de Rio Cuarto)subidas al sistema |                                 
-| Users         | Personas que entran al sistema                                             |  
-| Invited Users | Usuarios que ingresan sin registro previo                                  |                             
+| Admin         | People that upload the documents and add tags to them  |                                
+| Documents     | Proceedings from the N.U.R.C (Nacional University of Rio Cuarto)upload to the system |                                 
+| Users         | People registed in the system                                             |  
+| Invited Users | People                                   |                             
 
 
 ### 1.4 References 
@@ -119,26 +118,20 @@ In this system there will be three types of users that interact with it:
 ### 2.5 Assumptions and Dependencies
 <incompleto, traducir>
 
-* El software funcionara para cualquier navegador
+* El software funcionara para cualquier navegador ???
 * El usuario deberá tener conexion a internet
 
 
 
 ## 3. Requirements
 <incompleto>
-> This section specifies the software product's requirements. Specify all of the software requirements to a level of detail sufficient to enable designers to design a software system to satisfy those requirements, and to enable testers to test that the software system satisfies those requirements.
+> This section specifies the software product's requirements.This section contains all of the functional and quality requirements of the system. It gives a detailed description of the system and all its features.
 
-> The specific requirements should:
-* Be uniquely identifiable.
-* State the subject of the requirement (e.g., system, software, etc.) and what shall be done.
-* Optionally state the conditions and constraints, if any.
-* Describe every input (stimulus) into the software system, every output (response) from the software system, and all functions performed by the software system in response to an input or in support of an output.
-* Be verifiable (e.g., the requirement realization can be proven to the customer's satisfaction)
-* Conform to agreed upon syntax, keywords, and terms.
 
 ### 3.1 External Interfaces
 <incompleto>
-> This subsection defines all the inputs into and outputs requirements of the software system. Each interface defined may include the following content:
+> This section provides a detailed description of all inputs into and outputs from the system. It also gives a description of the hardware, software and communication interfaces and provides basic prototypes of the user interface.
+
 * Name of item
 * Source of input or destination of output
 * Valid range, accuracy, and/or tolerance
@@ -153,6 +146,15 @@ In this system there will be three types of users that interact with it:
 
 #### 3.1.1 User interfaces
 <incompleto>
+A first-time user of the "D.A.N.S" should see the log-in page when he enter in the web page, see Figure 1. If the user has not registered, he should be able to do that on the log-in page or enter like a invited user.
+If the user is not a first-time user, he have to log-in and identify itself, see Figure 2. Every user should have a profile page where they can edit their e-mail address and password, see Figure 3. Also, the user can set the mobile application to his preferred language 
+
+Now, both users continue to the next interface, see Figure 4. Here the user watch all the documents unread and he should be able to click in one of interest to expand it to watch it better. 
+
+Another userface will be the page where the user can search and suscribe to some tags. See Figure 5. A list of tags is shown and the user can select some of them. Each tag should give the number of documents that are vinculated to it.
+
+
+ 
 Define the software components for which a user interface is needed. Describe the logical characteristics of each interface between the software product and the users. This may include sample screen images, any GUI standards or product family style guides that are to be followed, screen layout constraints, standard buttons and functions (e.g., help) that will appear on every screen, keyboard shortcuts, error message display standards, and so on. Details of the user interface design should be documented in a separate user interface specification.
 
 Could be further divided into Usability and Convenience requirements.
@@ -200,3 +202,4 @@ Specify the requirements derived from existing standards or regulations, includi
 For example, this could specify the requirement for software to trace processing activity. Such traces are needed for some applications to meet minimum regulatory or financial standards. An audit trace requirement may, for example, state that all changes to a payroll database shall be recorded in a trace file with before and after values.
 
 ### 3.5 Atributes
+

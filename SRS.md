@@ -52,7 +52,6 @@ The purpose of this document is to give a detailed description of the requiremen
 
 
 ### 1.2 Product Scope
-<t traducir >
 This software is based in a notification system that emits an alert when an admin add a document. It will be implement using a web aplication.
 The program emits a notification via e-mail when an admin uploead a document with lot of priorarity or when the user show some interest in a theme, previusly suscribed.
 The software should be free to use for all the users.
@@ -63,9 +62,9 @@ The software should be free to use for all the users.
 |   Term        |                      Definitions                                           | 
 | :-----------: | :------------------------------------------------------------------------: | 
 | Admin         | People that upload the documents and add tags to them  |                                
-| Documents     | Proceedings from the N.U.R.C (Nacional University of Rio Cuarto)upload to the system |                                 
+| Documents| Proceedings from the N.U.R.C (Nacional University of Rio Cuarto)upload to the system |                                 
 | Users         | People registed in the system                                             |  
-| Invited Users | People                                   |                             
+| Invited Users | People that only can search and watch the documents       |                             
 
 
 ### 1.4 References 
@@ -82,8 +81,7 @@ The remainder of this document includes two more chapters and an appendixes. The
 
 ### 2.1 Product Perspective
 <t traducir>
-
-Este software es un producto nuevo y autocontenido que nace de la necesidad de tener un sistema eficiente para la correcta informacion y notificacion de nuevas actas. Este sistema constara de un portal web donde se administrarán Documentos y usuarios (users and admins) guardados en una base de datos. Los documentos seran subidos y al mismo tiempo, tanto los involucrados como los suscritos al tema de interés, seran notificados. 
+This software is a new product and self-contained. It come aout from the necesity of have a efficent system for the notification of the documents. The system should have a web portal where the documents and users will be administered and save in a Data Base. The documents should be upload by the admins and the system will notificate immediately.
 
 ### 2.2 Product Functions
 <cambiar, traducir>
@@ -96,12 +94,12 @@ Con el portal web los admins podran administrar los documentos, ya sea subirlos,
 
 ### 2.3 Product Constraints
 <t traducir>
-Esta seccion provee una vision de las restricciones o limitaciones de nuestro software, las cuales son:  
+This section provide a list of the restrictions or limitations of the software, which are:
 
-* Las actas solo estaran ordenadas por orden cronologico.
-* Solo se podran etiquetar personas que contengan cuenta.
-* Las actas solo podran ser buscadas por fecha, categoria y/o etiquetados.
-* Los documentos a subir deben cumplir restricciones de formato.
+* The documents are only sorted by the cronological order that are upload.
+* The admins only can tag registed users.
+* The documents only can be searched by date, tag or labelled.
+* The documents only can be .PDF, the original format of the University web.
 
 
 ### 2.4 User Characteristics

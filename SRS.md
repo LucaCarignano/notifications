@@ -57,7 +57,6 @@ The program emits a notification via e-mail when an admin uploead a document wit
 The software should be free to use for all the users.
 
 ### 1.3 Definitions, Acronyms and Abbreviations
-<t traducir>
 
 |   Term        |                      Definitions                                           | 
 | :-----------: | :------------------------------------------------------------------------: | 
@@ -80,20 +79,20 @@ The remainder of this document includes two more chapters and an appendixes. The
 ## 2. Product Overview
 
 ### 2.1 Product Perspective
-<t traducir>
 This software is a new product and self-contained. It come aout from the necesity of have a efficent system for the notification of the documents. The system should have a web portal where the documents and users will be administered and save in a Data Base. The documents should be upload by the admins and the system will notificate immediately.
 
 ### 2.2 Product Functions
-<cambiar, traducir>
+<traducir>
 
--listado funciones principales del software-
+A list of the principal functions of the software is given:
 
-Con el portal web los admins podran administrar los documentos, ya sea subirlos, editaros, clasificarlos o eliminaros, mientras que los usuarios podran ver y buscar estos, suscribirse a temas de interes, y ademas seran notificados cuando corresponda. Tambien existira la posibilidad de ingresar como invitado, el cual solo podra ver y/o buscar las actas.
-
-
+- A Functtion that allow the admins users add, delete and edit documents
+- The users should be able to search documents by the app Filter, looking for the date, the tags and the labelled users
+- The users can add tags into theirs profile.
+- The users should be notificated when a intrested document is added or when they are labelled in it.
+- The invited user only can read and search documets
 
 ### 2.3 Product Constraints
-<t traducir>
 This section provide a list of the restrictions or limitations of the software, which are:
 
 * The documents are only sorted by the cronological order that are upload.
@@ -114,59 +113,62 @@ In this system there will be three types of users that interact with it:
 
 
 ### 2.5 Assumptions and Dependencies
-<incompleto, traducir>
 
-* El software funcionara para cualquier navegador ???
-* El usuario deberá tener conexion a internet
+* The software will be designed for the most common web servidors, for example Google Chrome, Safari, Modzilla and Internet Explorer
+* The user must have a conection to internet.
 
 
 
 ## 3. Requirements
-<incompleto>
-> This section specifies the software product's requirements.This section contains all of the functional and quality requirements of the system. It gives a detailed description of the system and all its features.
+This section specifies the software product's requirements.This section contains all of the functional and quality requirements of the system. It gives a detailed description of the system and all its features.
 
 
 ### 3.1 External Interfaces
-<incompleto>
-> This section provides a detailed description of all inputs into and outputs from the system. It also gives a description of the hardware, software and communication interfaces and provides basic prototypes of the user interface.
-
-* Name of item
-* Source of input or destination of output
-* Valid range, accuracy, and/or tolerance
-* Units of measure
-* Timing
-* Relationships to other inputs/outputs
-* Screen formats/organization
-* Window formats/organization
-* Data formats
-* Command formats
-* End messages
+This section provides a detailed description of all inputs into and outputs from the system. It also gives a description of the hardware, software and communication interfaces and provides basic prototypes of the user interface.
 
 #### 3.1.1 User interfaces
-<incompleto>
-A first-time user of the "D.A.N.S" should see the log-in page when he enter in the web page, see Figure 1. If the user has not registered, he should be able to do that on the log-in page or enter like a invited user.
-If the user is not a first-time user, he have to log-in and identify itself, see Figure 2. Every user should have a profile page where they can edit their e-mail address and password, see Figure 3. Also, the user can set the mobile application to his preferred language 
 
-Now, both users continue to the next interface, see Figure 4. Here the user watch all the documents unread and he should be able to click in one of interest to expand it to watch it better. 
+A first-time user of the "D.A.N.S" should see the log-in page when he enter in the web page, see Figure 1. And register users have to log-in and identify itself. If the person don't want to get registered, he should be able to enter like a invited user. Every registed user should have a profile page where they can edit their e-mail address, username, password and apply for upgrade the acount, see Figure 2.A and Figure 2.N
+Figure 1             |  Figure 2.A | Figure 2.N
+:-------------------------:|:-------------------------:|:-------------------------:
+![Imgur](https://i.imgur.com/yPFiAjj.png)|![Imgur](https://i.imgur.com/qfklgUp.png) | ![Imgur](https://i.imgur.com/dvGvwCc.png) 
 
-Another userface will be the page where the user can search and suscribe to some tags. See Figure 5. A list of tags is shown and the user can select some of them. Each tag should give the number of documents that are vinculated to it.
+Now, register users continue to the next interface, see Figure 3.A and Figure 3.N Here the user watch all the documents unread and he should be able to click in one of interest to expand it to watch it better. 
+  Figure 3.A | Figure 3.N
+:-------------------------:|:-------------------------:
+![Imgur](https://i.imgur.com/la6UOSN.png) | ![Imgur](https://i.imgur.com/4fyaVWg.png) 
+
+Another interface will be the page where the user can search and suscribe to some tags. See Figure 4.A and 4.N. A list of tags is shown and the user can select some of them. Each tag should give the number of documents that are vinculated to it.
+  Figure 4.A | Figure 4.N 
+:-------------------------:|:-------------------------: 
+![Imgur](https://i.imgur.com/LxMVUhU.png)  | ![Imgur](https://i.imgur.com/WSj4KMj.png) |
+
+In the search interface the user should be able to search documents by the date, a tag or the users labelled. See Figure 5.A, 5.N and 5.G.
+  Figure 5.A | Figure 5.N | Figure 5.G
+:-------------------------:|:-------------------------: |:-------------------------: 
+![Imgur](https://i.imgur.com/AhBCmnK.png)   | ![Imgur](https://i.imgur.com/eeVlKWT.png)  | ![Imgur](https://i.imgur.com/hKsHoSD.png) 
+
+All this interfaces are diferent for normal and admin users. The invited user only can use de all document page, se Figure 
+Also we have the interface where the admin user should be able to add documents, vinculate de tags to it and label the users. See figure 6.
+Figure 6 |
+:-------------------------: |
+![Imgur](https://i.imgur.com/v5Onuo0.png)  | 
 
 
- 
-Define the software components for which a user interface is needed. Describe the logical characteristics of each interface between the software product and the users. This may include sample screen images, any GUI standards or product family style guides that are to be followed, screen layout constraints, standard buttons and functions (e.g., help) that will appear on every screen, keyboard shortcuts, error message display standards, and so on. Details of the user interface design should be documented in a separate user interface specification.
-
-Could be further divided into Usability and Convenience requirements.
 
 #### 3.1.2 Hardware interfaces
-<incompleto>
-Describe the logical and physical characteristics of each interface between the software product and the hardware components of the system. This may include the supported device types, the nature of the data and control interactions between the software and the hardware, and communication protocols to be used.
+
+Because the software is a web portal, only is needed the hardware required by by the Web navigator. The conecction with the Data Bases are administrated by the operating system. 
+
 
 #### 3.1.3 Software interfaces
 <incompleto>
 Describe the connections between this product and other specific software components (name and version), including databases, operating systems, tools, libraries, and integrated commercial components. Identify the data items or messages coming into the system and going out and describe the purpose of each. Describe the services needed and the nature of communications. Refer to documents that describe detailed application programming interface protocols. Identify data that will be shared across software components. If the data sharing mechanism must be implemented in a specific way (for example, use of a global data area in a multitasking operating system), specify this as an implementation constraint.
 
 #### 3.1.4 Comunication
-<incompleto>
+
+The comunication between the Data Base and the web portal consists in the search of documents, the tags (tags of documents and tags of users).
+
 
 ### 3.2 Functional
 <incompleto>
@@ -174,12 +176,15 @@ Describe the connections between this product and other specific software compon
 
 #### 3.2.1 User Class 1
 <incompleto>
-fotito UML ///Diagrama de clases////
+UML Diagram |
+:-------------------------: |
+![Imgur](https://i.imgur.com/AY14C6M.png)  | 
+
 
 #### 3.2.2 User Class 2
 <incompleto>
 Historias (Issues)
-
+  
 
 #### 3.3 Desing Requirements
 <incompleto>

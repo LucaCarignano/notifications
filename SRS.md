@@ -82,7 +82,6 @@ The remainder of this document includes two more chapters and an appendixes. The
 This software is a new product and self-contained. It come aout from the necesity of have a efficent system for the notification of the documents. The system should have a web portal where the documents and users will be administered and save in a Data Base. The documents should be upload by the admins and the system will notificate immediately.
 
 ### 2.2 Product Functions
-<traducir>
 
 A list of the principal functions of the software is given:
 
@@ -162,8 +161,8 @@ Because the software is a web portal, only is needed the hardware required by by
 
 
 #### 3.1.3 Software interfaces
-<incompleto>
-Describe the connections between this product and other specific software components (name and version), including databases, operating systems, tools, libraries, and integrated commercial components. Identify the data items or messages coming into the system and going out and describe the purpose of each. Describe the services needed and the nature of communications. Refer to documents that describe detailed application programming interface protocols. Identify data that will be shared across software components. If the data sharing mechanism must be implemented in a specific way (for example, use of a global data area in a multitasking operating system), specify this as an implementation constraint.
+
+The web portal doesn't neeed another software, a conecction to the Data Base is only needed, when the users want to access to the information in it.
 
 #### 3.1.4 Comunication
 
@@ -171,20 +170,127 @@ The comunication between the Data Base and the web portal consists in the search
 
 
 ### 3.2 Functional
-<incompleto>
-> This section specifies the requirements of functional effects that the software-to-be is to have on its environment.
 
-#### 3.2.1 User Class 1
-<incompleto>
+This section specifies the requirements of functional effects that the software should have on its environment.
+
+#### 3.2.1 Class Diagram
+
 UML Diagram |
 :-------------------------: |
 ![Imgur](https://i.imgur.com/AY14C6M.png)  | 
 
+#### 3.2.2 User Class - The User
 
-#### 3.2.2 User Class 2
-<incompleto>
-Historias (Issues)
-  
+#####3.2.2.1 Functional 1.1
+
+ID: FR1
+TITLE: Enter the web 
+DESC: A user should be able to access the web through any browser.
+RAT: In order for a user to enter the web. 
+DEP: None
+
+#####3.2.2.1 Functional 1.2
+
+ID: FR2
+TITLE: User registration 
+DESC: Given that a user has into the web, then the user should be able to register through the beginin page. The user must provide his full name, id number, user-name, password and e-mail address.
+RAT: In order for a user to register on the web.
+DEP: FR1
+
+#####3.2.2.1 Functional 1.3
+
+ID: FR3
+TITLE: User log-in 
+DESC: Given that a user has registered, then the user should be able to log in to the web.
+RAT: In order for a user to log in on the web.
+DEP: FR2
+
+#####3.2.2.1 Functional 1.4
+
+ID: FR4
+TITLE: Retrieve password
+DESC: Given that a user has registered, then the user should be able to retrieve his/her password by e-
+mail.
+RAT: In order for a user to retrieve his/her password.
+DEP: FR2
+
+#####3.2.2.1 Functional 1.5
+
+ID: FR5
+TITLE: Search
+DESC: Given that a user is logged in to the web, one page that is shown should be
+the All documents page. The user should be able to search for a document, according to several search options.
+The search options are Date, Tag, Labelleds. A user should be able to select multiple search options in one search.
+RAT: In order for a user to search for a document.
+DEP: FR3
+
+#####3.2.2.1 Functional 1.6
+
+ID: FR6
+TITLE: Download
+DESC: Given that a user is logged in to the web, one page that is shown should be
+the All documents page. The user should be able to download for a document.
+DEP: FR3
+
+##### 3.2.2.1 Functional 1.7
+
+ID: FR7
+TITLE: My profile
+DESC: Given that a user is logged in to the web, one page that is shown should be
+the My profile page. The user should be able to edit his profile, being able to change his username, email and password. As well as you can request for an upgrade to admin.
+DEP: FR3
+
+#### 3.2.3 User Class - Invited User
+
+##### 3.2.3.1 Functional 1.1
+
+ID: FR8
+TITLE: User log-in 
+DESC: The invited user should be able to log in to the web whitout given information.
+RAT: In order for a invited user to log in on the web.
+DEP: FR2
+
+##### 3.2.3.2 Funcional 1.2
+
+Functional 1.5 from User.
+
+##### 3.2.3.2 Funcional 1.3
+
+Functional 1.6 from User.
+
+##### 3.2.4 User Class 4 - The Admin 
+
+###### 3.2.4.1 Functional 1.1
+
+ID: FR9                
+TITLE: Upload a document                 
+DESC: As an admin, I want to upload a document. To archive it I will need a PDF file, the tags refers to the document and label the users involucrated.
+RAT: In order for an admin to upload a document.              
+DEP: none
+
+###### 3.2.4.2 Functional 1.2
+
+ID: FR10                 
+TITLE: Edit                  
+DESC: An admin, want to edit any document that has already been uploaded. He can can add or delete somo tags, add or delete labelled users. 
+RAT: In order for an admin to edit uploaded documents.                 
+DEP: FR9                       
+
+###### 3.2.4.3 Functional 1.3
+
+ID: FR11                 
+TITLE: Delete documents                
+DESC: An admin, he should be able to delete a document that have been wrongfully uploaded, or for some reason are no longer important.      
+RAT: In order for an admin to delete documents, no questions asked.           
+DEP: FR9
+
+###### 3.2.4.4 Functional 1.4
+
+ID: FR12
+TITLE: Accept other admins
+DESC: As an admin, I have to accept when a normal user wants to become a admin user, this need the aprovation of 3 admin users at least.                
+RAT: In order for an admin to accept a normal user to become an admin.            
+DEP: none  
 
 #### 3.3 Desing Requirements
 <incompleto>

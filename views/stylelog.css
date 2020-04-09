@@ -1,0 +1,255 @@
+/*
+html5doctor.com Reset Stylesheet
+v1.6.1
+Last Updated: 2010-09-17
+Author: Richard Clark - http://richclarkdesign.com
+Twitter: @rich_clark
+*/
+
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var,
+b, i,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+body {
+    line-height:1;
+}
+
+article,aside,details,figcaption,figure,
+footer,header,hgroup,menu,nav,section {
+    display:block;
+}
+
+nav ul {
+    list-style:none;
+}
+
+blockquote, q {
+    quotes:none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content:'';
+    content:none;
+}
+
+a {
+    margin:0;
+    padding:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* change colours to suit your needs */
+ins {
+    background-color:#ff9;
+    color:#000;
+    text-decoration:none;
+}
+
+/* change colours to suit your needs */
+mark {
+    background-color:#ff9;
+    color:#000;
+    font-style:italic;
+    font-weight:bold;
+}
+
+del {
+    text-decoration: line-through;
+}
+
+abbr[title], dfn[title] {
+    border-bottom:1px dotted;
+    cursor:help;
+}
+
+table {
+    border-collapse:collapse;
+    border-spacing:0;
+}
+
+/* change border colour to suit your needs */
+hr {
+    display:block;
+    height:1px;
+    border:0;  
+    border-top:1px solid #cccccc;
+    margin:1em 0;
+    padding:0;
+}
+
+input, select {
+    vertical-align:middle;
+}
+
+body{
+    background: #FDF4E8;
+    font-size: 25px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+h1{
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background: #0F5E92;
+    font-size: 90px;
+    text-align: center;
+    letter-spacing: 5px;
+    word-spacing: 15px;
+    text-shadow: 3px 3px 7px #BFBFBF;
+    font-style: oblique;
+    font-weight: bold;
+    border: 10px solid black;
+    border-bottom: none;
+    border-color: black;
+    border-top-style: solid;
+    border-left-style: solid;
+    border-right-style: solid;
+}
+
+h2{
+    background: #0F5E92;
+    background-size: cover;
+    background-position: center;
+    font-size: 45px;
+    text-align: center;
+    padding-bottom: 10px;  
+    padding-top: 5px; 
+    word-spacing: 10px;
+    border: 10px solid black;
+    border-top: none;
+
+}
+
+a{
+    text-decoration: none;
+    color: #101010;
+    text-decoration: underline;
+}
+
+.login p{
+    padding-top: 50px;
+    padding-left: 18%;
+    word-spacing: 30px;
+    font-weight: bold;
+
+}
+
+.login input{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.login input[type="text"], .login input[type="password"]{
+    border: none;
+    border-bottom: 1px solid #000;
+    background: transparent;
+    outline: none;
+    height: 40px;
+    font-size: 20px;
+}
+.login input[type="submit"]{
+    border: none;
+    background: transparent;
+    outline: none;
+    height: 40px;
+    color: white;
+    background: #0F5E92;
+    border: 2px solid black;
+    border-radius: 10px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.login input[type="submit"]:hover {
+    background-color: white;
+    color: #0F5E92;
+    font-weight: bold;
+}
+
+h3{
+    padding-left: 15%;
+    padding-top: 100px;
+    font-style: oblique;
+}
+
+h4{
+    padding-left: 15%;
+    font-size: 60px;
+    font-style: oblique;
+}
+
+
+.register {
+    padding-left: 18%;
+    padding-top:  20px;
+  }
+
+td {
+    padding-top: 10px;
+    text-align: center;
+
+}
+
+p{
+    padding-top: 10px;;
+    font-weight: bold;
+
+}
+
+.right {
+    text-align: left;
+    padding-left: 250px; 
+}
+
+.register input[type="text"], .register input[type="password"]{
+    border: none;
+    border-bottom: 1px solid #000;
+    background: transparent;
+    outline: none;
+    height: 40px;
+    font-size: 20px;
+
+}
+
+.register input[type="submit"]{
+    border: none;
+    background: transparent;
+    outline: none;
+    height: 40px;
+    color: white;
+    background: #0F5E92;
+    border: 2px solid black;
+    border-radius: 10px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    font-size: 20px;
+    position: relative;
+    top: 15px; 
+    left: 32%;
+}
+
+.register input[type="submit"]:hover {
+    background-color: white;
+    color: #0F5E92;
+    font-weight: bold;
+}

@@ -181,134 +181,180 @@ UML Diagram |
 
 #### 3.2.2 User Class - The User
 
-#####3.2.2.1 Functional 1.1
+##### 3.2.2.1 Functional 2.1
 
-ID: FR1
-TITLE: Enter the web 
-DESC: A user should be able to access the web through any browser.
-RAT: In order for a user to enter the web. 
-DEP: None
+ID: FR1                                                               
+TITLE: Enter the web.                                                   
+DESC: A user should be able to access the web through any browser.                              
+RAT: In order for a user to enter the web.                             
+DEP: None                              
 
-#####3.2.2.1 Functional 1.2
+##### 3.2.2.1 Functional 2.2
 
-ID: FR2
-TITLE: User registration 
-DESC: Given that a user has into the web, then the user should be able to register through the beginin page. The user must provide his full name, id number, user-name, password and e-mail address.
-RAT: In order for a user to register on the web.
+ID: FR2                                                   
+TITLE: User registration.                                           
+DESC: Given that a user has into the web, then the user should be able to register through the beginin page. The user must provide his full name, id number, user-name, password and e-mail address.                                 
+RAT: In order for a user to register on the web.                                                  
 DEP: FR1
 
-#####3.2.2.1 Functional 1.3
+##### 3.2.2.1 Functional 2.3
 
-ID: FR3
-TITLE: User log-in 
-DESC: Given that a user has registered, then the user should be able to log in to the web.
-RAT: In order for a user to log in on the web.
+ID: FR3                                                        
+TITLE: User log-in.                                                              
+DESC: Given that a user has registered, then the user should be able to log in to the web.                            
+RAT: In order for a user to log in on the web.                                  
 DEP: FR2
 
-#####3.2.2.1 Functional 1.4
+##### 3.2.2.1 Functional 2.4
 
-ID: FR4
-TITLE: Retrieve password
+ID: FR4                                                        
+TITLE: Retrieve password.                                           
 DESC: Given that a user has registered, then the user should be able to retrieve his/her password by e-
-mail.
-RAT: In order for a user to retrieve his/her password.
+mail.                                                   
+RAT: In order for a user to retrieve his/her password.                                              
 DEP: FR2
 
-#####3.2.2.1 Functional 1.5
+##### 3.2.2.1 Functional 2.5
 
-ID: FR5
-TITLE: Search
+ID: FR5                                                    
+TITLE: Search.                                                    
 DESC: Given that a user is logged in to the web, one page that is shown should be
 the All documents page. The user should be able to search for a document, according to several search options.
-The search options are Date, Tag, Labelleds. A user should be able to select multiple search options in one search.
-RAT: In order for a user to search for a document.
+The search options are Date, Tag, Labelleds. A user should be able to select multiple search options in one search.            
+RAT: In order for a user to search for a document.                               
 DEP: FR3
 
-#####3.2.2.1 Functional 1.6
+##### 3.2.2.1 Functional 2.6
 
-ID: FR6
-TITLE: Download
+ID: FR6                                                
+TITLE: Download.                                               
 DESC: Given that a user is logged in to the web, one page that is shown should be
-the All documents page. The user should be able to download for a document.
-DEP: FR3
+the All documents page. The user should be able to download for a document.                                   
+DEP: FR3                                                 
 
-##### 3.2.2.1 Functional 1.7
+##### 3.2.2.1 Functional 2.7
 
-ID: FR7
-TITLE: My profile
+ID: FR7                                              
+TITLE: My profile.                                       
 DESC: Given that a user is logged in to the web, one page that is shown should be
-the My profile page. The user should be able to edit his profile, being able to change his username, email and password. As well as you can request for an upgrade to admin.
+the My profile page. The user should be able to edit his profile, being able to change his username, email and password. As well as you can request for an upgrade to admin.                                     
 DEP: FR3
 
 #### 3.2.3 User Class - Invited User
 
-##### 3.2.3.1 Functional 1.1
+##### 3.2.3.1 Functional 3.1
 
-ID: FR8
-TITLE: User log-in 
-DESC: The invited user should be able to log in to the web whitout given information.
-RAT: In order for a invited user to log in on the web.
+ID: FR8                                         
+TITLE: Invited log-in.                                        
+DESC: The invited user should be able to log in to the web whitout given information.                             
+RAT: In order for a invited user to log in on the web.                                       
 DEP: FR2
 
-##### 3.2.3.2 Funcional 1.2
-
-Functional 1.5 from User.
-
-##### 3.2.3.2 Funcional 1.3
-
-Functional 1.6 from User.
 
 ##### 3.2.4 User Class 4 - The Admin 
 
-###### 3.2.4.1 Functional 1.1
+##### 3.2.4.1 Functional 4.1
 
 ID: FR9                
-TITLE: Upload a document                 
+TITLE: Upload a document.                 
 DESC: As an admin, I want to upload a document. To archive it I will need a PDF file, the tags refers to the document and label the users involucrated.
 RAT: In order for an admin to upload a document.              
-DEP: none
+DEP: FR1
 
-###### 3.2.4.2 Functional 1.2
+##### 3.2.4.2 Functional 4.2
 
 ID: FR10                 
-TITLE: Edit                  
-DESC: An admin, want to edit any document that has already been uploaded. He can can add or delete somo tags, add or delete labelled users. 
-RAT: In order for an admin to edit uploaded documents.                 
-DEP: FR9                       
+TITLE: Edit.                                                                                     
+DESC: An admin, want to edit any document that has already been uploaded. He can can add or delete somo tags, add or delete labelled users.                                             
+RAT: In order for an admin to edit uploaded documents.                                                             
+DEP: FR9                                          
 
-###### 3.2.4.3 Functional 1.3
+##### 3.2.4.3 Functional 4.3
 
-ID: FR11                 
-TITLE: Delete documents                
-DESC: An admin, he should be able to delete a document that have been wrongfully uploaded, or for some reason are no longer important.      
-RAT: In order for an admin to delete documents, no questions asked.           
+ID: FR11                                                      
+TITLE: Delete documents.                                                     
+DESC: An admin, he should be able to delete a document that have been wrongfully uploaded, or for some reason are no longer important.                                                
+RAT: In order for an admin to delete documents, no questions asked.                                                 
 DEP: FR9
 
-###### 3.2.4.4 Functional 1.4
+##### 3.2.4.4 Functional 4.4
 
-ID: FR12
-TITLE: Accept other admins
-DESC: As an admin, I have to accept when a normal user wants to become a admin user, this need the aprovation of 3 admin users at least.                
-RAT: In order for an admin to accept a normal user to become an admin.            
-DEP: none  
+ID: FR12                                               
+TITLE: Accept other admins.                                         
+DESC: As an admin, I have to accept when a normal user wants to become a admin user, this need the aprovation of 3 admin users at least.                                                
+RAT: In order for an admin to accept a normal user to become an admin.                                             
+DEP: FR7
 
-#### 3.3 Desing Requirements
-<incompleto>
-> This section states additional, quality-related property requirements that the functional effects of the software should present.
 
-#### 3.3.1 Performance
-<incompleto>
-If there are performance requirements for the product under various circumstances, state them here and explain their rationale, to help the developers understand the intent and make suitable design choices. Specify the timing relationships for real time systems. Make such requirements as specific as possible. You may need to state performance requirements for individual functional requirements or features.
+### 3.3 Desing Requirements
+The requirements in this section provide a detailed specification of the user interaction with the software
+and measurements placed on the system performance.
 
-### 3.4 Design Constraints
-<incompleto>
-Specify the requirements derived from existing standards or regulations, including:  
-* Report format
-* Data naming
-* Accounting procedures
-* Audit tracing
+#### 3.3.1 Search
 
-For example, this could specify the requirement for software to trace processing activity. Such traces are needed for some applications to meet minimum regulatory or financial standards. An audit trace requirement may, for example, state that all changes to a payroll database shall be recorded in a trace file with before and after values.
+ID: DR1                 
+TITLE: Simple search feature                   
+DESC: The search feature should be simple and easy for the user to use.
+RAT: In order for the user to easily find the search feature and have no issues using it.                   
+DEP: None.
 
-### 3.5 Atributes
+#### 3.3.2 Document visualization 
+
+ID: DR2               
+TITLE: Simple document visualization                 
+DESC: All documents should be easily identifiable, and ready to be read by clicking on them.                 
+RAT: In order for the user to easily indetify and read the documents.     
+DEP: None. 
+
+#### 3.3.3 Document download
+
+ID: DR3               
+TITLE: Simple download feature             
+DESC: All documents should be easily downloaded by clicking on a download icon.       
+RAT: In order for the user to easily download any document.             
+
+#### 3.3.4 Suscribing 
+
+ID: DR4             
+TITLE: Ease of subscribing/unsuscribing to an IC         
+DESC: All ICs should be listed on the user's profile so that they can easily subscribe to any of them by checking a small box next to the ICs name, or unsubscribe by doing the exact opposite.                                
+RAT: In order for the user to easily subscribe/unsubscribe to an IC.      
+
+#### 3.3.5 Log-In & Register
+
+ID: DR5            
+TITLE: Easy log-in and register service.        
+DESC: The users should be able to log-in and register in the web on a easy way.                                
+RAT: In order for the user to easily log-in/register to the service. 
+
+#### 3.3.6 Notifications
+
+ID: DR6            
+TITLE: Simple notificaions.        
+DESC: The notifications should be simple and only contain the necessary information.                                
+RAT: In order for the user can read easily the notifications.
+
+#### 3.4 Design Constraints
+
+This section includes the design constraints on the software caused by the hardware.
+
+##### 3.4.1 Docs 
+
+ID: DC1              
+TITLE: Having the docs in your computer              
+DESC: The admin must have the document's PDF file stored in his computer in order to be able to upload it, any other kinds of storage will not work (URLs, etc).
+
+##### 3.4.2 E-mail
+
+ID: DC2                           
+TITLE: Having an email account                     
+DESC: The system is designed so that all users must have an email account.
+
+##### 3.4.3 ID
+
+ID: DC3           
+TITLE: Having an ID number               
+DESC: Only people with ID numbers will be able to sign up for an account.
+
+
 

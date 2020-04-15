@@ -7,5 +7,7 @@ gem 'sinatra', '2.0.7'
 group :development do
   gem 'dotenv', '2.7.5'
   gem 'rerun'
+  gem 'sequel'
+  gem 'pg'
 end
 

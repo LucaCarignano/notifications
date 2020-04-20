@@ -106,24 +106,6 @@ body{
     font-size: 25px;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
-h1{
-    padding-top: 20px;
-    padding-bottom: 20px;
-    background: #0F5E92;
-    font-size: 90px;
-    text-align: center;
-    letter-spacing: 5px;
-    word-spacing: 15px;
-    text-shadow: 3px 3px 7px #BFBFBF;
-    font-style: oblique;
-    font-weight: bold;
-    border: 10px solid black;
-    border-bottom: none;
-    border-color: black;
-    border-top-style: solid;
-    border-left-style: solid;
-    border-right-style: solid;
-}
 
 h2{
     background: #0F5E92;
@@ -230,6 +212,13 @@ p{
     font-size: 20px;
 
 }
+
+.fg p{
+	padding-left: 70%;
+	color: white;
+
+}
+
 
 .register input[type="submit"]{
     border: none;

@@ -16,6 +16,9 @@
 				LOG IN!! or get into like a 
 				<a href="/guest">guest</a>
 			</h2>
+			 <% if @error %>
+			   <p class="error"><%= @error %></p>
+			 <% end %>
 			<div class="login"> 
 				<form method="POST" action="/">
 					<p>Email/Username:  

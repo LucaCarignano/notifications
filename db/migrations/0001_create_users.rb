@@ -1,11 +1,11 @@
 Sequel.migration do                                                                                           
   up do                                                                                                       
-      create_table(:users) do                                                                                   
-        primary_key :id                                                                                         
-        String :name, null: false                                                                               
-      end                                                                                                       
-    end                                                                                                         
+    create_table(:users) do                                                                                   
+      primary_key :id                                                                                         
+      String :surname, null: false                                                                               
+    end                                                                                                       
+  end                                                                                                         
   down do                                                                                                     
-      drop_table(:users)                                                                                        
-    end
+    drop_table(:users)                                                                                        
   end
+end

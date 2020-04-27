@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<table>
+		<% @documents.each do |doc| %>
+		  <tr>
+		    <td><%=h doc.date %></td><td><%=h doc.tags %></td><%=h doc.labelled %></td>
+		  </tr>
+		<% end %>
+		</table>
+	</head>
+</html>
+	

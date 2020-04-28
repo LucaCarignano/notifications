@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<table>
-		<% @documents.each do |doc| %>
-		  <tr>
-		    <td><%=doc.title %><td><%= doc.date %></td><td><%= doc.tags %></td><%= doc.labelled %></td>
+
+    <div class="main_content">
+        <div class="header">All Documents</div>  
+        <div class="info">
+          <table>
+			<% @documents.each do |doc| %>
+		 	 <tr>
+		    	<td><%=doc.title %><td><%= doc.date %></td><td><%= doc.tags %></td><%= doc.labelled %></td>
 		  <% end %>
 		  </tr>
 		</table>
-	</head>
+      </div>
+    </div>
+</div>
+
+</body>
 </html>
 	

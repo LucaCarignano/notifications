@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
-	<body>
+	<div class="main_content">
+      <div class="header">Add Document</div>  
+    <div class="info">
 		<form method="POST" action="/adddoc">
 	        <p>Title: <input type="text" name="title"></p>
-	        <p>Date: <input type="number" name="date"></p>
-	        <p>Users to label: <input type="" name="labelled"></p>
+	        <p>Date: <input type="date" name="date"></p>
+	        <p>Users to label: <input type="text" name="labelled"></p>
 	        <p>TAGS: <select id="categories" name="tags"	>
 	        	  <option>Seleccione una categoria</option>	
 				  <option value="coronavirus">Corona Virus</option>
@@ -15,6 +17,7 @@
 	        <% if @error2 %>
 	        <p class="error"><%= @error %></p>
 	        <% end %>
+	        <br><br>
             <input type="submit" name="" value="Submit">
         </form>
 	</body>

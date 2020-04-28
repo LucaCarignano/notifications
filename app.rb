@@ -8,7 +8,7 @@ class App < Sinatra::Base
 	end
 
 	get "/adddoc" do
-		erb :add_doc, :layout => :layout_sig
+		erb :add_doc, :layout => :layout_main
 	end
 	
 	#Comprobar que el usuario y la contraseña sean del mismo user y se encuentre en
@@ -48,7 +48,7 @@ class App < Sinatra::Base
 
 	get "/docs" do
 		@documents = Doc.all
-  		erb :docs, :layout => :layout_sig
+  		erb :docs, :layout => :layout_main
   	end
 
  	post '/adddoc' do

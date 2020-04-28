@@ -102,12 +102,12 @@ input, select {
 }
 
 body{
-    background: #FFF0D1;
+    background: #FFF7E8;
     font-size: 25px;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-h1{
+.page h1{
     background: #0F5E92;
     background-size: cover;
     background-position: center;
@@ -116,11 +116,10 @@ h1{
     padding-bottom: 10px;  
     padding-top: 5px; 
     word-spacing: 10px;
-    border: 10px solid black;
-    border-bottom: : none;
+
 }
 
-h2{
+.page h2{
     background: #0F5E92;
     background-size: cover;
     background-position: center;
@@ -165,7 +164,7 @@ input[type="submit"]{
     transition-duration: 0.4s;
     cursor: pointer;
     font-size: 20px;
-    padding-top; 10px;
+    padding-top: 10px;
 }
 
 input[type="submit"]:hover {

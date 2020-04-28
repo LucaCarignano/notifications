@@ -1,19 +1,13 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-widht, initial-scale=1">
-		<title>
-			Log-in Site
-		</title>
-		<link rel="stylesheet" href="stylelog.css">
-	</head>
 	<body>
+		<div class="page">
 			<h1>
 				WELCOME TO D.A.N.S
 			</h1>
 			<h2>
-				LOG IN!! or get into like a 
+				<a href="/">LOG IN!!</a>
+				 or get into like a 
 				<a href="/guest">guest</a>
 			</h2>
 			 <% if @error %>
@@ -45,29 +39,31 @@
 				    		<input type="text" name="name">
 				    	</p>
 				    </td>
-				    <td class = "right">		
+				    <td class = "right">	
+				 		<p>	Surname:
+				    		<input type="text" name="surname">
+				    	</p>	
+				    	
+				    </td>
+				  </tr>
+				  <tr>
+				    <td>
 				    	<p> Your Email:
 				    		<input type="text" name="email" placeholder="name@example.com">
+				    	</p>
+				    </td>
+				    <td class = "right">		
+						<p>	User name:
+				    		<input type="text" name="username">
 				    	</p>
 				    </td>
 				  </tr>
 				  <tr>
 				    <td>
-				    		<p>	Surname:
-				    		<input type="text" name="surname">
-				    		</p>
-				    </td>
-				    <td class = "right">		
-				    		<p> New password:
+				    	<p> New password:
 				    		<input type="password" name="password">
-				    		</p>
-				    </td>
-				  </tr>
-				  <tr>
-				    <td>
-				    		<p>	User name:
-				    		<input type="text" name="username">
-				    		</p>
+				    	</p>
+
 				    </td>
 				    <td class = "right">		
 				    		<p> Repeat your password:
@@ -79,6 +75,7 @@
 				<br>
 				<input type="submit" name="" value="Submit">
 			</form>
-			</div>	
+			</div>
+		</div>
 		</body>
 </html>

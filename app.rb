@@ -7,6 +7,10 @@ class App < Sinatra::Base
     	erb :log, :layout => :layout_sig
 	end
 
+	get "/adddoc" do
+		erb :add_doc, :layout => :layout_sig
+	end
+	
 	#Comprobar que el usuario y la contraseña sean del mismo user y se encuentre en
 	#la base de datos, si no, informar que se han ingresado datos inválidos
 	post "/" do
@@ -41,4 +45,24 @@ class App < Sinatra::Base
 		else "email inválido"
 		end
 	end
+
+	get "/docs" do
+		@documents = Doc.all
+  		erb :docs, :layout => :layout_sig
+  	end
+
+ 	post '/adddoc' do
+	    request.body.rewind
+
+	    hash = Rack::Utils.parse_nested_query(request.body.read)
+	    params = JSON.parse hash.to_json 
+
+	    doc = Doc.new(title: params["title"], date: params["date"], tags: params["tags"], labelled: params["labelled"])
+	    if doc.save
+	      "redirect home"
+	    else 
+	      [500, {}, "Internal server Error"]
+	    end 
+  	end 
+
 end

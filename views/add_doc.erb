@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<form method="POST" action="/adddoc">
+	        <p>Title: <input type="text" name="title"></p>
+	        <p>Date: <input type="number" name="date"></p>
+	        <p>Users to label: <input type="" name="labelled"></p>
+	        <p>TAGS: <select id="categories" name="tags"	>
+	        	  <option>Seleccione una categoria</option>	
+				  <option value="coronavirus">Corona Virus</option>
+				  <option value="Matematica">Matematica</option>
+				  <option value="Comedor">Comedor universidad</option>
+				</select></p>
+	        <p>Document: <input type="file" name="document" accept=".pdf"></p>
+	        <% if @error2 %>
+	        <p class="error"><%= @error %></p>
+	        <% end %>
+            <input type="submit" name="" value="Submit">
+        </form>
+	</body>
+</html>

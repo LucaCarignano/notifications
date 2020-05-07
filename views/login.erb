@@ -4,14 +4,16 @@
 		<title>Uncorrect</title>
 	<body>
 		<div class="loginbox">
-			<h3>Uncorrect password or username</h3>
+			<% if @error %>
+			   <p class="error"><%= @error %></p>
+			 <% end %>
 			<form method="POST" action="/login">
 				<p>Username</p>
-				<input type="text" name="users" placeholder="Enter Username">
+				<input type="text" name="us" placeholder="Enter Username">
 				<p>Password</p>
-				<input type="password" name="passs" placeholder="Enter Password"><br>
+				<input type="password" name="pas" placeholder="Enter Password"><br><br>
 				<input type="submit" name="" value="Log-in"><br>
-				<a href="/rp">Lost your password?</a><br>
+				<a href="/rp">Lost your password?</a><br><br>
 				<a href="/">Don´t have an account?</a>
 			</form>
 		</div>

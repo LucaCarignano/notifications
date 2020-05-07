@@ -116,6 +116,8 @@ body{
     padding-bottom: 10px;  
     padding-top: 5px; 
     word-spacing: 10px;
+    border: 10px solid black;
+    border-bottom: none;
 
 }
 

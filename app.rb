@@ -1,6 +1,7 @@
 require 'json'
 require './models/init.rb'
 require 'sinatra/base'
+include FileUtils::Verbose
  
 
 class App < Sinatra::Base
@@ -8,60 +9,68 @@ class App < Sinatra::Base
 	configure :development, :production do
 		enable :logging
 		enable :session
-		set :session_secret, "secret"
+		set :session_secret, "una clave polenta"
 		set :session, true
 	end	
 
 	get "/" do
-		logger.info "params"
-		logger.info session[:user_id]
-		logger.info "--------------"
+	    logger.info ""
+	    logger.info session["session_id"]
+	    logger.info session.inspect
+	    logger.info "-------------"
+	    logger.info ""
 
-		logger.info session.inspect
-		logger.info "Configurations"
-		#logger.info settings.db.adapter
-		logger.info "--------------"
-
-    	erb :log, :layout => :layout_sig
+		if !session[:user_id] 
+			erb :log, :layout => :layout_sig
+		else
+			erb :docs, :layout => :layout_main
+		end
 	end
 
 	get "/adddoc" do
 		erb :add_doc, :layout => :layout_main
 	end
 	
-	#Comprobar que el usuario y la contraseña sean del mismo user y se encuentre en
+	#Comprobar que el user1 y la contraseña sean del mismo user y se encuentre en
 	#la base de datos, si no, informar que se han ingresado datos inválidos
 	post "/" do
 
-		if User.last.id
-			session[:user_id] = User.last.id
+		# Login part
+		user1 = User.find(username: params[:user])
+		
+      	if user1 && user1.password == params[:pass]
+        	session[:user_id] = user1.id
+        	redirect "/docs"
+      	else
+      		@error ="Your username o password is incorrect"
+        	redirect "/login"
+      	end
 
-			[200, {"Content-Type" => "text/plain"}, ["You're logged in"]]
+		# Register to the system part
+		if User.find(username: params[:username])
+		    @error = "The username is already taken!!"
+		    erb :log, :layout => :layout_sig
+		elsif   User.find(email: params[:email])                                                                                               
+		    @error = "The email have a user created!!"
+		    erb :log, :layout => :layout_sig
+		elsif params[:password] != params[:password2]
+		    @error = "Passwords are diferent!!"
+		    erb :log, :layout => :layout_sig
 		else
-			# halt 401, 'go away!'      
-			[400, {"Content-Type" => "text/plain"}, ["Unautorized"]]
+	        request.body.rewind
+
+	        hash = Rack::Utils.parse_nested_query(request.body.read)
+	        params = JSON.parse hash.to_json 
+	        user = User.new(name: params["name"], email: params["email"], username: params["username"], password: params["password"])
+	        if user.save
+	           session[:user_id] = user.id
+	           "guardo"
+	           
+	        else 
+		        [500, {}, "Internal server Error"]
+		    end
 		end
-
-
-		request.body.rewind
-
-		hash = Rack::Utils.parse_nested_query(request.body.read)
-		params = JSON.parse hash.to_json 
-
-		user = User.new(name: params["name"], email: params["email"], username: params["username"], password: params["password"])
-		if user.save
-		  "redirect home"
-		else 
-		  [500, {}, "Internal server Error"]
-		end 
 	end
-			#if params[:user]=="asd" && params[:pass] == "asd" 
-			#	    "funciona"
-			#else 
-			#	@error = 'Username or password was incorrect'
-		 	#	erb :log			
-			#end
-
 
 	get "/rp" do
 		erb :rp, :layout => :layout_sig
@@ -94,4 +103,22 @@ class App < Sinatra::Base
 	    end 
   	end 
 
+  	get "/login" do
+  		erb :login, :layout => :layout_sig
+  	end
+
+  	post "/login" do
+
+		# Login part
+		user = User.find(username: params["us"])
+		
+      	if user && user.password == params["pas"]
+        	session[:user_id] = user.id
+        	redirect "/docs"
+      	else
+      		@error ="Your username o password is incorrect"
+        	erb :login, :layout => :layout_sig
+      	end
+
+  	end	
 end

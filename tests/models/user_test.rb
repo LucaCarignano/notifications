@@ -7,7 +7,7 @@ class UserTest < MiniTest::Unit::TestCase
     @user = User.new
 
     # Act
-    @user.name = nil
+    @user.surname = nil
 
     # Assert
     assert_equal @user.valid?, false

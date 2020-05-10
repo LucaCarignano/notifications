@@ -14,6 +14,9 @@ class App < Sinatra::Base
 	end	
 
 	get "/" do
+		
+		session.clear
+
 	    logger.info ""
 	    logger.info session["session_id"]
 	    logger.info session.inspect
@@ -31,9 +34,9 @@ class App < Sinatra::Base
 		erb :add_doc, :layout => :layout_main
 	end
 	
-	#Comprobar que el user1 y la contraseña sean del mismo user y se encuentre en
-	#la base de datos, si no, informar que se han ingresado datos inválidos
 	post "/" do
+
+		session.clear
 
 		# Login part
 		user1 = User.find(username: params[:user])
@@ -41,17 +44,19 @@ class App < Sinatra::Base
       	if user1 && user1.password == params[:pass]
         	session[:user_id] = user1.id
         	redirect "/docs"
-      	else
+      	elsif params["user"] != ""
       		@error ="Your username o password is incorrect"
         	redirect "/login"
-      	end
 
 		# Register to the system part
-		if User.find(username: params[:username])
+		elsif User.find(username: params[:username])
 		    @error = "The username is already taken!!"
 		    erb :log, :layout => :layout_sig
 		elsif   User.find(email: params[:email])                                                                                               
 		    @error = "The email have a user created!!"
+		    erb :log, :layout => :layout_sig
+		elsif params[:password].length < 9
+		    @error = "Password must have more than 8 caracters!!"
 		    erb :log, :layout => :layout_sig
 		elsif params[:password] != params[:password2]
 		    @error = "Passwords are diferent!!"
@@ -61,10 +66,10 @@ class App < Sinatra::Base
 
 	        hash = Rack::Utils.parse_nested_query(request.body.read)
 	        params = JSON.parse hash.to_json 
-	        user = User.new(name: params["name"], email: params["email"], username: params["username"], password: params["password"])
+	        user = User.new(name: params["name"], surname: params["surname"], email: params["email"], username: params["username"], password: params["password"])
 	        if user.save
 	           session[:user_id] = user.id
-	           "guardo"
+	           redirect "/docs"
 	           
 	        else 
 		        [500, {}, "Internal server Error"]
@@ -85,7 +90,7 @@ class App < Sinatra::Base
 	end
 
 	get "/docs" do
-		@documents = Doc.all
+		@documents = Document.all
   		erb :docs, :layout => :layout_main
   	end
 
@@ -95,7 +100,7 @@ class App < Sinatra::Base
 	    hash = Rack::Utils.parse_nested_query(request.body.read)
 	    params = JSON.parse hash.to_json 
 
-	    doc = Doc.new(title: params["title"], date: params["date"], tags: params["tags"], labelled: params["labelled"])
+	    doc = Document.new(title: params["title"], date: params["date"], tags: params["tags"], labelled: params["labelled"])
 	    if doc.save
 	      "redirect home"
 	    else 
@@ -104,6 +109,7 @@ class App < Sinatra::Base
   	end 
 
   	get "/login" do
+  		session.clear
   		erb :login, :layout => :layout_sig
   	end
 

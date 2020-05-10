@@ -4,7 +4,8 @@ class User < Sequel::Model
 		super
 		validates_presence [:name, :surname, :email, :password, :username]
 		validates_unique [:email, :username]
-		validates_format /\A.*@.*\..*\z/, :email, message: 'invalid email'	
+		validates_format /\A.*@.*\..*\z/, :email, message: 'invalid email'
+		validates_min_length(8, :password, message: 'password must have more than 8 caracters')	
 	end
 	many_to_many :tags
 	many_to_many :documents

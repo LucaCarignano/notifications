@@ -2,40 +2,149 @@ require File.expand_path '../../test_helper.rb', __FILE__
 
 class UserTest < MiniTest::Unit::TestCase
   MiniTest::Unit::TestCase		
-  def test_name_existence
-    # Arrange
+  def test_values_existence
+
+    #Arrange
+	@user1 = User.new
+
+    # Act
+    @user1.name = "fede"
+    @user1.surname = "guti"
+    @user1.username = "fede"
+    @user1.email = "fede@gmail.com"
+    @user1.password = "123456789"
+
+    # Assert
+    all_ok = assert_equal @user1.valid?, true
+
+    # Act
+    @user1.name = nil
+    
+    # Assert
+    name_check = assert_equal @user1.valid?, false
+    
+    # Act
+    @user1.name = "fede"
+    @user1.email = nil
+    
+    # Assert
+    email_check = assert_equal @user1.valid?, false
+
+    # Act
+    @user1.email = "fede@gmail.com"
+    @user1.surname = nil
+    
+    # Assert
+    surname_check = assert_equal @user1.valid?, false
+
+    # Act
+    @user1.surname = "fede"
+    @user1.username = nil
+    
+    # Assert
+    user_check = assert_equal @user1.valid?, false
+
+    # Act
+    @user1.password = nil
+    @user1.username = "fede"
+    
+    # Assert
+    pass_check = assert_equal @user1.valid?, false
+
+    # Assert
+    assert_equal (all_ok || email_check || name_check || user_check || pass_check || surname_check) , true
+
+  end
+
+  def test_email_accurrancy
+
+    #Arrange
+    @user2 = User.new
+
+    # Act
+    @user2.name = "fede"
+    @user2.surname = "guti"
+    @user2.username = "fede"
+    @user2.email = "fede@gmail.com"
+    @user2.password = "123456789"
+
+    # Assert
+    all_ok = assert_equal @user2.valid?, true
+
+    # Act
+    @user2.email = "fede"
+
+    # Assert
+    email_check = assert_equal @user2.valid?, false
+
+    # Assert
+    assert_equal (all_ok || email_check) , true
+  end
+
+  def test_pass_accurrancy
+
+    #Arrange
     @user = User.new
 
     # Act
-    @user.surname = nil
+    @user.name = "fede"
+    @user.surname = "guti"
+    @user.username = "fede"
+    @user.email = "fede@gmail.com"
+    @user.password = "123456789"
 
     # Assert
-    assert_equal @user.valid?, false
+    all_ok = assert_equal @user.valid?, true
 
-	@user1 = User.new
-	@user2 = User.new
     # Act
-    @user1.username = "fede"
-    @user2.username = "fede"
+    @user.password = "fede"
 
     # Assert
-    assert_equal @user2.valid?, false
-
-	@user3 = User.new
-	@user4 = User.new
-    # Act
-    @user3.email = "fede"
-    @user4.email = "fede"
-
-    assert_equal @user4.valid?, false
-
-	@user5 = User.new
-
-    # Act
-    @user5.password = nil
+    pass_check = assert_equal @user.valid?, false
 
     # Assert
-    assert_equal @user5.valid?, false
+    assert_equal (all_ok || pass_check) , true
+  end
+
+  #no puedo chequear que sean unicos
+  def test_values_unique
+
+    #Arrange
+    @user3 = User.new
+    @user4 = User.new
+
+    # Act
+    @user3.name = "fede"
+    @user3.surname = "guti"
+    @user3.username = "fede"
+    @user3.email = "fede@gmail.com"
+    @user3.password = "123456789"
+
+    @user4.name = "fede"
+    @user4.surname = "guti"
+    @user4.username = "luca"
+    @user4.email = "luca@gmail.com"
+    @user4.password = "123456789"
+
+
+    # Assert
+    all_ok = assert_equal @user3.valid? && @user4.valid? , true
+
+    # Act
+    @user4.email = "fede@gmail.com"
+
+    # Assert
+    email_check = assert_equal @user4.valid?, false
+
+    # Act
+    @user4.email = "luca@gmail.com"
+    @user4.username = "fede"
+
+    # Assert
+    user_check = assert_equal @user4.valid?, false
+
+    # Assert
+    assert_equal (all_ok || email_check || user_check) , true
 
   end
 end

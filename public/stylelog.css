@@ -107,7 +107,7 @@ body{
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-.page h1{
+h1{
     background: #0F5E92;
     background-size: cover;
     background-position: center;
@@ -121,7 +121,7 @@ body{
 
 }
 
-.page h2{
+h2{
     background: #0F5E92;
     background-size: cover;
     background-position: center;

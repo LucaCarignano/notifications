@@ -10,23 +10,14 @@
 	</head>
 	<body>
 		<div class="page">
-			<h1>
-				WELCOME TO D.A.N.S
-			</h1>
-			<h2>
-				<a href="/">LOG IN!!</a>
-				 or get into like a 
-				<a href="/guest">guest</a>
-			</h2>
 			<div class="login"> 
 				<form method="POST" action="/">
 					<p>Email/Username:  
-					<input type="text" name="user" placeholder="Enter Email or Username">
+					<input type="text" name="user" placeholder="Enter Username">
 					Password:
 					<input type="password" name="pass" placeholder="Enter password">
 					<input type="submit" name="" value="Log-in">
 					</p>
-				</form>
 			</div>
 			<h3>
 				Don't have an account yet?
@@ -40,7 +31,6 @@
 			   <p class="error"><%= @error %></p>
 			 <% end %>
 			<div class="register">
-				<form method="POST" action="/">
 				<table>
 				  <tr>
 				    <td>

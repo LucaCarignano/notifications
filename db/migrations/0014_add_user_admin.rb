@@ -1,10 +1,10 @@
 Sequel.migration do                                                                                           
   up do                                                                                                       
-    alter_table(:documents) do                                                                                   
-      set_column_default :date, today()#CURRENT_TIMESTAMP                                                                                   
+    alter_table(:users) do                                                                                   
+      add_column :admin, FalseClass, default: false, null: false                                                                                   
       end                                                                                                       
   end                                                                                                         
   down do                                                                                                     
-    drop_table(:documents)                                                                                        
+    drop_column :users, :admin                                                                                      
   end
 end

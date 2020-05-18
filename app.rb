@@ -8,26 +8,37 @@ class App < Sinatra::Base
 
 	configure :development, :production do
 		enable :logging
-		enable :session
+		enable :sessions
 		set :session_secret, "una clave polenta"
-		set :session, true
+		set :sessions, true
 	end	
 
+
+	before do
+      if !session[:user_id] && request.path_info != '/' && request.path_info != '/docs'
+        redirect '/'
+      end
+      if session[:user_id]
+      	@currentUser = User.find (id: session[:user_id])
+      	#@visibility = currentUser.admin ? "inline" : "none"
+      	if !currentUser.admin && request.path_info == '/adddoc'
+      		redirect '/docs'
+      	end
+      end
+	end
+
 	get "/" do
-		
-		session.clear
-
-	    logger.info ""
-	    logger.info session["session_id"]
-	    logger.info session.inspect
-	    logger.info "-------------"
-	    logger.info ""
-
-		if !session[:user_id] 
-			erb :log, :layout => :layout_sig
-		else
-			erb :docs, :layout => :layout_main
-		end
+      logger.info ""
+      logger.info session["session_id"]
+      logger.info session.inspect
+      logger.info "-------------"
+      logger.info ""
+  
+	  if !session[:user_id]
+	  	erb :log, :layout => :layout_sig
+	  else
+	    redirect '/docs'
+	  end
 	end
 
 	get "/adddoc" do
@@ -36,27 +47,32 @@ class App < Sinatra::Base
 	
 	post "/" do
 
-		session.clear
-
-		# Login part
-		user1 = User.find(username: params[:user])
 		
-      	if user1 && user1.password == params[:pass]
-        	session[:user_id] = user1.id
-        	redirect "/docs"
-      	elsif params["user"] != ""
-      		@error ="Your username o password is incorrect"
-        	redirect "/login"
+		# Login part
+		if params[:Login]
+			user1 = User.find(username: params[:user])
+			
+	      	if user1 && user1.password == params[:pass]
+	        	session[:user_id] = user1.id
+	        	redirect "/docs"
+	      	elsif !user1 || params[:user] == "" || params[:pass] == "" || user1.password != params[:pass]
+	      		@error ="Your username o password is incorrect"
+	        	redirect "/login"
+	        end
+    	end
 
 		# Register to the system part
+		if (params[:username] == "" || params[:name] == "" || params[:email] == "" || params[:password] == "")
+			@error = "Incomplete form"
+			erb :log, :layout => :layout_sig
 		elsif User.find(username: params[:username])
 		    @error = "The username is already taken!!"
 		    erb :log, :layout => :layout_sig
 		elsif   User.find(email: params[:email])                                                                                               
 		    @error = "The email have a user created!!"
 		    erb :log, :layout => :layout_sig
-		elsif params[:password].length < 9
-		    @error = "Password must have more than 8 caracters!!"
+		elsif params[:password].length < 6
+		    @error = "Password must have more than 5 caracters!!"
 		    erb :log, :layout => :layout_sig
 		elsif params[:password] != params[:password2]
 		    @error = "Passwords are diferent!!"
@@ -75,6 +91,11 @@ class App < Sinatra::Base
 		        [500, {}, "Internal server Error"]
 		    end
 		end
+	end
+
+	get "/logout" do
+		session.clear
+		erb :log, :layout => :layout_sig
 	end
 
 	get "/rp" do
@@ -96,13 +117,15 @@ class App < Sinatra::Base
 
  	post '/adddoc' do
 	    request.body.rewind
-
 	    hash = Rack::Utils.parse_nested_query(request.body.read)
 	    params = JSON.parse hash.to_json 
 
+	    if params["title"] == ""  && params["tag"] == "" && params["document"] == ""
+	    	@error = "Incomplete form"
+
 	    doc = Document.new(title: params["title"], date: params["date"], tags: params["tags"], labelled: params["labelled"])
 	    if doc.save
-	      "redirect home"
+	      redirect '/docs'
 	    else 
 	      [500, {}, "Internal server Error"]
 	    end 

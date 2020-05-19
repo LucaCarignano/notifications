@@ -1,6 +1,8 @@
 require 'json'
 require './models/init.rb'
 require 'sinatra/base'
+require 'date'
+require 'tempfile'
 include FileUtils::Verbose
  
 
@@ -15,13 +17,13 @@ class App < Sinatra::Base
 
 
 	before do
-      if !session[:user_id] && request.path_info != '/' && request.path_info != '/docs'
+      if !user_logged? && restricted_path?
         redirect '/'
       end
-      if session[:user_id]
-      	@currentUser = User.find (id: session[:user_id])
+      if user_logged?
+      	@currentUser = User.find(id: session[:user_id])
       	#@visibility = currentUser.admin ? "inline" : "none"
-      	if !currentUser.admin && request.path_info == '/adddoc'
+      	if path_only_admin?
       		redirect '/docs'
       	end
       end
@@ -62,22 +64,23 @@ class App < Sinatra::Base
     	end
 
 		# Register to the system part
-		if (params[:username] == "" || params[:name] == "" || params[:email] == "" || params[:password] == "")
+		if all_field_register?
 			@error = "Incomplete form"
-			erb :log, :layout => :layout_sig
-		elsif User.find(username: params[:username])
-		    @error = "The username is already taken!!"
-		    erb :log, :layout => :layout_sig
-		elsif   User.find(email: params[:email])                                                                                               
-		    @error = "The email have a user created!!"
-		    erb :log, :layout => :layout_sig
-		elsif params[:password].length < 6
-		    @error = "Password must have more than 5 caracters!!"
-		    erb :log, :layout => :layout_sig
-		elsif params[:password] != params[:password2]
-		    @error = "Passwords are diferent!!"
-		    erb :log, :layout => :layout_sig
-		else
+		end
+		if User.find(username: params[:username])
+		    @errorUser = "The username is already taken!!"
+		end
+		if   User.find(email: params[:email])                                                                                               
+		    @errorEmail = "The email have a user created!!"
+		end
+		if params[:password].length < 6
+		    @errorPassLength = "Password must have more than 5 caracters!!"
+		end
+		if params[:password] != params[:password2]
+		    @errorPassDif = "Passwords are diferent!!"
+		end		    
+		if !@errorPassLength && !@errorUser && !@error && !@errorEmail && !@errorPassDif
+
 	        request.body.rewind
 
 	        hash = Rack::Utils.parse_nested_query(request.body.read)
@@ -90,6 +93,8 @@ class App < Sinatra::Base
 	        else 
 		        [500, {}, "Internal server Error"]
 		    end
+		else 
+			erb :log, :layout => :layout_sig
 		end
 	end
 
@@ -116,15 +121,23 @@ class App < Sinatra::Base
   	end
 
  	post '/adddoc' do
+
+	    if params["title"] == ""  || params["tag"] == "" || params["labelled"] == "" || params["document"] == ""  
+	    	@error = "Incomplete form"
+	    end
+
+	    file = params[:document][:tempfile]
+	    @time = Time.now	    
+	    @name =  "#{@time}#{params[:title]}"
+	    @src =  "/file/#{@name}"
+
 	    request.body.rewind
 	    hash = Rack::Utils.parse_nested_query(request.body.read)
 	    params = JSON.parse hash.to_json 
 
-	    if params["title"] == ""  && params["tag"] == "" && params["document"] == ""
-	    	@error = "Incomplete form"
-
-	    doc = Document.new(title: params["title"], date: params["date"], tags: params["tags"], labelled: params["labelled"])
+	    doc = Document.new(title: params["title"], date: Date.today, tags: params["tags"], labelled: params["labelled"], location: @src)
 	    if doc.save
+	      cp(file.path, "public/file/#{@name}.pdf")	
 	      redirect '/docs'
 	    else 
 	      [500, {}, "Internal server Error"]
@@ -150,4 +163,19 @@ class App < Sinatra::Base
       	end
 
   	end	
+
+	def user_logged?
+    	session[:user_id]
+	end
+
+	def restricted_path?
+		request.path_info != '/' && request.path_info != '/login' && request.path_info != '/rp' && request.path_info != '/' && request.path_info != '/docs'
+	end
+
+	def path_only_admin?
+		!@currentUser.admin && request.path_info == '/rp'
+	end
+	def all_field_register?
+		(params[:username] == "" || params[:name] == "" || params[:email] == "" || params[:password] == "" || params[:surname] == "")
+	end
 end

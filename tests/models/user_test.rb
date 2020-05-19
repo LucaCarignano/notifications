@@ -10,8 +10,8 @@ class UserTest < MiniTest::Unit::TestCase
     # Act
     @user1.name = "fede"
     @user1.surname = "guti"
-    @user1.username = "fede"
-    @user1.email = "fede@gmail.com"
+    @user1.username = "fede1"
+    @user1.email = "fede1@gmail.com"
     @user1.password = "123456789"
 
     # Assert
@@ -64,8 +64,8 @@ class UserTest < MiniTest::Unit::TestCase
     # Act
     @user2.name = "fede"
     @user2.surname = "guti"
-    @user2.username = "fede"
-    @user2.email = "fede@gmail.com"
+    @user2.username = "fede2"
+    @user2.email = "fede2@gmail.com"
     @user2.password = "123456789"
 
     # Assert
@@ -89,8 +89,8 @@ class UserTest < MiniTest::Unit::TestCase
     # Act
     @user.name = "fede"
     @user.surname = "guti"
-    @user.username = "fede"
-    @user.email = "fede@gmail.com"
+    @user.username = "fede5"
+    @user.email = "fede5@gmail.com"
     @user.password = "123456789"
 
     # Assert
@@ -116,8 +116,8 @@ class UserTest < MiniTest::Unit::TestCase
     # Act
     @user3.name = "fede"
     @user3.surname = "guti"
-    @user3.username = "fede"
-    @user3.email = "fede@gmail.com"
+    @user3.username = "fede3"
+    @user3.email = "fede3@gmail.com"
     @user3.password = "123456789"
 
     @user4.name = "fede"
@@ -128,17 +128,21 @@ class UserTest < MiniTest::Unit::TestCase
 
 
     # Assert
+    @user3.save
+    @user4.save
     all_ok = assert_equal @user3.valid? && @user4.valid? , true
 
     # Act
-    @user4.email = "fede@gmail.com"
+    @user4.email = "fede3@gmail.com"
+    @user4.save
 
     # Assert
     email_check = assert_equal @user4.valid?, false
 
     # Act
     @user4.email = "luca@gmail.com"
-    @user4.username = "fede"
+    @user4.username = "fede3"
+    @user4.save
 
     # Assert
     user_check = assert_equal @user4.valid?, false

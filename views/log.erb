@@ -27,11 +27,11 @@
 				It is fast and easy.
 			</h4>
 			<br><br>
-			 <% if @error %>
-			   <p class="error"><%= @error %></p>
-			 <% end %>
 			<div class="register">
 				<table>
+				 <% if @error %>
+					   <p class="error"><%= @error %></p>
+				 <% end %>
 				  <tr>
 				    <td>
 				    	<p>	Name:
@@ -50,11 +50,17 @@
 				    	<p> Your Email:
 				    		<input type="text" name="email" placeholder="name@example.com">
 				    	</p>
+						 <% if @errorMail %>
+						   <p class="error"><%= @errorMail %></p>
+						 <% end %>
 				    </td>
 				    <td class = "right">		
 						<p>	User name:
 				    		<input type="text" name="username">
 				    	</p>
+						 <% if @errorUser %>
+						   <p class="error"><%= @errorUser %></p>
+						 <% end %>				    	
 				    </td>
 				  </tr>
 				  <tr>
@@ -64,11 +70,17 @@
 				    	</p>
 
 				    </td>
+						 <% if @errorPassLength %>
+						   <p class="error"><%= @errorPassLength %></p>
+						 <% end %>				    
 				    <td class = "right">		
 				    		<p> Repeat your password:
 				    		<input type="password" name="password2">
 				    		</p>
 				    </td>
+						 <% if @errorPassDif %>
+						   <p class="error"><%= @errorPassDif %></p>
+						 <% end %>
 				  </tr>
 				</table>
 				<br>

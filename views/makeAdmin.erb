@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+
+    <div class="main_content">
+        <div class="header">Manage Admin</div>  
+        <div class="info">
+	        <form method="POST" action="/makeadmin">
+	        	<% if @error %>
+					   <p class="error"><%= @error %></p>
+				<% end %>
+				<p>Username of the person to make admin:  
+				<input type="text" name="useradmin" placeholder="Enter Username">
+				</p>
+				<input type="submit" name="promote" value="Promote">
+			</form>
+      </div>
+    </div>
+</div>
+
+</body>
+</html>

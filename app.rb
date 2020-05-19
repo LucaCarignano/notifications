@@ -22,7 +22,7 @@ class App < Sinatra::Base
       end
       if user_logged?
       	@currentUser = User.find(id: session[:user_id])
-      	#@visibility = currentUser.admin ? "inline" : "none"
+      	@admin = @currentUser.admin
       	if path_only_admin?
       		redirect '/docs'
       	end
@@ -46,10 +46,64 @@ class App < Sinatra::Base
 	get "/adddoc" do
 		erb :add_doc, :layout => :layout_main
 	end
-	
-	post "/" do
 
-		
+  	get "/login" do
+  		session.clear
+  		erb :login, :layout => :layout_sig
+  	end
+	
+	get '/view/:doc_location' do
+		@src = "/file/" + params[:doc_location] + ".pdf"
+		erb :view_doc, :layout=> false
+	end
+
+	get "/docs" do
+		@documents = Document.order(:date).reverse.all
+  		erb :docs, :layout => :layout_main
+  	end
+
+	get "/rp" do
+		erb :rp, :layout => :layout_sig
+	end
+
+	get "/profile" do
+		user = User.find(id: session[:user_id])
+		@Username = user.username
+		@Email = user.email
+		erb :profile, :layout => :layout_main
+	end 
+
+	get "/applyadmin" do
+		"se envia un mail a los admin para que autoricen a modificar el estado del usuario"
+	end 
+
+	get "/makeadmin" do
+		erb :makeAdmin, :layout => :layout_main
+	end 
+
+	get "/logout" do
+		session.clear
+		erb :log, :layout => :layout_sig
+	end
+
+	post "/makeadmin" do
+		if params[:useradmin] != ""
+
+			useradmin = User.find(username: params[:useradmin])
+
+			if useradmin
+				useradmin.update(admin: 't')
+			else
+				@error ="nonexistent Username"
+	        	redirect "/makeadmin"
+	        end
+	    else 
+			erb :makeadmin, :layout => :layout_main
+		end
+	end
+
+	post "/" do
+	
 		# Login part
 		if params[:Login]
 			user1 = User.find(username: params[:user])
@@ -97,15 +151,6 @@ class App < Sinatra::Base
 			erb :log, :layout => :layout_sig
 		end
 	end
-
-	get "/logout" do
-		session.clear
-		erb :log, :layout => :layout_sig
-	end
-
-	get "/rp" do
-		erb :rp, :layout => :layout_sig
-	end
 	
 	#Comprobar que el mail se encuentre en la base de datos
 	post "/rp" do
@@ -115,39 +160,54 @@ class App < Sinatra::Base
 		end
 	end
 
-	get "/docs" do
-		@documents = Document.all
-  		erb :docs, :layout => :layout_main
-  	end
+	get "/prueba" do
+
+		file = Tempfile.new.binmode
+		begin
+		  file.write <<~FILE
+		    Test data
+		    test data
+		  FILE
+		  file.close
+		  puts IO.read(file.path) #=> Test data\ntestdata\n
+		end	
+
+		cp(file.path, "public/file/pruebaTest.pdf")	
+	end
 
  	post '/adddoc' do
 
-	    if params["title"] == ""  || params["tag"] == "" || params["labelled"] == "" || params["document"] == ""  
+	    if params[:title] == ""  || params[:tag] == "" || params[:labelled] == "" || params[:document] == ""  
 	    	@error = "Incomplete form"
 	    end
 
-	    file = params[:document][:tempfile]
-	    @time = Time.now	    
-	    @name =  "#{@time}#{params[:title]}"
-	    @src =  "/file/#{@name}"
+	    file = Tempfile.new.binmode
+		begin
+		  file.write {params[:document]}
+		  file.close
+		  puts IO.read(file.path) #=> Test data\ntestdata\n
+		end	
 
-	    request.body.rewind
-	    hash = Rack::Utils.parse_nested_query(request.body.read)
-	    params = JSON.parse hash.to_json 
+		cp(file.path, "public/file/pruebasolo.pdf")	
 
-	    doc = Document.new(title: params["title"], date: Date.today, tags: params["tags"], labelled: params["labelled"], location: @src)
-	    if doc.save
-	      cp(file.path, "public/file/#{@name}.pdf")	
-	      redirect '/docs'
-	    else 
-	      [500, {}, "Internal server Error"]
-	    end 
+	    #file = Tempfile.create { |f| f << "Viva la patriaaa!!!" }
+	    #file = Tempfile.new(params[:document])
+	    #@time = Time.now	    
+	    #@name =  "#{@time}#{params[:title]}"
+	    #@src =  "/file/#{@name}"
+
+	   #request.body.rewind
+	    #hash = Rack::Utils.parse_nested_query(request.body.read)
+	    #params = JSON.parse hash.to_json 
+
+	    #doc = Document.new(title: params["title"], date: Date.today, tags: params["tags"], labelled: params["labelled"], location: @src)
+	    #if doc.save
+	    #  cp(file.path, "public/file/#{@name}.pdf")	
+	    #  redirect '/docs'
+	    #else 
+	    #  [500, {}, "Internal server Error"]
+	    #end 
   	end 
-
-  	get "/login" do
-  		session.clear
-  		erb :login, :layout => :layout_sig
-  	end
 
   	post "/login" do
 
@@ -162,7 +222,7 @@ class App < Sinatra::Base
         	erb :login, :layout => :layout_sig
       	end
 
-  	end	
+  	end
 
 	def user_logged?
     	session[:user_id]
@@ -173,9 +233,10 @@ class App < Sinatra::Base
 	end
 
 	def path_only_admin?
-		!@currentUser.admin && request.path_info == '/rp'
+		!@currentUser.admin && (request.path_info == '/adddoc' || request.path_info == '/makeadmin')
 	end
 	def all_field_register?
 		(params[:username] == "" || params[:name] == "" || params[:email] == "" || params[:password] == "" || params[:surname] == "")
 	end
+
 end

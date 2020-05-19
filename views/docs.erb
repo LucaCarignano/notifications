@@ -8,6 +8,7 @@
 			<% @documents.each do |doc| %>
 		 	 <tr>
 		    	<td><%=doc.title %><td><%= doc.date %></td><td><%= doc.tags %></td><%= doc.labelled %></td>
+		    	<td><a  href="/view/<%= doc.location %>" target="blank" class="stretched-link text-muted" ></a></td>
 		  <% end %>
 		  </tr>
 		</table>

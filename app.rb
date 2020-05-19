@@ -177,36 +177,47 @@ class App < Sinatra::Base
 
  	post '/adddoc' do
 
-	    if params[:title] == ""  || params[:tag] == "" || params[:labelled] == "" || params[:document] == ""  
-	    	@error = "Incomplete form"
-	    end
+	    #if params[:title] == ""  || params[:tag] == "" || params[:labelled] == "" || params[:document] == ""  
+	    #	@error = "Incomplete form"
+	    #end
 
-	    file = Tempfile.new.binmode
-		begin
-		  file.write {params[:document]}
-		  file.close
-		  puts IO.read(file.path) #=> Test data\ntestdata\n
-		end	
+	    #file = Tempfile.new.binmode
+		#begin
+		#  file = File.open(file.path, 'wb') do |f|
+		#  	f.write(file.read)
+		#  end
+		 # file.close
+		  #puts IO.read(file.path) #=> Test data\ntestdata\n
+		#end
 
-		cp(file.path, "public/file/pruebasolo.pdf")	
+		@filename = params[:document][:filename]
+		file = params[:document][:tempfile]
+
+		File.open("./public/file/#{@filename}", 'wb') do |f|
+			f.write(file.read)
+		end
+		@filename
+
+
+		#cp(file.path, "public/file/aaaa.pdf")	
 
 	    #file = Tempfile.create { |f| f << "Viva la patriaaa!!!" }
 	    #file = Tempfile.new(params[:document])
-	    #@time = Time.now	    
-	    #@name =  "#{@time}#{params[:title]}"
-	    #@src =  "/file/#{@name}"
+	    @time = Time.now	    
+	    @name =  "#{@time}#{params[:title]}"
+	    @src =  "/file/#{@name}"
 
-	   #request.body.rewind
+	    request.body.rewind
 	    #hash = Rack::Utils.parse_nested_query(request.body.read)
 	    #params = JSON.parse hash.to_json 
 
-	    #doc = Document.new(title: params["title"], date: Date.today, tags: params["tags"], labelled: params["labelled"], location: @src)
-	    #if doc.save
-	    #  cp(file.path, "public/file/#{@name}.pdf")	
-	    #  redirect '/docs'
-	    #else 
-	    #  [500, {}, "Internal server Error"]
-	    #end 
+	    doc = Document.new(title: params["title"], date: Date.today, tags: params["tags"], labelled: params["labelled"], location: @src)
+	    if doc.save
+	      cp(file.path, "public/file/#{@name}.pdf")	
+	      redirect '/docs'
+	    else 
+	      [500, {}, "Internal server Error"]
+	    end 
   	end 
 
   	post "/login" do
@@ -233,7 +244,7 @@ class App < Sinatra::Base
 	end
 
 	def path_only_admin?
-		!@currentUser.admin && (request.path_info == '/adddoc' || request.path_info == '/makeadmin')
+		!@currentUser.admin && (request.path_info == '/makeadmin')
 	end
 	def all_field_register?
 		(params[:username] == "" || params[:name] == "" || params[:email] == "" || params[:password] == "" || params[:surname] == "")

@@ -7,7 +7,7 @@
           <table>
 			<% @documents.each do |doc| %>
 		 	 <tr>
-		    	<td><%=doc.title %><td><%= doc.date %></td><td><%= doc.tag_involved %></td><%= doc.labelled %></td>  <%= doc.location %></td>
+		    	<td><%=doc.title %><td><%= doc.date %></td>  <%= doc.location %></td>
 		    	<td><a href="/view?path=<%= doc.id %>" target="blank"> View</a></td>
 		  <% end %>
 		  </tr>

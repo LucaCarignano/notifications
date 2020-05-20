@@ -44,6 +44,7 @@ class App < Sinatra::Base
 	end
 
 	get "/adddoc" do
+		@categories = Tag.all
 		erb :add_doc, :layout => :layout_main
 	end
 
@@ -163,43 +164,44 @@ class App < Sinatra::Base
 
  	post '/adddoc' do
 
-	    #if params[:title] == ""  || params[:tag] == "" || params[:labelled] == "" || params[:document] == ""  
-	    #	@error = "Incomplete form"
-	    #end
-
-	    #file = Tempfile.new.binmode
-		#begin
-		#  file = File.open(file.path, 'wb') do |f|
-		#  	f.write(file.read)
-		#  end
-		 # file.close
-		  #puts IO.read(file.path) #=> Test data\ntestdata\n
-		#end
-
 		@filename = params[:document][:filename]
 		file = params[:document][:tempfile]
 
 		File.open("./public/file/#{@filename}", 'wb') do |f|
 			f.write(file.read)
 		end
-		@filename
 
-
-		#cp(file.path, "public/file/aaaa.pdf")	
-
-	    #file = Tempfile.create { |f| f << "Viva la patriaaa!!!" }
-	    #file = Tempfile.new(params[:document])
 	    @time = Time.now	    
 	    @name =  "#{params[:title]}"
 	    @src =  "file/#{@name}.pdf"
 
 	    request.body.rewind
 
-	    doc = Document.new(title: params["title"], date: Date.today, tag_involved: params["tags"], labelled: params["labelled"], location: @src)
+	    doc = Document.new(title: params["title"], date: Date.today, location: @src)
 	    if doc.save
-	      doc = Document.first(title: params["title"], date: Date.today, tag_involved: params["tags"], labelled: params["labelled"], location: @src)
+	      doc = Document.first(title: params["title"], date: Date.today, location: @src)
 		  doc.update(location: doc.id)
 	      cp(file.path, "public/file/#{doc.id}.pdf")	
+	      
+	      #----------- Actualizo tablas relaciones -----------#
+
+	      labelleds = params["labelled"].split('@')
+	      labelleds.each do |labelled|
+	        user = User.find(username: labelled)
+	        if user
+	          user.add_document(doc)
+	          user.save
+	        end
+	      end
+
+	      tags = params["tags"].split(',')
+	      tags.each do |tag|
+	        category = Tag.find(name: tag)
+	        if category
+	          doc.add_tag(category)
+	       	  doc.save
+	        end
+	      end
 	      redirect '/docs'
 	    else 
 	      [500, {}, "Internal server Error"]

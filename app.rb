@@ -87,6 +87,21 @@ class App < Sinatra::Base
 		erb :log, :layout => :layout_sig
 	end
 
+	get "/tags" do
+		@categories = Tag.all
+		erb :suscription, :layout => :layout_main
+	end
+
+	post "/tags" do
+		
+		if params[:newtag]
+			user1 = User.find(user_id: session[:user_id])
+			user1.add_tag(params[:newtag])
+			user1.save
+		end
+	end
+
+
 	post "/makeadmin" do
 		if params[:useradmin] != ""
 

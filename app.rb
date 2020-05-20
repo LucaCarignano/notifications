@@ -52,8 +52,8 @@ class App < Sinatra::Base
   		erb :login, :layout => :layout_sig
   	end
 	
-	get '/view/:doc_location' do
-		@src = "/file/" + params[:doc_location] + ".pdf"
+	get '/view' do
+		@src = "file/" + params[:path] + ".pdf"
 		erb :view_doc, :layout=> false
 	end
 
@@ -160,20 +160,6 @@ class App < Sinatra::Base
 		end
 	end
 
-	get "/prueba" do
-
-		file = Tempfile.new.binmode
-		begin
-		  file.write <<~FILE
-		    Test data
-		    test data
-		  FILE
-		  file.close
-		  puts IO.read(file.path) #=> Test data\ntestdata\n
-		end	
-
-		cp(file.path, "public/file/pruebaTest.pdf")	
-	end
 
  	post '/adddoc' do
 
@@ -204,16 +190,16 @@ class App < Sinatra::Base
 	    #file = Tempfile.create { |f| f << "Viva la patriaaa!!!" }
 	    #file = Tempfile.new(params[:document])
 	    @time = Time.now	    
-	    @name =  "#{@time}#{params[:title]}"
-	    @src =  "/file/#{@name}"
+	    @name =  "#{params[:title]}"
+	    @src =  "file/#{@name}.pdf"
 
 	    request.body.rewind
-	    #hash = Rack::Utils.parse_nested_query(request.body.read)
-	    #params = JSON.parse hash.to_json 
 
-	    doc = Document.new(title: params["title"], date: Date.today, tags: params["tags"], labelled: params["labelled"], location: @src)
+	    doc = Document.new(title: params["title"], date: Date.today, tag_involved: params["tags"], labelled: params["labelled"], location: @src)
 	    if doc.save
-	      cp(file.path, "public/file/#{@name}.pdf")	
+	      doc = Document.first(title: params["title"], date: Date.today, tag_involved: params["tags"], labelled: params["labelled"], location: @src)
+		  doc.update(location: doc.id)
+	      cp(file.path, "public/file/#{doc.id}.pdf")	
 	      redirect '/docs'
 	    else 
 	      [500, {}, "Internal server Error"]

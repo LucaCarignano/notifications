@@ -6,17 +6,23 @@
 		<form method="POST" action="/adddoc" enctype="multipart/form-data" >
 	        <p>Title: <input type="text" name="title"></p>
 	        <p>Users to label: <input type="text" name="labelled"></p>
-	        <p>TAGS: <select id="categories" name="tags" class="custom-select"	>
-	        	  <option>Seleccione una categoria</option>	
+	        <p>TAGS: 
 				  <% @categories.each do |category| %>
-					  <option value=<%category.name%>></option>
+				  	<ul>
+				  		<li>
+					  		<label> <%=category.name%>
+					  			<input type="checkbox" name="<%=category.name%>" value="<%=category.name%>">
+					  		</label>
+				  		</li>
+				  	</ul>
+					  <!--<option value=<%category.name%>></option>-->
 					  <!--<option value="Matematica">Matematica</option>
 					  <option value="Comedor">Comedor universidad</option>-->
 				  <%end%>
-				</select></p>
+			</p>
 	        <p>Document: <input type="file" name="document" accept="application/pdf"></p>
 	        <% if @error %>
-	        <p class="error"><%= @error %></p>
+	        	<p class="error"><%= @error %></p>
 	        <% end %>
 	        <br><br>
             <input type="submit" name="" value="Submit">

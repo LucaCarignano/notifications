@@ -60,6 +60,8 @@ class App < Sinatra::Base
 
 	get "/docs" do
 		@documents = Document.order(:date).reverse.all
+		@categories = Tag.all
+		@users = User.all
   		erb :docs, :layout => :layout_main
   	end
 
@@ -82,22 +84,65 @@ class App < Sinatra::Base
 		erb :makeAdmin, :layout => :layout_main
 	end 
 
+	get "/maketag" do
+		erb :maketags, :layout => :layout_main
+	end 
+
+
 	get "/logout" do
 		session.clear
 		erb :log, :layout => :layout_sig
 	end
 
-	get "/tags" do
-		@categories = Tag.all
-		erb :suscription, :layout => :layout_main
+	post "/docs" do
+
+#		if params[:datedoc] == "" && params[:tags] == "" && params[:users] == ""
+#			redirect "/docs"
+#		else 
+#			cateall = Category.all
+#			doc_tag = Document.natural_join(:cateall)
+#			doc_tag_user = doc_tag.join_table(:natural, :Suscription)
+#
+#			if params[:datedoc] != ""
+#				doc_tag_user = doc_tag_user.where(date: params[:datedoc])
+#			end
+#			if params[:tags] != ""
+#				tagid = Tag.find(name: params[:tags])
+#				doc_tag_user = doc_tag_user.where(tag_id: tagid.id) 	
+#			end
+#			if params[:users] != ""
+#				userid = User.find(username: params[:users])
+#				doc_tag_user = doc_tag_user.where(user_id: userid.id)
+#			end
+#
+#			aux = doc_tag_user.select(:title, :date, :location) 	
+			@documents = Document.order(:date).reverse.all
+			@categories = Tag.all
+			@users = User.all
+  			erb :docs, :layout => :layout_main
+#		end
 	end
 
-	post "/tags" do
-		
-		if params[:newtag]
-			user1 = User.find(user_id: session[:user_id])
-			user1.add_tag(params[:newtag])
-			user1.save
+	post "/maketag" do
+		if params[:newtag] != ""
+
+			tag = Tag.find(name: params[:newtag])
+
+			if tag
+				@error ="Tag is already created"
+	        	erb :maketags, :layout => :layout_main
+			else
+				newtag = Tag.new(name: params["newtag"])
+				if newtag.save
+					@error ="Add successfully!!"
+	        		erb :maketags, :layout => :layout_main
+	        	else 
+	        		[500, {}, "Internal server Error"]
+	        	end
+	        end
+	    else 
+	    	@error ="Insert tag name"
+			erb :maketags, :layout => :layout_main
 		end
 	end
 
@@ -105,16 +150,19 @@ class App < Sinatra::Base
 	post "/makeadmin" do
 		if params[:useradmin] != ""
 
-			useradmin = User.find(username: params[:useradmin])
+			useradmi = User.find(username: params[:useradmin])
 
-			if useradmin
-				useradmin.update(admin: 't')
+			if useradmi
+				useradmi.update(admin: 't')
+				@error ="Promoted successfully!!"
+	        	erb :makeAdmin, :layout => :layout_main
 			else
 				@error ="nonexistent Username"
-	        	redirect "/makeadmin"
+	        	erb :makeAdmin, :layout => :layout_main
 	        end
 	    else 
-			erb :makeadmin, :layout => :layout_main
+	    	@error ="Insert username"
+			erb :makeAdmin, :layout => :layout_main
 		end
 	end
 
@@ -209,12 +257,13 @@ class App < Sinatra::Base
 	        end
 	      end
 
-	      tags = params["tags"].split(',')
-	      tags.each do |tag|
-	        category = Tag.find(name: tag)
-	        if category
-	          doc.add_tag(category)
-	       	  doc.save
+	      categories = Tag.all
+	      categories.each do |category|
+	      	nombre = category.name
+	        if params[:nombre] != ""
+
+	        	category.add_document(doc)
+	        	category.save
 	        end
 	      end
 	      redirect '/docs'
@@ -247,7 +296,7 @@ class App < Sinatra::Base
 	end
 
 	def path_only_admin?
-		!@currentUser.admin && (request.path_info == '/makeadmin')
+		!@currentUser.admin && ((request.path_info == '/makeadmin') || (request.path_info == '/adddoc') || (request.path_info == '/maketag'))
 	end
 	def all_field_register?
 		(params[:username] == "" || params[:name] == "" || params[:email] == "" || params[:password] == "" || params[:surname] == "")

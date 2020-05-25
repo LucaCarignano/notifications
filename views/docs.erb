@@ -6,35 +6,41 @@
         <div class="info">
         <form method="POST" action="/docs">
         <p>Select category to filter:
-        	<select id="categories" name="tags" value="">
-        	<option>Select Tag</option>	
-        	<% @categories.each do |category| %>
-        		<option value=<%=category.name%>><%=category.name%></option>
-        	<%end%>
-        </select>
+           <select id="categories" name="tags" value="">
+              <option>Select Tag</option>      
+                 <% @categories.each do |category| %>
+                    <option value=<%=category.name%>><%=category.name%></option>
+                 <%end%>
+           </select>
         Select user to filter:
-        	<select id="users" name="users">
-        		<option>Select User</option>		
-        	<% @users.each do |user| %>
-        		<option value=<%=user.username%>><%=user.username%></option>
-        	<%end%>
-        </select> Select Date: 
-        <input type="date" name="datedoc">
-        <input type="submit" name="" value="Filter">
-        </p>	
-          <table>
-			<% @documents.each do |doc| %>
-		 	 <tr>
-		    	<td><%=doc.title %><td><%= doc.date %></td>  <%= doc.location %></td>
-		    	<td><a href="/view?path=<%= doc.id %>" target="blank"> View</a></td>
-		  	</tr>
-		  <% end %>
-		</table>
-		</form>
+          <select id="users" name="users">
+             <option>Select User</option>            
+             <% @users.each do |user| %>
+                <option value=<%=user.username%>><%=user.username%></option>
+             <%end%>
+           </select>
+        Select Date: 
+           <input type="date" name="datedoc">
+           <input type="submit" name="filter" value="Filter">
+        </p>      
+        <table>
+           <% @documents.each do |doc| %>
+              <tr>
+                 <td><%=doc.title %></td>
+                 <td><%= doc.date %></td>
+                 <td><a href="/view?path=<%= doc.location %>" target="blank"> View</a></td>
+                 <%if @admin%>
+                    <td><input type="submit" name="editfile" value="Edit"></td>
+                       <td><input type="submit" name="delfile" value="Delete"></td>
+                 <%end%>
+             </tr>
+          <% end %>
+        </table>
+        </form>
       </div>
     </div>
 </div>
 
 </body>
 </html>
-	
+      

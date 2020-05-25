@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+    <div class="main_content">
+        <div class="header">Manage Tags</div>  
+        <div class="info">
+            <form method="POST" action="/maketag">
+                <% if @error %>
+                       <p class="error"><%= @error %></p>
+                <% end %>
+                <p>Name of the new tag:  
+                <input type="text" name="newtag" placeholder="Enter Tag">
+                </p><br>
+                <input type="submit" name="add" value="Add">
+                <br><br><br>    
+                <p>Name of the tag to delete:  
+                <input type="text" name="deltag" placeholder="Enter Tag">
+                </p><br>
+                <input type="submit" name="delete" value="Delete">
+            </form>
+      </div>
+    </div>
+</div>
+
+</body>
+</html>

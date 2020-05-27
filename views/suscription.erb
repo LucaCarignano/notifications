@@ -31,6 +31,23 @@
             <% if @error %>
 	        	<%= @error %></p>
 	        <% end %>
-        </form>
-	</body>
+	        <p> Unsuscribe to:
+        		<% if @errortag %>
+	        		<%= @errortag %></p>
+	        	<% else %>
+				  <select id="categories" name="tag" value="">
+              			<option>Select Tag</option>      
+                 		<% @categories.each do |category| %>
+                   			<option value=<%=category.name%>><%=category.name%></option>
+                 		<%end%>
+           		  </select>
+				  </p>
+	              <br><br>
+                  <input type="submit" name="unsuscribe" value="unsuscribe">
+                <%end%>
+                <% if @error %>
+	        	   <%= @error %></p>
+	            <% end %>
+      	  	</form>
+   	  </body>
 </html>

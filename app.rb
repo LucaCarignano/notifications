@@ -62,8 +62,17 @@ class App < Sinatra::Base
         @documents = Document.order(:date).reverse.where(delete: 'f').all
         @categories = Tag.all
         @users = User.all
-          erb :docs, :layout => :layout_main
-      end
+        erb :docs, :layout => :layout_main
+    end
+
+    get "/unreaddocs" do
+    	user = User.find(id: session[:user_id])
+    	#@documents = Document.select(:id).except(Labelled.select(:document_id).where(readed: 't', user_id: user.id))
+    	@documents = Document.order(:date).reverse.where(delete: 'f', id:( Labelled.select(:document_id).where(readed: 'f', user_id: user.id))).all
+        @categories = Tag.all
+        @users = User.all
+        erb :docs, :layout => :layout_main
+    end
 
     get "/rp" do
         erb :rp, :layout => :layout_sig
@@ -93,13 +102,13 @@ class App < Sinatra::Base
     end 
 
     get "/tags" do
-        @categories = Tag.select(:id).where(id: Suscription.select(:tag_id).where(user_id: session[:user_id]))
+        @categories = Tag.select(:id).where(id: Subscription.select(:tag_id).where(user_id: session[:user_id]))
         @categories = Tag.where(id: @categories).all
         if @categories == []
             @errorcat = "No esta suscripto a ninguna categoria" 
         end
 
-        @tags = Tag.select(:id).except(Suscription.select(:tag_id).where(user_id: session[:user_id]))
+        @tags = Tag.select(:id).except(Subscription.select(:tag_id).where(user_id: session[:user_id]))
         @tags = Tag.where(id: @tags).all
         if @tags == []
             @errortag = "Esta suscripto a todas las categorias" 
@@ -119,38 +128,28 @@ class App < Sinatra::Base
         if params[:suscribe]
 
             user1 = User.find(id: session[:user_id])
-            if user1
-                categories = Tag.all
-                categories.each do |category|
-
-                  nombre = category.name
-                  #val = Suscription.find(user_id: user1.id, tag_id: category.id)
-
-                  if  params[nombre]
-
+            categories = Tag.all
+            categories.each do |category|
+                nombre = category.name
+				if  params[nombre]
                     category.add_user(user1)
                     if category.save
-                        @error = "Susces"
+                        @error = "Succes"
                     else 
                         @error = "fail"
                     end
-                  end
-
                 end
             end
+        elsif params[:unsuscribe]
+        	user1 = User.find(id: session[:user_id])
+            user1.remove_tag(Tag.find(name: params[:tag]))
+            if user1.save
+                @error = "Succes"
+            else 
+                @error = "fail"
+            end
         end
-        @categories = Tag.select(:id).where(id: Suscription.select(:tag_id).where(user_id: session[:user_id]))
-        @categories = Tag.where(id: @categories).all
-        if @categories == []
-            @errorcat = "No esta suscripto a ninguna categoria" 
-        end
-
-        @tags = Tag.select(:id).except(Suscription.select(:tag_id).where(user_id: session[:user_id]))
-        @tags = Tag.where(id: @tags).all
-        if @tags == []
-            @errortag = "Esta suscripto a todas las categorias" 
-        end
-        erb :suscription, :layout => :layout_main
+        redirect "/tags"
     end
 
     post "/profile" do
@@ -200,13 +199,10 @@ class App < Sinatra::Base
                     @error = "Contraseña cambiada correctamente"
                 end
             end
-        end
-        
+        end        
         @Username = user.username
         @Email = user.email
         erb :profile, :layout => :layout_main
-
-
     end
 
     post "/docs" do
@@ -306,7 +302,7 @@ class App < Sinatra::Base
                 session[:user_id] = user1.id
                 redirect "/docs"
               elsif !user1 || params[:user] == "" || params[:pass] == "" || user1.password != params[:pass]
-                  @error ="Your username o password is incorrect"
+                	@error ="Your username o password is incorrect"
                 redirect "/login"
             end
         end
@@ -349,7 +345,7 @@ class App < Sinatra::Base
     #Comprobar que el mail se encuentre en la base de datos
     post "/rp" do
         if params[:email]=="Fede@gmail" 
-                "se a enviado un correo a tu mail con la nueva contraseña provisoria"
+            "se a enviado un correo a tu mail con la nueva contraseña provisoria"
         else "email inválido"
         end
     end
@@ -378,50 +374,60 @@ class App < Sinatra::Base
 
             doc = Document.new(title: params["title"], date: Date.today, location: @src)
             if doc.save
-              cp(file.path, "public/#{doc.location}")    
+              	cp(file.path, "public/#{doc.location}")    
               
-              #----------- Actualizo tablas relaciones -----------#
+            #----------- Actualizo tablas relaciones -----------#
 
-              labelleds = params["labelled"].split('@')
-              labelleds.each do |labelled|
-                user = User.find(username: labelled)
-                if user
-                  user.add_document(doc)
-                  user.save
-                end
-              end
+             	labelleds = params["labelled"].split('@')
+              	labelleds.each do |labelled|
+                	user = User.find(username: labelled)
+                	if user
+                  		user.add_document(doc)
+                  		user.save
+               		end
+              	end
 
-              categories = Tag.all
-              categories.each do |category|
-                  nombre = category.name
+                categories = Tag.all
+                categories.each do |category|
+                	nombre = category.name
                   
-                if params[nombre]
+	                if params[nombre]
+	                    category.add_document(doc)
+	                    category.save
+	                    labelled = Labelled.select(:user_id).where(document_id: doc.id)
+	                    subscription = Subscription.select(:user_id).where(tag_id: category.id)
+	                    users = User.where(id: subscription.except(labelled)).all
+	                    users.each do |user|	          
+	                    	user.add_document(doc)
+	                    	user.save
+	                    end
+	                end
+              	end
 
-                    category.add_document(doc)
-                    category.save
-                end
-              end
-              #redirect '/docs'
+
+
+              	redirect '/docs'
             else 
               [500, {}, "Internal server Error"]
             end
+            @categories = Tag.all
+       		erb :add_doc, :layout => :layout_main
         end 
       end 
 
-      post "/login" do
+    post "/login" do
 
         # Login part
         user = User.find(username: params["us"])
         
-          if user && user.password == params["pas"]
+        if user && user.password == params["pas"]
             session[:user_id] = user.id
             redirect "/docs"
-          else
-              @error ="Your username o password is incorrect"
+        else
+            @error ="Your username o password is incorrect"
             erb :login, :layout => :layout_sig
-          end
-
-      end
+        end
+    end
 
     def user_logged?
         session[:user_id]
@@ -438,6 +444,6 @@ class App < Sinatra::Base
         (params[:username] == "" || params[:name] == "" || params[:email] == "" || params[:password] == "" || params[:surname] == "")
     end
     def all_field_adddoc?
-        (params[:title] == "" || params[:labelled] == "" || params[:document] == "")
+        (params[:title] == "" || params[:labelled] == "" || params[:document] == nil)
     end
 end

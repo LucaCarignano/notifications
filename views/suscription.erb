@@ -3,21 +3,34 @@
 	<div class="main_content">
       <div class="header">TAGS</div>  
     <div class="info">
-		<form method="POST" action="/tags" enctype="multipart/form-data" >
-	        <p>Suscribe to: <select id="categories" name="tags" class="custom-select"	>
-	        	  <option>Seleccione una categoria</option>	
-				  <% @categories.each do |category| %>
-					  <option value=<%category.name%>></option>
-					  <!--<option value="Matematica">Matematica</option>
-					  <option value="Comedor">Comedor universidad</option>-->
+		<form method="POST" action="/tags" >
+	        <p> categorias Suscprito: 
+	        <% if @errorcat %>
+	        	<%= @errorcat %></p>
+	        <% else %>
+	            <table>
+           			<% @categories.each do |category| %>
+              			<tr> <%=category.name%>. </tr>
+                 	<%end%>
+        		</table> </p>
+        	<%end%> <br><br>
+        	<p> Suscribe to:
+        		<% if @errortag %>
+	        		<%= @errortag %></p>
+	        	<% else %>
+				  <% @tags.each do |tag| %>
+					  <ul><li>
+                          <label> <%=tag.name%>  </label>
+                              <input type="checkbox" name="<%=tag.name%>" value="<%=tag.name%>">
+                      </li></ul>
 				  <%end%>
-				</select></p>
-	        <!--<p>Document: <input type="file" name="document" accept="application/pdf"></p>-->
-	        <% if @error %>
-	        <p class="error"><%= @error %></p>
-	        <% end %>
+				</p>
 	        <br><br>
-            <input type="submit" name="" value="Submit">
+            <input type="submit" name="suscribe" value="Done">
+            <%end%>
+            <% if @error %>
+	        	<%= @error %></p>
+	        <% end %>
         </form>
 	</body>
 </html>

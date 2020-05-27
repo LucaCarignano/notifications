@@ -36,7 +36,7 @@ class App < Sinatra::Base
       logger.info "-------------"
       logger.info ""
   
-      if !session[:user_id]
+      if !user_logged?
           erb :log, :layout => :layout_sig
       else
         redirect '/docs'
@@ -59,7 +59,7 @@ class App < Sinatra::Base
     end
 
     get "/docs" do
-        @documents = Document.order(:date).reverse.all
+        @documents = Document.order(:date).reverse.where(delete: 'f').all
         @categories = Tag.all
         @users = User.all
           erb :docs, :layout => :layout_main
@@ -92,17 +92,120 @@ class App < Sinatra::Base
         erb :maketags, :layout => :layout_main
     end 
 
+    get "/tags" do
+        @categories = Tag.select(:id).where(id: Suscription.select(:tag_id).where(user_id: session[:user_id]))
+        @categories = Tag.where(id: @categories).all
+        if @categories == []
+            @errorcat = "No esta suscripto a ninguna categoria" 
+        end
+
+        @tags = Tag.select(:id).except(Suscription.select(:tag_id).where(user_id: session[:user_id]))
+        @tags = Tag.where(id: @tags).all
+        if @tags == []
+            @errortag = "Esta suscripto a todas las categorias" 
+        end
+
+        erb :suscription, :layout => :layout_main
+    end 
+
+
     get "/logout" do
         session.clear
         erb :log, :layout => :layout_sig
     end
 
+    post "/tags" do 
+
+        if params[:suscribe]
+
+            user1 = User.find(id: session[:user_id])
+            if user1
+                categories = Tag.all
+                categories.each do |category|
+
+                  nombre = category.name
+                  #val = Suscription.find(user_id: user1.id, tag_id: category.id)
+
+                  if  params[nombre]
+
+                    category.add_user(user1)
+                    if category.save
+                        @error = "Susces"
+                    else 
+                        @error = "fail"
+                    end
+                  end
+
+                end
+            end
+        end
+        @categories = Tag.select(:id).where(id: Suscription.select(:tag_id).where(user_id: session[:user_id]))
+        @categories = Tag.where(id: @categories).all
+        if @categories == []
+            @errorcat = "No esta suscripto a ninguna categoria" 
+        end
+
+        @tags = Tag.select(:id).except(Suscription.select(:tag_id).where(user_id: session[:user_id]))
+        @tags = Tag.where(id: @tags).all
+        if @tags == []
+            @errortag = "Esta suscripto a todas las categorias" 
+        end
+        erb :suscription, :layout => :layout_main
+    end
+
     post "/profile" do
 
-        "#{params[:edituser]}"
-        "#{params[:editemail]}"
-        "#{params[:editpass]}"
-        "algo imprimo"
+        user = User.find(id: session[:user_id])
+
+        if params[:botuser]
+            @edituse = "entro"
+        elsif params[:botemail]
+            @editmail = "entro"
+        elsif params[:botpass]
+            @editpas = "entro"
+        end
+
+        if @edituse != "" && params[:editus]
+            if params[:newuser] == ""
+                @error = "Ingrese un nombre de usuario"
+            else
+                user1 = User.find(username: params[:newuser])
+                if user1
+                    @error = "Nombre de usuario no disponible "
+                else    
+                    user.update(username: params[:newuser])
+                    @error = "Nombre cambiado correctamente"
+                end
+            end
+        elsif @editmail != "" && params[:editemail]
+            if params[:newemail] == ""
+                @error = "Ingrese un email"
+            else
+                user1 = User.find(email: params[:newemail])
+                if user1
+                    @error = "Email ya registrado"
+                else    
+                    user.update(email: params[:newemail])
+                    @error = "Email cambiado correctamente"
+                end
+            end
+        elsif @editpas != "" && params[:editpass]
+            if params[:newpass] == "" || params[:repas] == ""
+                @error = "Ingrese contraseña"
+            else
+                if params[:newpass] != params[:repas]
+                    @error = "contraseñas distintas"
+                else 
+                    user.update(password: params[:newpass])
+                    @error = "Contraseña cambiada correctamente"
+                end
+            end
+        end
+        
+        @Username = user.username
+        @Email = user.email
+        erb :profile, :layout => :layout_main
+
 
     end
 
@@ -112,15 +215,27 @@ class App < Sinatra::Base
             redirect "/docs"
         else 
 
-            tagid = Tag.find(name: params[:tags])
-            userid = User.find(username: params[:users])
+            #tagid = Tag.find(name: params[:tags])
+            #userid = User.find(username: params[:users])
 
-            @documents = Document.association_join(:documents_tags).association_join(:document_users).where(date: params[:datedoc], tag_id: tagid.id,  user_id: userid.id)
+            #@documents = Document.association_join(:documents_tags).association_join(:document_users).where(date: params[:datedoc], tag_id: tagid.id,  user_id: userid.id)
             
         end
 
-        #if params[:delfile]
+        documents = Document.all
+        documents.each do |doc|
 
+            location = "del"+doc.location
+
+            if  params[location]
+                doc.update(delete: 't')
+            end
+        end
+
+        @documents = Document.order(:date).reverse.where(delete: 'f').all
+        @categories = Tag.all
+        @users = User.all
+        erb :docs, :layout => :layout_main
     end
 
     post "/maketag" do
@@ -242,46 +357,54 @@ class App < Sinatra::Base
 
      post '/adddoc' do
 
-        @filename = params[:document][:filename]
-        file = params[:document][:tempfile]
+        if all_field_adddoc?
+            @error = "Incomplete form"
+            @categories = Tag.all
+            erb :add_doc, :layout => :layout_main
+        else
 
-        File.open("./public/file/#{@filename}", 'wb') do |f|
-            f.write(file.read)
-        end
+            @filename = params[:document][:filename]
+            file = params[:document][:tempfile]
 
-        @time = Time.now.to_i
-        @name =  "#{@time}#{params[:title]}".gsub(' ', '')
-        @src =  "file/#{@name}.pdf"
-
-        request.body.rewind
-
-        doc = Document.new(title: params["title"], date: Date.today, location: @src)
-        if doc.save
-          cp(file.path, "public/#{doc.location}")    
-          
-          #----------- Actualizo tablas relaciones -----------#
-
-          labelleds = params["labelled"].split('@')
-          labelleds.each do |labelled|
-            user = User.find(username: labelled)
-            if user
-              user.add_document(doc)
-              user.save
+            File.open("./public/file/#{@filename}", 'wb') do |f|
+                f.write(file.read)
             end
-          end
 
-          categories = Tag.all
-          categories.each do |category|
-              nombre = category.name
-            if params[:nombre] != ""
+            @time = Time.now.to_i
+            @name =  "#{@time}#{params[:title]}".gsub(' ', '')
+            @src =  "file/#{@name}.pdf"
 
-                category.add_document(doc)
-                category.save
+            #request.body.rewind
+
+            doc = Document.new(title: params["title"], date: Date.today, location: @src)
+            if doc.save
+              cp(file.path, "public/#{doc.location}")    
+              
+              #----------- Actualizo tablas relaciones -----------#
+
+              labelleds = params["labelled"].split('@')
+              labelleds.each do |labelled|
+                user = User.find(username: labelled)
+                if user
+                  user.add_document(doc)
+                  user.save
+                end
+              end
+
+              categories = Tag.all
+              categories.each do |category|
+                  nombre = category.name
+                  
+                if params[nombre]
+
+                    category.add_document(doc)
+                    category.save
+                end
+              end
+              #redirect '/docs'
+            else 
+              [500, {}, "Internal server Error"]
             end
-          end
-          redirect '/docs'
-        else 
-          [500, {}, "Internal server Error"]
         end 
       end 
 
@@ -314,5 +437,7 @@ class App < Sinatra::Base
     def all_field_register?
         (params[:username] == "" || params[:name] == "" || params[:email] == "" || params[:password] == "" || params[:surname] == "")
     end
-
+    def all_field_adddoc?
+        (params[:title] == "" || params[:labelled] == "" || params[:document] == "")
+    end
 end

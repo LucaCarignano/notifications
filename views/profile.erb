@@ -7,16 +7,16 @@
           <h2>Menu</h2>
             <ul>
               <form method="POST" action="/profile">	
-                <li>Username: <%= @Username %> <input type="submit" name="edituser" value="Edit"> </li>
+                <% if @error %>
+                   <li class="error"><%= @error %></li>
+                <% end %>
+                <li>Username: <%= @Username %>  <input type="submit" name="botuser" value="Edit Username"> </li>
                 <%if @edituse%>
-                    <% if @error %>
-                       <li class="error"><%= @error %></li>
-                    <% end %>
                     <li>New Username: <input type="text" name="newuser" placeholder="Enter Username"></li>
                     <br>
                     <li><input type="submit" name="editus" value="Accept"></li>
                 <%end%>
-                <li>Email: <%= @Email %> <input type="submit" name="editpass" value="Edit"></li>
+                <li>Email: <%= @Email %> <input type="submit" name="botemail" value="Edit Email"></li>
                 <%if @editmail%>
                     <% if @error %>
                        <li class="error"><%= @error %></li>
@@ -25,15 +25,15 @@
                     <br>
                     <li><input type="submit" name="editemail" value="Accept"></li>
                 <%end%>
-                <li><input type="submit" name="editpass" value="Edit Password"></li>
+                <li><input type="submit" name="botpass" value="Edit Password"></li>
                 <%if @editpas%>
                     <% if @error %>
                        <li class="error"><%= @error %></li>
                     <% end %>
-                    <li>New Password: <input type="text" name="newpass" placeholder="Enter Password"></li>
-                    <li>Repeat the Password: <input type="text" name="repas" placeholder="Enter Password"></li>
+                    <li>New Password: <input type="Password" name="newpass" placeholder="Enter Password"></li>
+                    <li>Repeat the Password: <input type="Password" name="repas" placeholder="Enter Password"></li>
                     <br>
-                    <li><input type="submit" name="editpas" value="Accept"></li>
+                    <li><input type="submit" name="editpass" value="Accept"></li>
                 <%end%>
                 <%if !@admin%>
                     <li><a href="/applyadmin" data text="make admin">Apply to be an admin</a></li>

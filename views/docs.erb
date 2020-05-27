@@ -30,8 +30,8 @@
                  <td><%= doc.date %></td>
                  <td><a href="/view?path=<%= doc.location %>" target="blank"> View</a></td>
                  <%if @admin%>
-                    <td><input type="submit" name="editfile" value="Edit"></td>
-                       <td><input type="submit" name="delfile" value="Delete"></td>
+                    <td><input type="submit" name="edit<%=doc.location%>" value="Edit"></td>
+                    <td><input type="submit" name="del<%=doc.location%>" value="Delete"></td>
                  <%end%>
              </tr>
           <% end %>

@@ -11,13 +11,10 @@
                   <ul>
                       <li>
                           <label> <%=category.name%>
-                              <input type="checkbox" name="<%=category.name%>" value="<%=category.name%>">
+                              <input id="<%=category.name%>" type="checkbox" name="<%=category.name%>" value="<%=category.name%>" >
                           </label>
                       </li>
                   </ul>
-                  <!--<option value=<%category.name%>></option>-->
-                  <!--<option value="Matematica">Matematica</option>
-                  <option value="Comedor">Comedor universidad</option>-->
               <%end%>
             </p>
             <p>Document: <input type="file" name="document" accept="application/pdf"></p>

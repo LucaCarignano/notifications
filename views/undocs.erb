@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+    <div class="main_content">
+        <div class="header">Unread Documents</div>  
+        <div class="info">
+        <form method="POST" action="/unreaddocs">      
+        <table>
+           <% @documents.each do |doc| %>
+              <tr>
+                 <td><%=doc.title %></td>
+                 <td><%= doc.date %></td>
+                 <td><input type="submit" name="<%=doc.location%>" value="View"></td>
+             </tr>
+          <% end %>
+        </table>
+        </form>
+      </div>
+    </div>
+</div>
+
+</body>
+</html>
+      

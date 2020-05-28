@@ -23,6 +23,7 @@ class App < Sinatra::Base
       if user_logged?
           @currentUser = User.find(id: session[:user_id])
           @admin = @currentUser.admin
+          @path = request.path_info
           if path_only_admin?
               redirect '/docs'
           end
@@ -69,9 +70,7 @@ class App < Sinatra::Base
     	user = User.find(id: session[:user_id])
     	#@documents = Document.select(:id).except(Labelled.select(:document_id).where(readed: 't', user_id: user.id))
     	@documents = Document.order(:date).reverse.where(delete: 'f', id:( Labelled.select(:document_id).where(readed: 'f', user_id: user.id))).all
-        @categories = Tag.all
-        @users = User.all
-        erb :docs, :layout => :layout_main
+        erb :undocs, :layout => :layout_main
     end
 
     get "/rp" do
@@ -121,6 +120,19 @@ class App < Sinatra::Base
     get "/logout" do
         session.clear
         erb :log, :layout => :layout_sig
+    end
+
+    post "/unreaddocs" do
+
+        docs = Document.all
+        docs.each do |doc|
+            if params[doc.location]
+
+                reading = Labelled.find(document_id: doc.id, user_id: session[:user_id])
+                reading.update(readed: 't')
+                redirect "/view?path=#{doc.location}"
+            end
+        end
     end
 
     post "/tags" do 

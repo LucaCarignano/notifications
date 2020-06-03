@@ -2,18 +2,30 @@
 <html>
 
     <div class="main_content">
-        <div class="header">Unread Documents</div>  
+        <div class="header">MIS DOCUMENTOS</div>  
         <div class="info">
         <form method="POST" action="/unreaddocs">      
+        <h2> Sin leer </h2>
         <table>
-           <% @documents.each do |doc| %>
+           <% @undocuments.each do |doc| %>
               <tr>
-                 <td><%=doc.title %></td>
+                 <td><%= doc.title %></td>
                  <td><%= doc.date %></td>
                  <td><input type="submit" name="<%=doc.location%>" value="View"></td>
              </tr>
           <% end %>
         </table>
+        <h2> Leidos </h2>
+        <table>
+           <% @documents.each do |doc| %>
+              <tr>
+                 <td><%= doc.title %></td>
+                 <td><%= doc.date %></td>
+                 <td><input type="submit" name="<%=doc.location%>" value="View"></td>
+             </tr>
+          <% end %>
+        </table>
+
         </form>
       </div>
     </div>

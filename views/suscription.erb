@@ -12,7 +12,7 @@
            			<% @categories.each do |category| %>
               			<tr> <%=category.name%>. </tr>
                  	<%end%>
-        		</table> </p>
+        		  </table> </p>
         	<%end%> <br><br>
         	<p> Suscribe to:
         		<% if @errortag %>
@@ -20,9 +20,9 @@
 	        	<% else %>
 				  <% @tags.each do |tag| %>
 					  <ul><li>
-                          <label> <%=tag.name%>  </label>
-                              <input type="checkbox" name="<%=tag.name%>" value="<%=tag.name%>">
-                      </li></ul>
+              <label> <%=tag.name%>  </label>
+                <input type="checkbox" name="<%=tag.name%>" value="<%=tag.name%>">
+            </li></ul>
 				  <%end%>
 				</p>
 	        <br><br>
@@ -36,7 +36,7 @@
 	        		<%= @errorcat %></p>
 	        	<% else %>
 				  <select id="categories" name="tag" value="">
-              			<option>Select Tag</option>      
+              			<option selected disabled>Select Tag</option>      
                  		<% @categories.each do |category| %>
                    			<option value=<%=category.name%>><%=category.name%></option>
                  		<%end%>

@@ -3,6 +3,8 @@ require './models/init.rb'
 require 'sinatra/base'
 require 'date'
 require 'tempfile'
+require 'sinatra'
+require 'sinatra-websocket'
 include FileUtils::Verbose
  
 
@@ -23,12 +25,38 @@ class App < Sinatra::Base
       if user_logged?
           @currentUser = User.find(id: session[:user_id])
           @admin = @currentUser.admin
-          @path = request.path_info
+          @path = request.path_info    	
+          @noti = (Document.where(delete: 'f', id:( Labelled.select(:document_id).where(readed: 'f', user_id: session[:user_id])))).count
           if path_only_admin?
               redirect '/docs'
           end
       end
     end
+
+
+	set :server, 'thin'
+	set :sockets, []
+
+
+	get '/prueba' do
+	  if !request.websocket?
+			erb :index
+	  else
+			request.websocket do |ws|
+				ws.onopen do
+		 			ws.send("Hello World!")
+		 			settings.sockets << ws
+		 		end
+		 		ws.onmessage do |msg|
+		 			EM.next_tick { settings.sockets.each{|s| s.send(msg) } }
+		 		end
+				ws.onclose do
+		 			warn("websocket closed")
+		 			settings.sockets.delete(ws)
+		 		end
+		 	end
+	 	end
+	end
 
     get "/" do
       logger.info ""
@@ -38,7 +66,7 @@ class App < Sinatra::Base
       logger.info ""
   
       if !user_logged?
-          erb :log, :layout => :layout_sig
+        erb :log, :layout => :layout_sig
       else
         redirect '/docs'
       end
@@ -55,8 +83,8 @@ class App < Sinatra::Base
       end
     
     get '/view' do
-        @src = params[:path]
-        erb :view_doc, :layout=> false
+      @src = params[:path]
+      erb :view_doc, :layout=> false
     end
 
     get "/docs" do
@@ -69,8 +97,9 @@ class App < Sinatra::Base
     get "/unreaddocs" do
     	user = User.find(id: session[:user_id])
     	#@documents = Document.select(:id).except(Labelled.select(:document_id).where(readed: 't', user_id: user.id))
-    	@documents = Document.order(:date).reverse.where(delete: 'f', id:( Labelled.select(:document_id).where(readed: 'f', user_id: user.id))).all
-        erb :undocs, :layout => :layout_main
+    	@undocuments = Document.order(:date).reverse.where(delete: 'f', id:( Labelled.select(:document_id).where(readed: 'f', user_id: user.id))).all
+    	@documents = Document.order(:date).reverse.where(delete: 'f', id:( Labelled.select(:document_id).where(readed: 't', user_id: user.id))).all
+      erb :undocs, :layout => :layout_main
     end
 
     get "/rp" do
@@ -124,15 +153,16 @@ class App < Sinatra::Base
 
     post "/unreaddocs" do
 
-        docs = Document.all
-        docs.each do |doc|
-            if params[doc.location]
-
-                reading = Labelled.find(document_id: doc.id, user_id: session[:user_id])
-                reading.update(readed: 't')
-                redirect "/view?path=#{doc.location}"
-            end
+	    docs = Document.all
+	    docs.each do |doc|
+        if params[doc.location]
+          reading = Labelled.find(document_id: doc.id, user_id: session[:user_id])
+          if reading.readed = 'f' 
+          	reading.update(readed: 't')
+          end
+          redirect "/view?path=#{doc.location}"
         end
+	    end
     end
 
     post "/tags" do 
@@ -201,10 +231,12 @@ class App < Sinatra::Base
                 end
             end
         elsif @editpas != "" && params[:editpass]
-            if params[:newpass] == "" || params[:repas] == ""
+            if params[:newpass] == "" || params[:repas] == "" || params[:oldpass] == ""
                 @error = "Ingrese contraseña"
             else
-                if params[:newpass] != params[:repas]
+            		if params[:oldpass] != user.password
+            			@error = "contraseña incorrecta"
+                elsif params[:newpass] != params[:repas]
                     @error = "contraseñas distintas"
                 else 
                     user.update(password: params[:newpass])

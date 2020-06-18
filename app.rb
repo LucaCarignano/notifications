@@ -15,18 +15,23 @@ class App < Sinatra::Base
         enable :sessions
         set :session_secret, "una clave polenta"
         set :sessions, true
+    	set :server, 'thin'
+    	set :sockets, []
     end    
 
 
     before do
       if !user_logged? && restricted_path?
-        redirect '/'
+        redirect '/log'
       end
       if user_logged?
           @currentUser = User.find(id: session[:user_id])
           @admin = @currentUser.admin
-          @path = request.path_info    	
-          @noti = (Document.where(delete: 'f', id:( Labelled.select(:document_id).where(readed: 'f', user_id: session[:user_id])))).count
+          @path = request.path_info
+          settings.sockets.each{|s| 
+            @noti = (Document.where(delete: 'f', id:( Labelled.select(:document_id).where(readed: 'f', user_id: s[:user])))).count
+            s[:socket].send(@noti.to_s)
+            }
           if path_only_admin?
               redirect '/docs'
           end
@@ -34,31 +39,29 @@ class App < Sinatra::Base
     end
 
 
-	set :server, 'thin'
-	set :sockets, []
+    get '/' do
+      if !request.websocket?
+        erb :log, :layout => :layout_sig
+      else
+        request.websocket do |ws|
+          user = session[:user_id]
+          logger.info(user)
+          @connection = {user: user, socket: ws}
+          ws.onopen do
+            settings.sockets << @connection
+          end
+          ws.onmessage do |msg|
+            EM.next_tick { settings.sockets.each{|s| s.send(msg) } }
+          end
+          ws.onclose do
+            warn("websocket closed")
+            settings.sockets.delete(ws)
+          end
+        end
+      end
+    end
 
-
-	get '/prueba' do
-	  if !request.websocket?
-			erb :index
-	  else
-			request.websocket do |ws|
-				ws.onopen do
-		 			ws.send("Hello World!")
-		 			settings.sockets << ws
-		 		end
-		 		ws.onmessage do |msg|
-		 			EM.next_tick { settings.sockets.each{|s| s.send(msg) } }
-		 		end
-				ws.onclose do
-		 			warn("websocket closed")
-		 			settings.sockets.delete(ws)
-		 		end
-		 	end
-	 	end
-	end
-
-    get "/" do
+    get "/log" do
       logger.info ""
       logger.info session["session_id"]
       logger.info session.inspect
@@ -336,7 +339,7 @@ class App < Sinatra::Base
         end
     end
 
-    post "/" do
+    post "/log" do
     
         # Login part
         if params[:Login]
@@ -478,7 +481,7 @@ class App < Sinatra::Base
     end
 
     def restricted_path?
-        request.path_info != '/' && request.path_info != '/login' && request.path_info != '/rp' && request.path_info != '/' && request.path_info != '/docs'
+        request.path_info != '/log' && request.path_info != '/login' && request.path_info != '/rp' && request.path_info != '/docs'
     end
 
     def path_only_admin?
@@ -490,4 +493,26 @@ class App < Sinatra::Base
     def all_field_adddoc?
         (params[:title] == "" || params[:labelled] == "" || params[:document] == nil)
     end
+
+
+    get '/prueba' do
+      if !request.websocket?
+            erb :index
+      else
+            request.websocket do |ws|
+                ws.onopen do
+                    ws.send("Hello World!")
+                    settings.sockets << ws
+                end
+                ws.onmessage do |msg|
+                    EM.next_tick { settings.sockets.each{|s| s.send(msg) } }
+                end
+                ws.onclose do
+                    warn("websocket closed")
+                    settings.sockets.delete(ws)
+                end
+            end
+        end
+    end
+
 end

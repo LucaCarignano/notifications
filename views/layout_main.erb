@@ -7,6 +7,7 @@
         D.A.N.S
     </title>
     <link rel="stylesheet" href="stylemain.css">
+    <script src="websocket.js" type="text/javascript"></script> 
 </head>
 <body>
 
@@ -17,7 +18,9 @@
                 <%if @currentUser%>
                     <li><a href="/profile" data text="All docs">PERFIL</a></li>
                     <li><a href="/docs" data text="All docs">DOCUMENTOS</a></li>
-                    <li><a href="/unreaddocs" data text="Unread docs">MIS DOCUMENTOS <%=@noti %> </a></li>
+                    <li><a href="/unreaddocs" data text="Unread docs">MIS DOCUMENTOS</a>
+                        <span id="noti"> <%=@noti %> </span> 
+                    </li>
                     <li><a href="/tags" data text="tags">TAGS</a></li>
                     <%if @admin%>
                         <li><a href="/adddoc" data text="add doc">AÑADIR DOCUMENTO</a></li>    

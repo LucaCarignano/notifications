@@ -28,10 +28,7 @@ class App < Sinatra::Base
           @currentUser = User.find(id: session[:user_id])
           @admin = @currentUser.admin
           @path = request.path_info
-          settings.sockets.each{|s| 
-            @noti = (Document.where(delete: 'f', id:( Labelled.select(:document_id).where(readed: 'f', user_id: s[:user])))).count
-            s[:socket].send(@noti.to_s)
-            }
+          @noti = (Document.where(delete: 'f', id:( Labelled.select(:document_id).where(readed: 'f', user_id: @currentUser.id)))).count
           if path_only_admin?
               redirect '/docs'
           end
@@ -49,9 +46,6 @@ class App < Sinatra::Base
           @connection = {user: user, socket: ws}
           ws.onopen do
             settings.sockets << @connection
-          end
-          ws.onmessage do |msg|
-            EM.next_tick { settings.sockets.each{|s| s.send(msg) } }
           end
           ws.onclose do
             warn("websocket closed")
@@ -80,10 +74,10 @@ class App < Sinatra::Base
         erb :add_doc, :layout => :layout_main
     end
 
-      get "/login" do
-          session.clear
-          erb :login, :layout => :layout_sig
-      end
+    get "/login" do
+        session.clear
+        erb :login, :layout => :layout_sig
+    end
     
     get '/view' do
       @src = params[:path]
@@ -350,7 +344,7 @@ class App < Sinatra::Base
                 redirect "/docs"
               elsif !user1 || params[:user] == "" || params[:pass] == "" || user1.password != params[:pass]
                 	@error ="Your username o password is incorrect"
-                redirect "/login"
+                redirect "/log"
             end
         end
 
@@ -385,7 +379,7 @@ class App < Sinatra::Base
                 [500, {}, "Internal server Error"]
             end
         else 
-            erb :log, :layout => :layout_sig
+            #erb :log, :layout => :layout_sig
         end
     end
     
@@ -400,67 +394,80 @@ class App < Sinatra::Base
 
      post '/adddoc' do
 
-        if all_field_adddoc?
-            @error = "Incomplete form"
-            @categories = Tag.all
-            erb :add_doc, :layout => :layout_main
-        else
+      if all_field_adddoc?
+        @error = "Incomplete form"
+        @categories = Tag.all
+        erb :add_doc, :layout => :layout_main
+      else
 
-            @filename = params[:document][:filename]
-            file = params[:document][:tempfile]
+        @filename = params[:document][:filename]
+        file = params[:document][:tempfile]
 
-            File.open("./public/file/#{@filename}", 'wb') do |f|
-                f.write(file.read)
-            end
+        File.open("./public/file/#{@filename}", 'wb') do |f|
+            f.write(file.read)
+        end
 
-            @time = Time.now.to_i
-            @name =  "#{@time}#{params[:title]}".gsub(' ', '')
-            @src =  "file/#{@name}.pdf"
+        @time = Time.now.to_i
+        @name =  "#{@time}#{params[:title]}".gsub(' ', '')
+        @src =  "file/#{@name}.pdf"
 
-            #request.body.rewind
+        #request.body.rewind
 
-            doc = Document.new(title: params["title"], date: Date.today, location: @src)
-            if doc.save
-              	cp(file.path, "public/#{doc.location}")    
+        doc = Document.new(title: params["title"], date: Date.today, location: @src)
+        if doc.save
+          cp(file.path, "public/#{doc.location}")    
+          
+         #----------- Actualizo tablas relaciones -----------#
+
+            usersInvolved = Array.new()
+         	labelleds = params["labelled"].split('@')
+          	labelleds.each do |labelled|
+            	user = User.find(username: labelled)
+            	if user
+                    usersInvolved << user.id
+              		user.add_document(doc)
+              		user.save
+           		end
+          	end
+
+            categories = Tag.all
+            categories.each do |category|
+            	nombre = category.name
               
-            #----------- Actualizo tablas relaciones -----------#
+              if params[nombre]
+                  category.add_document(doc)
+                  category.save
+                  labelled = Labelled.select(:user_id).where(document_id: doc.id)
+                  subscription = Subscription.select(:user_id).where(tag_id: category.id)
+                  users = User.where(id: subscription.except(labelled)).all
+                  users.each do |user|
+                    usersInvolved << user.id	          
+                  	user.add_document(doc)
+                  	user.save
+                  end
+              end
+          end
 
-             	labelleds = params["labelled"].split('@')
-              	labelleds.each do |labelled|
-                	user = User.find(username: labelled)
-                	if user
-                  		user.add_document(doc)
-                  		user.save
-               		end
-              	end
+          usersNotificated = Array.new()
 
-                categories = Tag.all
-                categories.each do |category|
-                	nombre = category.name
-                  
-	                if params[nombre]
-	                    category.add_document(doc)
-	                    category.save
-	                    labelled = Labelled.select(:user_id).where(document_id: doc.id)
-	                    subscription = Subscription.select(:user_id).where(tag_id: category.id)
-	                    users = User.where(id: subscription.except(labelled)).all
-	                    users.each do |user|	          
-	                    	user.add_document(doc)
-	                    	user.save
-	                    end
-	                end
-              	end
-
-
-
-              	redirect '/docs'
-            else 
-              [500, {}, "Internal server Error"]
+          settings.sockets.each { |s|
+            if (usersInvolved.index(s[:user]) != nil)
+                usersNotificated << s
             end
-            @categories = Tag.all
-       		erb :add_doc, :layout => :layout_main
-        end 
+          }
+
+          usersNotificated.each{|s|
+            @noti = (Document.where(delete: 'f', id:( Labelled.select(:document_id).where(readed: 'f', user_id: s[:user])))).count
+            s[:socket].send(@noti.to_s)
+          }
+          @categories = Tag.all
+          erb :add_doc, :layout => :layout_main
+          	
+        else 
+            [500, {}, "Internal server Error"]
+        end
       end 
+    end 
 
     post "/login" do
 

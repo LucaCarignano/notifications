@@ -12,19 +12,19 @@
 		<div class="page">
 			<div class="login"> 
 				<form method="POST" action="/log">
-					<p>Username:  
-					<input type="text" name="user" placeholder="Enter Username">
-					Password:
-					<input type="password" name="pass" placeholder="Enter password">
+					<p>Nombre de Usuario:  
+					<input type="text" name="user" placeholder="Enter Nombre de Usuario">
+					Contraseña:
+					<input type="password" name="pass" placeholder="Enter Contraseña">
 					<input type="submit" name="Login" value="Login">
 					</p>
 			</div>
 			<h3>
-				Don't have an account yet?
+				No tiene una cuenta todavía?
 			</h3>
 			<h4>
-				Create one, <br>
-				It is fast and easy.
+				Cree una, <br>
+				Es fácil y sencillo.
 			</h4>
 			<br><br>
 			<div class="register">
@@ -34,12 +34,12 @@
 				 <% end %>
 				  <tr>
 				    <td>
-				    	<p>	Name:
+				    	<p>	Nombre:
 				    		<input type="text" name="name">
 				    	</p>
 				    </td>
 				    <td class = "right">	
-				 		<p>	Surname:
+				 		<p>	Apellido:
 				    		<input type="text" name="surname">
 				    	</p>	
 				    	
@@ -47,7 +47,7 @@
 				  </tr>
 				  <tr>
 				    <td>
-				    	<p> Your Email:
+				    	<p> Su Email:
 				    		<input type="text" name="email" placeholder="name@example.com">
 				    	</p>
 						 <% if @errorMail %>
@@ -55,7 +55,7 @@
 						 <% end %>
 				    </td>
 				    <td class = "right">		
-						<p>	User name:
+						<p>	Nombre de Usuario:
 				    		<input type="text" name="username">
 				    	</p>
 						 <% if @errorUser %>
@@ -65,7 +65,7 @@
 				  </tr>
 				  <tr>
 				    <td>
-				    	<p> New password:
+				    	<p> Contraseña:
 				    		<input type="password" name="password">
 				    	</p>
 
@@ -74,7 +74,7 @@
 						   <p class="error"><%= @errorPassLength %></p>
 						 <% end %>				    
 				    <td class = "right">		
-				    		<p> Repeat your password:
+				    		<p> Repetir Contraseña:
 				    		<input type="password" name="password2">
 				    		</p>
 				    </td>
@@ -84,7 +84,7 @@
 				  </tr>
 				</table>
 				<br>
-				<input type="submit" name="Sumbit" value="Submit">
+				<input type="submit" name="Sumbit" value="Enviar">
 			</form>
 			</div>
 		</div>

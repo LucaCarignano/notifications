@@ -2,7 +2,7 @@
 <html>
 
     <div class="main_content">
-        <div class="header">Profile</div>  
+        <div class="header">Perfil</div>  
         <div class="info">
           <h2>Menu</h2>
             <ul>
@@ -10,38 +10,38 @@
                 <% if @error %>
                    <li class="error"><%= @error %></li>
                 <% end %>
-                <li>Username: <%= @Username %>  <input type="submit" name="botuser" value="Edit Username"> </li>
+                <li>Nombre de usuario: <%= @Username %>  <input type="submit" name="botuser" value="Editar nombre de usuario"> </li>
                 <%if @edituse%>
-                    <li>New Username: <input type="text" name="newuser" placeholder="Enter Username"></li>
+                    <li>Nuevo Nombre de usuario: <input type="text" name="newuser" placeholder="Ingresar Nombre de Usuario"></li>
                     <br>
-                    <li><input type="submit" name="editus" value="Accept"></li>
+                    <li><input type="submit" name="editus" value="Aceptar"></li>
                 <%end%>
-                <li>Email: <%= @Email %> <input type="submit" name="botemail" value="Edit Email"></li>
+                <li>Email: <%= @Email %> <input type="submit" name="botemail" value="Editar Email"></li>
                 <%if @editmail%>
                     <% if @error %>
                        <li class="error"><%= @error %></li>
                     <% end %>
-                    <li>New Email: <input type="text" name="newemail" placeholder="Enter Email"></li>
+                    <li>Nuevo Email: <input type="text" name="newemail" placeholder="Ingresar Email"></li>
                     <br>
-                    <li><input type="submit" name="editemail" value="Accept"></li>
+                    <li><input type="submit" name="editemail" value="Aceptar"></li>
                 <%end%>
-                <li><input type="submit" name="botpass" value="Edit Password"></li>
+                <li><input type="submit" name="botpass" value="Editar Contraseña"></li>
                 <%if @editpas%>
                     <% if @error %>
                        <li class="error"><%= @error %></li>
                     <% end %>
-                    <li>Contraseña actual: <input type="Password" name="oldpass" placeholder="Enter Password"></li>
-                    <li>New Password: <input type="Password" name="newpass" placeholder="Enter Password"></li>
-                    <li>Repeat the Password: <input type="Password" name="repas" placeholder="Enter Password"></li>
+                    <li>Contraseña actual: <input type="password" name="oldpass" placeholder="Ingresar Contraseña"></li>
+                    <li>Nueva Contraseña: <input type="password" name="newpass" placeholder="Ingresar Contraseña"></li>
+                    <li>Repetir Contraseña: <input type="password" name="repas" placeholder="Ingresar Contraseña"></li>
                     <br>
-                    <li><input type="submit" name="editpass" value="Accept"></li>
+                    <li><input type="submit" name="editpass" value="Aceptar"></li>
                 <%end%>
                 <%if !@admin%>
-                    <li><a href="/applyadmin" data text="make admin">Apply to be an admin</a></li>
+                    <li><a href="/applyadmin" data text="make admin">Pedir promocion para ser administrador</a></li>
                 <%end%>
                 <%if @admin%>
-                    <li><a href="/makeadmin" data text="make admin">Make a user admin</a></li>
-                    <li><a href="/maketag" data text="make admin">Manage tags</a></li>
+                    <li><a href="/makeadmin" data text="make admin">Crear un administrador</a></li>
+                    <li><a href="/maketag" data text="make admin">Manejar tags</a></li>
                 <%end%>
               </form> 
             </ul> 

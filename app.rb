@@ -173,9 +173,9 @@ class App < Sinatra::Base
 					if params[nombre]
 	          category.add_user(user1)
 	          if category.save
-	            @error = "Succes"
+	            @error = "Suscripto correctamente"
 	          else 
-	            @error = "fail"
+	            @error = "Error"
 	          end
        	 	end
       	end
@@ -183,9 +183,9 @@ class App < Sinatra::Base
       	user1 = User.find(id: session[:user_id])
         user1.remove_tag(Tag.find(name: params[:tag]))
         if user1.save
-          @error = "Succes"
+          @error = "Suscripto correctamente"
         else 
-          @error = "fail"
+          @error = "Error"
         end
    		end
     redirect "/tags"
@@ -298,12 +298,12 @@ class App < Sinatra::Base
         tag = Tag.find(name: params[:newtag])
 
         if tag
-            @error ="Tag is already created"
+            @error ="El tag ya existe"
             erb :maketags, :layout => :layout_main
         else
           newtag = Tag.new(name: params["newtag"])
           if newtag.save
-            @error ="Add successfully!!"
+            @error ="Agregado correctamente"
             erb :maketags, :layout => :layout_main
           else 
             [500, {}, "Internal server Error"]
@@ -315,17 +315,17 @@ class App < Sinatra::Base
 
         if tag
           if tag.delete
-            @error ="Delete successfully!!"
+            @error ="Borrado correctamente"
             erb :maketags, :layout => :layout_main
           else 
             [500, {}, "Internal server Error"]
           end
         else
-          @error ="Tag doesn't exist"
+          @error ="El tag no existe"
           erb :maketags, :layout => :layout_main
         end
       else 
-        @error ="Insert tag name"
+        @error ="Inserte el nombre del tags"
         erb :maketags, :layout => :layout_main
       end
     end
@@ -338,14 +338,14 @@ class App < Sinatra::Base
 
         if useradmi
           useradmi.update(admin: 't')
-          @error ="Promoted successfully!!"
+          @error ="Promocion realizada"
           erb :makeAdmin, :layout => :layout_main
         else
-          @error ="nonexistent Username"
+          @error ="No existe ese usuario"
           erb :makeAdmin, :layout => :layout_main
         end
       else 
-        @error ="Insert username"
+        @error ="Inserte el nombre del usuario"
         erb :makeAdmin, :layout => :layout_main
       end
     end
@@ -359,26 +359,26 @@ class App < Sinatra::Base
           session[:user_id] = user1.id
           redirect "/docs"
         elsif !user1 || params[:user] == "" || params[:pass] == "" || user1.password != params[:pass]
-        	@error ="Your username o password is incorrect"
+        	@error ="Tu usuario o contraseña son incorrectos"
           redirect "/log"
         end
       end
 
       # Register to the system part
       if all_field_register?
-        @error = "Incomplete form"
+        @error = "Complete todos los campos!!"
       end
       if User.find(username: params[:username])
-        @errorUser = "The username is already taken!!"
+        @errorUser = "El nombre de usario ya esta registrado!!"
       end
       if User.find(email: params[:email])                                                                                               
-        @errorEmail = "The email have a user created!!"
+        @errorEmail = "El email ya esta registrado!!"
       end
       if params[:password].length < 6
-        @errorPassLength = "Password must have more than 5 caracters!!"
+        @errorPassLength = "La contraseña tiene que tener mas de 5 caracteres!!"
       end
       if params[:password] != params[:password2]
-        @errorPassDif = "Passwords are diferent!!"
+        @errorPassDif = "Las contraseñas son diferentes!!"
       end            
       
       if !@errorPassLength && !@errorUser && !@error && !@errorEmail && !@errorPassDif
@@ -401,7 +401,7 @@ class App < Sinatra::Base
     post '/adddoc' do
 
       if all_field_adddoc?
-        @error = "Incomplete form"
+        @error = "Complete todos los campos!!"
         @categories = Tag.all
         erb :add_doc, :layout => :layout_main
       else
@@ -484,7 +484,7 @@ class App < Sinatra::Base
         session[:user_id] = user.id
         redirect "/docs"
       else
-        @error ="Your username o password is incorrect"
+        @error ="Tu usuario o contraseña son incorrectos"
         erb :login, :layout => :layout_sig
       end
     end
@@ -505,26 +505,5 @@ class App < Sinatra::Base
     end
     def all_field_adddoc?
       (params[:title] == "" || params[:labelled] == "" || params[:document] == nil)
-    end
-
-
-    get '/prueba' do
-      if !request.websocket?
-        erb :index
-      else
-        request.websocket do |ws|
-          ws.onopen do
-            ws.send("Hello World!")
-            settings.sockets << ws
-          end
-          ws.onmessage do |msg|
-            EM.next_tick { settings.sockets.each{|s| s.send(msg) } }
-          end
-          ws.onclose do
-            warn("websocket closed")
-            settings.sockets.delete(ws)
-          end
-        end
-      end
     end
 end

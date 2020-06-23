@@ -2,21 +2,21 @@
 <html>
 
     <div class="main_content">
-        <div class="header">Manage Tags</div>  
+        <div class="header">Manejo de Tags</div>  
         <div class="info">
             <form method="POST" action="/maketag">
                 <% if @error %>
                        <p class="error"><%= @error %></p>
                 <% end %>
-                <p>Name of the new tag:  
-                <input type="text" name="newtag" placeholder="Enter Tag">
+                <p>Nombre del nuevo tag:  
+                <input type="text" name="newtag" placeholder="Ingresar Tag">
                 </p><br>
-                <input type="submit" name="add" value="Add">
+                <input type="submit" name="add" value="Agregar">
                 <br><br><br>    
-                <p>Name of the tag to delete:  
-                <input type="text" name="deltag" placeholder="Enter Tag">
+                <p>Nombre del tag a borrar:  
+                <input type="text" name="deltag" placeholder="Ingresar Tag">
                 </p><br>
-                <input type="submit" name="delete" value="Delete">
+                <input type="submit" name="delete" value="Borrar">
             </form>
       </div>
     </div>

@@ -14,7 +14,7 @@
                  	<%end%>
         		  </table> </p>
         	<%end%> <br><br>
-        	<p> Suscribe to:
+        	<p> Suscribirse a:
         		<% if @errortag %>
 	        		<%= @errortag %></p>
 	        	<% else %>
@@ -26,12 +26,12 @@
 				  <%end%>
 				</p>
 	        <br><br>
-            <input type="submit" name="suscribe" value="Done">
+            <input type="submit" name="suscribe" value="Listo">
             <%end%>
             <% if @error %>
 	        	<%= @error %></p>
 	        <% end %>
-	        <p> Unsuscribe to:
+	        <p> Desuscribirse de:
         		<% if @errorcat %>
 	        		<%= @errorcat %></p>
 	        	<% else %>
@@ -43,7 +43,7 @@
            		  </select>
 				  </p>
 	              <br><br>
-                  <input type="submit" name="unsuscribe" value="unsuscribe">
+                  <input type="submit" name="unsuscribe" value="Desuscribirse">
                 <%end%>
                 <% if @error %>
 	        	   <%= @error %></p>

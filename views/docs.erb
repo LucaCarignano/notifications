@@ -2,36 +2,35 @@
 <html>
 
     <div class="main_content">
-        <div class="header">All Documents</div>  
+        <div class="header">Todos los documentos</div>  
         <div class="info">
         <form method="POST" action="/docs">
-        <p>Select category to filter:
+        <p>Seleccione una categoria a filtrar:
            <select id="categories" name="tags" value="">
-              <option>Select Tag</option>      
+              <option>Seleccione Tag</option>      
                  <% @categories.each do |category| %>
                     <option value=<%=category.name%>><%=category.name%></option>
                  <%end%>
            </select>
-        Select user to filter:
+        Seleccione usuario a filtrar:
           <select id="users" name="users">
-             <option>Select User</option>            
+             <option>Seleccione Usuario</option>            
              <% @users.each do |user| %>
                 <option value=<%=user.username%>><%=user.username%></option>
              <%end%>
            </select>
-        Select Date: 
+        Seleccione fecha: 
            <input type="date" name="datedoc">
-           <input type="submit" name="filter" value="Filter">
+           <input type="submit" name="filter" value="Filtrar">
         </p>      
         <table>
            <% @documents.each do |doc| %>
               <tr>
                  <td><%=doc.title %></td>
                  <td><%= doc.date %></td>
-                 <td><a href="/view?path=<%= doc.location %>" target="blank"> View</a></td>
+                 <td><a href="/view?path=<%= doc.location %>" target="blank"> Ver</a></td>
                  <%if @admin%>
-                    <td><input type="submit" name="edit<%=doc.location%>" value="Edit"></td>
-                    <td><input type="submit" name="del<%=doc.location%>" value="Delete"></td>
+                    <td><input type="submit" name="del<%=doc.location%>" value="Borrar"></td>
                  <%end%>
              </tr>
           <% end %>

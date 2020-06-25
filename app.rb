@@ -89,8 +89,34 @@ class App < Sinatra::Base
       erb :view_doc, :layout=> false
     end
 
+    def cant_pages(cantdocs)
+      @docsperpage = 10
+      if cantdocs % @docsperpage == 0
+        @pagelimit = cantdocs / @docsperpage 
+      else
+        @pagelimit = cantdocs / @docsperpage + 1
+      end
+    end
+
+    def set_pages
+      if params[:page]
+        @page = params[:page].to_i
+      else @page = 1
+      end
+    end
+
+    def autocompleteDocs
+      @docsname = []
+      Document.each do |doc|
+        @docsname.push(doc.title)
+      end
+    end
+
     get "/docs" do
-      @documents = Document.order(:date).reverse.where(delete: 'f').all
+      set_pages
+      cant_pages(Document.where(delete: 'f').count)
+      autocompleteDocs
+      @documents = Document.order(:date).reverse.where(delete: 'f').limit(@docsperpage, @page*@docsperpage-(@docsperpage-1))
       @categories = Tag.all
       @users = User.all
       get_noti
@@ -99,7 +125,6 @@ class App < Sinatra::Base
 
     get "/unreaddocs" do
       user = User.find(id: session[:user_id])
-      #@documents = Document.select(:id).except(Labelled.select(:document_id).where(readed: 't', user_id: user.id))
       @undocuments = Document.order(:date).reverse.where(delete: 'f', id:( Labelled.select(:document_id).where(readed: 'f', user_id: user.id))).all
       @documents = Document.order(:date).reverse.where(delete: 'f', id:( Labelled.select(:document_id).where(readed: 't', user_id: user.id))).all
       get_noti
@@ -147,7 +172,7 @@ class App < Sinatra::Base
       @tags = Tag.select(:id).except(Subscription.select(:tag_id).where(user_id: session[:user_id]))
       @tags = Tag.where(id: @tags).all
       if @tags == []
-          @errortag = "Esta suscripto a todas las categorias" 
+        @errortag = "Esta suscripto a todas las categorias" 
       end
       get_noti
       erb :suscription, :layout => :layout_main
@@ -259,10 +284,11 @@ class App < Sinatra::Base
     end
 
     post "/docs" do
-
+      set_pages
+      autocompleteDocs
       if params[:datedoc] == "" && params[:tags] == "" && params[:users] == "" && params[:filter]
           redirect "/docs"
-      end
+      end      
       @documents = Document.all
       if params[:users] != ""
         user = User.find(username: params[:users])
@@ -282,6 +308,12 @@ class App < Sinatra::Base
         aux3 = Document.where(date: params[:datedoc]).all
         @documents = @documents & aux3
       end
+      if params[:docname] && params[:docname] != ""
+        aux4 = Document.where(title: params[:docname]).all       
+        @documents = @documents & aux4
+      end
+      cant_pages(@documents.length)
+      @documents = @documents[((@page - 1) * @docsperpage) ..  (@page * @docsperpage)-1]    
 
       if !params[:filter]
 

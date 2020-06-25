@@ -71,6 +71,10 @@ class App < Sinatra::Base
 
     get "/adddoc" do
       @categories = Tag.all
+      @users = []
+      User.each do |user| 
+        @users.push(user.username)
+      end
       erb :add_doc, :layout => :layout_main
     end
 

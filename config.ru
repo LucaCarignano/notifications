@@ -6,11 +6,13 @@ Bundler.require
 
 # Create a connection and leave it as a global object in our project
 DB = Sequel.connect(
+
 adapter: 'postgres',
 database: 'notificator-development',
 host: 'db',
 user: 'unicorn',
 password: 'magic')
+Sequel::Model.plugin :json_serializer
 require "./app.rb"
 run App
 

@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html>
-
     <form method="POST" action="/adddoc" enctype="multipart/form-data" >
       <fieldset>
         <legend>Add Document</legend>
           <div class="form-group row">
 
         <p>Title: <input type="text" name="title"></p>
-        <p>Users to label: <input type="text" name="labelled"></p>
+        <p>Users to label: <input autocomplete="off" id="myInput" type="text" name="labelled" placeholder="Usuario/s">  
+              <script src = "autocomplete.js" ></script>
+              <script>
+                var myJSArray = <%=@users.to_json%>;
+                autocomplete(document.getElementById("myInput"), myJSArray);
+              </script></p>
         <p>TAGS: 
           <% @categories.each do |category| %>
               <ul>

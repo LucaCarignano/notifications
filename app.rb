@@ -467,7 +467,7 @@ class App < Sinatra::Base
             s[:socket].send(@noti.to_s)
           }
           @categories = Tag.all
-          erb :add_doc, :layout => :layout_main
+            erb :add_doc, :layout => :layout_main
           	
         else 
           [500, {}, "Internal server Error"]
@@ -494,7 +494,7 @@ class App < Sinatra::Base
     end
 
     def restricted_path?
-      request.path_info != '/log' && request.path_info != '/login' && request.path_info != '/rp' && request.path_info != '/docs'
+      request.path_info != '/log' && request.path_info != '/login' && request.path_info != '/rp' && request.path_info != '/docs' && request.path_info != '/prueba'
     end
 
     def path_only_admin?
@@ -505,5 +505,9 @@ class App < Sinatra::Base
     end
     def all_field_adddoc?
       (params[:title] == "" || params[:labelled] == "" || params[:document] == nil)
+    end
+
+    get "/prueba" do
+      erb :index, :layout => false
     end
 end

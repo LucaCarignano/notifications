@@ -1,53 +1,79 @@
 <!DOCTYPE html>
 <html>
-	<div class="main_content">
-      <div class="header">TAGS</div>  
-    <div class="info">
+  <div class="page-header">
+    <h1 id="navbars" style="text-align: center;">TAGS</h1>
+  </div>
+  <br> 
 		<form method="POST" action="/tags" >
-	        <p> categorias Suscprito: 
-	        <% if @errorcat %>
-	        	<%= @errorcat %></p>
-	        <% else %>
-	            <table>
-           			<% @categories.each do |category| %>
-              			<tr> <%=category.name%>. </tr>
-                 	<%end%>
-        		  </table> </p>
-        	<%end%> <br><br>
-        	<p> Suscribirse a:
-        		<% if @errortag %>
-	        		<%= @errortag %></p>
-	        	<% else %>
-				  <% @tags.each do |tag| %>
-					  <ul><li>
-              <label> <%=tag.name%>  </label>
-                <input type="checkbox" name="<%=tag.name%>" value="<%=tag.name%>">
-            </li></ul>
-				  <%end%>
-				</p>
-	        <br><br>
-            <input type="submit" name="suscribe" value="Listo">
-            <%end%>
-            <% if @error %>
-	        	<%= @error %></p>
-	        <% end %>
-	        <p> Desuscribirse de:
-        		<% if @errorcat %>
-	        		<%= @errorcat %></p>
-	        	<% else %>
-				  <select id="categories" name="tag" value="">
+      <div style="text-align: center;"> 
+        <legend>Categorias Suscprito: </legend>
+      	<% if @errorcat %>
+          <div class="alert alert-dismissible alert-danger justify-content-center">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <%= @errorcat %>
+          </div>
+        <% else %>
+          <% @categories.each do |category| %>
+            <h3> <%=category.name%> </h3>
+          <%end%>
+        <%end%>
+      </div>
+      <br>
+      <fieldset>
+        <legend style="text-align: center;">Suscribirse a:</legend>
+          <% if @errortag %>
+            <div class="alert alert-dismissible alert-success justify-content-center" >
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              <%= @errortag %>
+            </div>
+          <% else %>
+
+            <div class="form-check">
+              <% @tags.each do |tag| %>
+                <label class="form-check-label" style="padding-left: 48%;">
+                  <input class="form-check-input" type="checkbox" name="<%=tag.name%>" value="<%=tag.name%>">
+                  <%=tag.name%>
+                </label>
+                <br>
+              <%end%> 
+              <br>
+              <div style="text-align: center;"> 
+                <button type="submit" class="btn btn-primary" name="suscribe">Listo</button> 
+              </div>
+            </div>
+          <% end %>
+          <br>
+      </fieldset>
+      <fieldset style="text-align: center;">
+        <div class="form-row align-items-center justify-content-center">
+          <div class="col-auto my-1">
+  	        <legend >Desuscribirse de:</legend>
+              <% if @errorcat %>
+                  <%= @errorcat %>
+                </div>
+              <% else %>
+                <div class="form-group">
+                  <select class="custom-select mr-sm-2" id="categories" name="tag">
               			<option selected disabled>Select Tag</option>      
                  		<% @categories.each do |category| %>
                    			<option value=<%=category.name%>><%=category.name%></option>
                  		<%end%>
-           		  </select>
-				  </p>
-	              <br><br>
-                  <input type="submit" name="unsuscribe" value="Desuscribirse">
-                <%end%>
-                <% if @error %>
-	        	   <%= @error %></p>
-	            <% end %>
+               		</select>
+                </div>
+    		  
+                <br>
+                <button type="submit" class="btn btn-primary" name="unsuscribe">Desuscribirse</button> 
+              <%end%>
+          </div>
+        </div>
+      </fieldset>            
+          <% if @error %>
+            <div class="alert alert-dismissible alert-danger justify-content-center">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              <%= @error %>
+            </div>
+	        <% end %>
+              
       	  	</form>
    	  </body>
 </html>

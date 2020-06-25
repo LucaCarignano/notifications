@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html>
 
-    <div class="main_content">
-        <div class="header">Todos los documentos</div>  
-        <div class="info">
-        <form method="POST" action="/docs">
-        <p>Seleccione una categoria a filtrar:
+  <form method="POST" action="/docs">
+    <div class="sticky-top">
+    <div class="jumbotron">
+      <h3 class="display-2" style="font-size: 40px;">Filtros</h3>
+      <p class="lead">
+        Seleccione una categoria a filtrar:
+        <select id="categories" name="tags" value="">
+          <option>Seleccione Tag</option>      
+             <% @categories.each do |category| %>
+                <option value=<%=category.name%>><%=category.name%></option>
+             <%end%>
+        </select>
+        Seleccione una categoria a filtrar:
            <select id="categories" name="tags" value="">
               <option>Seleccione Tag</option>      
                  <% @categories.each do |category| %>
@@ -21,25 +29,49 @@
            </select>
         Seleccione fecha: 
            <input type="date" name="datedoc">
-           <input type="submit" name="filter" value="Filtrar">
-        </p>      
-        <table>
-           <% @documents.each do |doc| %>
-              <tr>
-                 <td><%=doc.title %></td>
-                 <td><%= doc.date %></td>
-                 <td><a href="/view?path=<%= doc.location %>" target="blank"> Ver</a></td>
-                 <%if @admin%>
-                    <td><input type="submit" name="del<%=doc.location%>" value="Borrar"></td>
-                 <%end%>
-             </tr>
-          <% end %>
-        </table>
-        </form>
-      </div>
+           <button type="submit" class="btn btn-primary" name="filter">Filtrar</button>
+      </p>
     </div>
-</div>
-
+    </div>  
+    <table class="table table-hover" style="text-align: center;">
+      <thead>
+        <tr>
+          <th scope="col">Titulo</th>
+          <th scope="col">Fecha</th>
+          <th scope="col">TAGS</th>
+          <th scope="col">Usuarios etiquetados</th>
+          <th scope="col">Visualizacion</th>
+          <%if @admin%>
+            <th scope="col">Elimina</th>
+          <%end%>
+        </tr>
+      </thead>
+      <tbody>
+        <% @documents.each do |doc| %>
+          <tr class="table-primary">
+          <td scope="row"><%=doc.title %></td>          
+          <td><%= doc.date %></td>
+          <% tags = Array.new() %>
+          <% doc.tags.each do |tag| %>
+            <%  tags <<tag.name %>
+          <% end %>
+          <td> <%= tags * ", " %></td>
+          <% users = Array.new() %> 
+          <% doc.users.each do |user| %>
+            <%  users <<user.username %>
+          <% end %>
+          <td> <%= users * ", " %></td>
+          <td><a href="/view?path=<%= doc.location %>" target="blank"> Ver</a></td>
+          <%if @admin%>
+            <td>
+              <button type="submit" class="btn btn-primary" name="del<%=doc.location%>">Borrar</button>
+            </td>
+          <%end%>
+          </tr>
+        <% end %>
+      </tbody>
+    </table> 
+  </form>
 </body>
 </html>
       

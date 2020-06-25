@@ -347,7 +347,7 @@ class App < Sinatra::Base
         else
           newtag = Tag.new(name: params["newtag"])
           if newtag.save
-            @error ="Agregado correctamente"
+            @succes ="Agregado correctamente"
             get_noti
             erb :maketags, :layout => :layout_main
           else 
@@ -360,7 +360,7 @@ class App < Sinatra::Base
 
         if tag
           if tag.delete
-            @error ="Borrado correctamente"
+            @succes ="Borrado correctamente"
             get_noti
             erb :maketags, :layout => :layout_main
           else 
@@ -386,7 +386,7 @@ class App < Sinatra::Base
 
         if useradmi
           useradmi.update(admin: 't')
-          @error ="Promocion realizada"
+          @succes ="Promocion realizada"
           get_noti
           erb :makeAdmin, :layout => :layout_main
         else
@@ -411,7 +411,7 @@ class App < Sinatra::Base
           redirect "/docs"
         elsif !user1 || params[:user] == "" || params[:pass] == "" || user1.password != params[:pass]
           @error ="Tu usuario o contraseña son incorrectos"
-          redirect "/log"
+          redirect "/login"
         end
       end
 

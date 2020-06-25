@@ -1,26 +1,43 @@
 <!DOCTYPE html>
 <html>
-
-    <div class="main_content">
-        <div class="header">Manejo de Tags</div>  
-        <div class="info">
-            <form method="POST" action="/maketag">
-                <% if @error %>
-                       <p class="error"><%= @error %></p>
-                <% end %>
-                <p>Nombre del nuevo tag:  
-                <input type="text" name="newtag" placeholder="Ingresar Tag">
-                </p><br>
-                <input type="submit" name="add" value="Agregar">
-                <br><br><br>    
-                <p>Nombre del tag a borrar:  
-                <input type="text" name="deltag" placeholder="Ingresar Tag">
-                </p><br>
-                <input type="submit" name="delete" value="Borrar">
-            </form>
+  <div class="page-header row justify-content-center align-items-center h-100">
+    <h1 id="navbars">MANEJO DE TAGS</h1>
+  </div>
+  <br>
+  <form method="POST" action="/maketag">
+    <% if @error %>
+      <div class="alert alert-dismissible alert-danger justify-content-center" style="text-align: center;">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <%= @error %>
+        </div>
+    <% end %>
+    <% if @succes %>
+      <div class="alert alert-dismissible alert-success justify-content-center" style="text-align: center;">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <%= @succes %>
+        </div>
+    <% end %>
+    <div class="form-group row align-items-center justify-content-center" style="text-align: center;">
+      <div class="form-group">
+        <legend>
+          Nombre del nuevo tag:
+        </legend>
+        <input type="text" name="newtag" class="form-control form-control" placeholder="Ingresar Tag">
+        <br>
+        <button type="submit" class="btn btn-primary btn" name="add">Agregar</button>  
+      </div>
+      <br><br>
+    </div>
+    <div class="form-group row align-items-center justify-content-center" style="text-align: center;">
+      <div class="form-group">
+        <legend>
+          Nombre del tag a borrar:
+        </legend>
+        <input type="text" name="deltag" class="form-control form-control" placeholder="Ingresar Tag">
+        <br>
+        <button type="submit" class="btn btn-primary btn" name="delete">Borrar</button>  
       </div>
     </div>
-</div>
-
+  </form>
 </body>
 </html>

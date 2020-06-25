@@ -1,21 +1,33 @@
 <!DOCTYPE html>
 <html>
+  <div class="page-header row justify-content-center align-items-center h-100">
+    <h1 id="navbars">CREAR ADMINISTRADORES</h1>
+  </div>
 
-    <div class="main_content">
-        <div class="header">Crear Administradores</div>  
-        <div class="info">
-	        <form method="POST" action="/makeadmin">
-	        	<% if @error %>
-					   <p class="error"><%= @error %></p>
-				<% end %>
-				<p>Nombre de usuario de la persona a ser administradora:  
-				<input type="text" name="useradmin" placeholder="Ingresar nombre de usuario">
-				</p>
-				<input type="submit" name="promote" value="Promocionar">
-			</form>
+  <form method="POST" action="/makeadmin">
+  	<% if @error %>
+      <div class="alert alert-dismissible alert-danger justify-content-center" style="text-align: center;">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <%= @error %>
+        </div>
+    <% end %>
+    <% if @succes %>
+      <div class="alert alert-dismissible alert-success justify-content-center" style="text-align: center;">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <%= @succes %>
+        </div>
+    <% end %>
+    <div class="form-group row align-items-center justify-content-center" style="text-align: center;">
+      <div class="form-group">
+        <legend>
+          Nombre de usuario de la persona a ser administradora:  
+        </legend>
+    		<input type="text" name="useradmin" class="form-control form-control" placeholder="Ingresar nombre de usuario">
+        <br>
+        <button type="submit" class="btn btn-primary btn" name="add">Promocionar</button>  
       </div>
     </div>
-</div>
+	</form>
 
 </body>
 </html>

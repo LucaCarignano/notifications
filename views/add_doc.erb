@@ -1,34 +1,59 @@
 <!DOCTYPE html>
 <html>
+  <div style="text-align: center;">
+    <div class="page-header">
+      <h1 id="navbars" >AGREGAR DOCUMENTO</h1>
+    </div>
+    <br> 
     <form method="POST" action="/adddoc" enctype="multipart/form-data" >
-      <fieldset>
-        <legend>Add Document</legend>
-          <div class="form-group row">
-
-        <p>Title: <input type="text" name="title"></p>
-        <p>Users to label: <input autocomplete="off" id="myInput" type="text" name="labelled" placeholder="Usuario/s">  
-              <script src = "autocomplete.js" ></script>
-              <script>
-                var myJSArray = <%=@users.to_json%>;
-                autocomplete(document.getElementById("myInput"), myJSArray);
-              </script></p>
-        <p>TAGS: 
+      <div class="form-group row align-items-center justify-content-center">
+        <label class="col-sm-auto col-form-label">Titulo:</label>
+         <div class="col-sm-auto">
+          <input type="text" name="title" class="form-control form-control-sm">
+        </div>
+        <br>
+      </div>
+      <div class="form-group row align-items-center justify-content-center">
+        <label class="col-sm-auto col-form-label">Usuarios a etiquetar:</label>
+         <div class="col-sm-auto">
+          <input autocomplete="off" id="myInput" type="text" name="labelled" placeholder="Usuario/s" class="form-control form-control-sm">
+          <script src = "autocomplete.js" ></script>
+          <script>
+            var myJSArray = <%=@users.to_json%>;
+            autocomplete(document.getElementById("myInput"), myJSArray);
+          </script>  
+        </div>
+        <br>
+      </div>
+      <div class="form-group row align-items-center justify-content-center">
+        <legend>TAGS:</legend>
+        <br>
+        <div class="form-check">
           <% @categories.each do |category| %>
-              <ul>
-                  <li>
-                      <label> <%=category.name%>
-                          <input id="<%=category.name%>" type="checkbox" name="<%=category.name%>" value="<%=category.name%>" >
-                      </label>
-                  </li>
-              </ul>
-          <%end%>
-        </p>
-        <p>Document: <input type="file" name="document" accept="application/pdf"></p>
-        <% if @error %>
-            <p class="error"><%= @error %></p>
-        <% end %>
-        <br><br>
-        <input type="submit" name="" value="Submit">
+            <label class="form-check-label" style="padding-left: 23%;">
+              <input class="form-check-input" type="checkbox" name="<%=category.name%>" value="<%=category.name%>">
+              <%=category.name%>
+            </label>
+            <br>
+          <%end%> 
+        </div>
+        <br>
+      </div>
+      <div class="form-group row align-items-center justify-content-center">
+        <label class="col-sm-auto col-form-label">Documento:</label>
+         <div class="col-sm-auto">
+          <input type="file" name="document" accept="application/pdf" class="form-control form-control-sm">
+        </div>
+        <br>
+      </div>
+      <% if @error %>
+        <div class="alert alert-dismissible alert-danger justify-content-center">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <%= @error %>
+        </div>
+      <% end %>
+      <br>
+      <button type="submit" class="btn btn-primary">Cargar</button> 
     </form>
   </body>
 </html>

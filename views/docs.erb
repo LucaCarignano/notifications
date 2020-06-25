@@ -6,30 +6,30 @@
     <div class="jumbotron">
       <h3 class="display-2" style="font-size: 40px;">Filtros</h3>
       <p class="lead">
+        Busqueda por titulo:
+          <input autocomplete="off" id="entrada" type="text" name="docname" placeholder="Titulo">  
+          <script src = "autocomplete.js" ></script>
+          <script>
+            var myJSArray = <%=@docsname.to_json%>;
+            autocomplete(document.getElementById("entrada"), myJSArray);
+          </script>
         Seleccione una categoria a filtrar:
-        <select id="categories" name="tags" value="">
+          <select id="categories" name="tags" value="">
           <option>Seleccione Tag</option>      
-             <% @categories.each do |category| %>
-                <option value=<%=category.name%>><%=category.name%></option>
-             <%end%>
+            <% @categories.each do |category| %>
+              <option value=<%=category.name%>><%=category.name%></option>
+            <%end%>
         </select>
-        Seleccione una categoria a filtrar:
-           <input autocomplete="off" id="entrada" type="text" name="docname" placeholder="Titulo">  
-              <script src = "autocomplete.js" ></script>
-              <script>
-                var myJSArray = <%=@docsname.to_json%>;
-                autocomplete(document.getElementById("entrada"), myJSArray);
-              </script></p>
         Seleccione usuario a filtrar:
           <select id="users" name="users">
-             <option>Seleccione Usuario</option>            
-             <% @users.each do |user| %>
-                <option value=<%=user.username%>><%=user.username%></option>
-             <%end%>
-           </select>
+            <option>Seleccione Usuario</option>            
+            <% @users.each do |user| %>
+              <option value=<%=user.username%>><%=user.username%></option>
+            <%end%>
+          </select>
         Seleccione fecha: 
-           <input type="date" name="datedoc">
-           <button type="submit" class="btn btn-primary" name="filter">Filtrar</button>
+          <input type="date" name="datedoc">
+          <button type="submit" class="btn btn-primary" name="filter">Filtrar</button>
       </p>
 
     </div>

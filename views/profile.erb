@@ -71,11 +71,6 @@
             <button type="submit" class="btn btn-primary btn-sm" name="editpass">Aceptar</button>
       <%end%>
       <br>
-      <%if !@admin%>
-          <label class="col-sm-auto col-form-label">
-            <a href="/applyadmin" data text="make admin">Pedir promocion para ser administrador</a>
-          </label>
-      <%end%>
       <%if @admin%>
           <label class="col-sm-auto col-form-label">
             <a href="/makeadmin" data text="make admin">Crear un administrador</a>

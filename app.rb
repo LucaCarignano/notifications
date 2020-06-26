@@ -87,13 +87,10 @@ class App < Sinatra::Base
       @src = params[:path]
       erb :view_doc, :layout=> false
     end
-
     
-
     get "/docs" do
       set_pages
       cant_pages(Document.where(delete: 'f').count)
-      autocompleteDocs
       @documents = Document.order(:date).reverse.where(delete: 'f').limit(@docsperpage,(@page-1)*@docsperpage)
       @categories = Tag.all
       @users = User.all
@@ -123,6 +120,10 @@ class App < Sinatra::Base
 
     get "/makeadmin" do
       get_noti
+      @users = Array.new()
+      User.where(admin: 'f').each do |u|
+        @users.push(u.username)
+      end
       erb :makeAdmin, :layout => :layout_main
     end 
 
@@ -189,11 +190,11 @@ class App < Sinatra::Base
             end
           end
         end
-      elsif params[:unsuscribe] 
+      elsif params[:unsuscribe] && params[:unsuscribe] != ""
         user1 = User.find(id: session[:user_id])
         user1.remove_tag(Tag.find(name: params[:tag]))
         if user1.save
-          @error = "Suscripto correctamente"
+          @error = "Desuscripto correctamente"
         else 
           @error = "Error"
         end
@@ -259,7 +260,7 @@ class App < Sinatra::Base
 
     post "/docs" do
       set_pages
-      if params[:datedoc] == "" && params[:tags] == "" && params[:users] == "" && params[:filter]
+      if not_filter?
           redirect "/docs"
       end      
       @documents = Document.where(delete: 'f').all
@@ -281,8 +282,9 @@ class App < Sinatra::Base
         aux3 = Document.where(date: params[:datedoc]).all
         @documents = @documents & aux3
       end
-      if params[:docname] && params[:docname] != ""
-        aux4 = Document.where(title: params[:docname]).all       
+      if params[:docname] != ""
+        params[:docname] = "%" + params[:docname] + "%"
+        aux4 = Document.where(Sequel.like(:title, params[:docname])).all
         @documents = @documents & aux4
       end
       cant_pages(@documents.length)
@@ -299,7 +301,9 @@ class App < Sinatra::Base
           end
         end
 
-        @documents = Document.order(:date).reverse.where(delete: 'f').all
+        set_pages
+        cant_pages(Document.where(delete: 'f').count)
+        @documents = Document.order(:date).reverse.where(delete: 'f').limit(@docsperpage,(@page-1)*@docsperpage)
 
       end
       @categories = Tag.all
@@ -424,7 +428,7 @@ class App < Sinatra::Base
 
     post '/adddoc' do
 
-    	autocompleteDocs
+      autocompleteDocs
       if all_field_adddoc?
         @error = "Complete todos los campos!!"
         @categories = Tag.all
@@ -534,7 +538,7 @@ class App < Sinatra::Base
       end
     end
 
-    def autocompleteDocs
+    def autocompletea
       @docsname = []
       Document.where(delete: 'f').each do |doc|
         @docsname.push(doc.title)
@@ -551,6 +555,10 @@ class App < Sinatra::Base
       tags = Array.new()
       docsTags.each { |tag| tags <<tag.name }
       return tags * ", " 
+    end
+
+    def not_filter?
+      params[:datedoc] == "" && params[:tags] == "" && params[:users] == "" && params[:filter] && params[:docname]
     end
 
     def user_logged?

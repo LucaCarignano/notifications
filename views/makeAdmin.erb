@@ -22,8 +22,13 @@
         <legend>
           Nombre de usuario de la persona a ser administradora:  
         </legend>
-    		<input type="text" name="useradmin" class="form-control form-control" placeholder="Ingresar nombre de usuario">
-        <br>
+        <input autocomplete="off" id="myInput" type="text" name="useradmin" class="form-control form-control" placeholder="Ingresar nombre de usuario">
+        <script src = "autocomplete.js" ></script>
+        <script>
+          var myJSArray = <%=@users.to_json%>;
+          autocomplete(document.getElementById("myInput"), myJSArray);
+        </script>
+        <br>   
         <button type="submit" class="btn btn-primary btn" name="add">Promocionar</button>  
       </div>
     </div>

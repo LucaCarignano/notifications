@@ -94,7 +94,7 @@ class App < Sinatra::Base
       set_pages
       cant_pages(Document.where(delete: 'f').count)
       autocompleteDocs
-      @documents = Document.order(:date).reverse.where(delete: 'f').limit(2,(@page-1)*@docsperpage)
+      @documents = Document.order(:date).reverse.where(delete: 'f').limit(@docsperpage,(@page-1)*@docsperpage)
       @categories = Tag.all
       @users = User.all
       get_noti
@@ -189,7 +189,7 @@ class App < Sinatra::Base
             end
           end
         end
-      elsif params[:unsuscribe]
+      elsif params[:unsuscribe] 
         user1 = User.find(id: session[:user_id])
         user1.remove_tag(Tag.find(name: params[:tag]))
         if user1.save
@@ -259,7 +259,6 @@ class App < Sinatra::Base
 
     post "/docs" do
       set_pages
-      autocompleteDocs
       if params[:datedoc] == "" && params[:tags] == "" && params[:users] == "" && params[:filter]
           redirect "/docs"
       end      
@@ -425,6 +424,7 @@ class App < Sinatra::Base
 
     post '/adddoc' do
 
+    	autocompleteDocs
       if all_field_adddoc?
         @error = "Complete todos los campos!!"
         @categories = Tag.all
@@ -570,7 +570,7 @@ class App < Sinatra::Base
     end
 
     def all_field_adddoc?
-      (params[:title] == "" || params[:labelled] == "" || params[:document] == nil)
+      (params[:title] == "" || params[:document] == nil)
     end
 
     def get_noti

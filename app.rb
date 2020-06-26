@@ -28,9 +28,8 @@ class App < Sinatra::Base
         @currentUser = User.find(id: session[:user_id])
         @admin = @currentUser.admin
         @path = request.path_info
-        #@noti = (Document.where(delete: 'f', id:( Labelled.select(:document_id).where(readed: 'f', user_id: @currentUser.id)))).count
         if path_only_admin?
-            redirect '/docs'
+          redirect '/docs'
         end
       end
     end
@@ -248,7 +247,7 @@ class App < Sinatra::Base
             @error = "Nombre de usuario no disponible "
           else    
             user.update(username: params[:newuser])
-            @error = "Nombre cambiado correctamente"
+            @succes = "Nombre cambiado correctamente"
           end
         end
       elsif @editmail != "" && params[:editemail]
@@ -260,7 +259,7 @@ class App < Sinatra::Base
             @error = "Email ya registrado"    
           else    
             user.update(email: params[:newemail])
-            @error = "Email cambiado correctamente"
+            @succes = "Email cambiado correctamente"
           end
         end
       elsif @editpas != "" && params[:editpass]
@@ -273,7 +272,7 @@ class App < Sinatra::Base
             @error = "contraseñas distintas"
           else 
             user.update(password: params[:newpass])
-            @error = "Contraseña cambiada correctamente"
+            @succes = "Contraseña cambiada correctamente"
           end
         end
       end        
@@ -521,6 +520,7 @@ class App < Sinatra::Base
           }
           @categories = Tag.all
           get_noti
+          @succes = "Documento cargado correctamente"
           erb :add_doc, :layout => :layout_main
             
         else 
@@ -560,11 +560,11 @@ class App < Sinatra::Base
     end
 
     def restricted_path?
-      request.path_info != '/log' && request.path_info != '/login' && request.path_info != '/rp' && request.path_info != '/docs' && request.path_info != '/prueba'
+      request.path_info != '/log' && request.path_info != '/login' && request.path_info != '/rp' && request.path_info != '/docs' && request.path_info != '/view'
     end
 
     def path_only_admin?
-      !@currentUser.admin && ((request.path_info == '/makeadmin') || (request.path_info == '/adddoc') || (request.path_info == '/maketag'))
+      !@currentUser.admin && ((request.path_info == '/adddoc') || (request.path_info == '/maketag'))
     end
     def all_field_register?
       (params[:username] == "" || params[:name] == "" || params[:email] == "" || params[:password] == "" || params[:surname] == "")

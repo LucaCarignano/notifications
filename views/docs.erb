@@ -16,7 +16,7 @@
         Seleccione una categoria a filtrar:
           <select id="categories" name="tags" value="">
           <option>Seleccione Tag</option>      
-            <% @categories.each do |category| %>
+             <% @categories.each do |category| %>
               <option value=<%=category.name%>><%=category.name%></option>
             <%end%>
         </select>

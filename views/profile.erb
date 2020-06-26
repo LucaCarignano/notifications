@@ -7,13 +7,19 @@
   <br>
   <form method="POST" action="/profile">
     <div style="text-align: center;" > 
-      <div class="form-group row align-items-center justify-content-center">
-        <% if @error %> 
-          <div class="alert alert-dismissible alert-danger justify-content-center">
+      <% if @error %>
+        <div class="alert alert-dismissible alert-danger justify-content-center" style="text-align: center;">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             <%= @error %>
           </div>
-        <% end %>
+      <% end %>
+      <% if @succes %>
+        <div class="alert alert-dismissible alert-success justify-content-center" style="text-align: center;">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <%= @succes %>
+          </div>
+      <% end %>
+      <div class="form-group row align-items-center justify-content-center">
         <div class="form-group">
           <label>
             Nombre de usuario: <%= @Username %>
@@ -25,7 +31,7 @@
             <div class="col-sm-auto">
             <input type="text" name="newuser" class="form-control form-control-sm" placeholder="Ingresar Nombre de Usuario">
             <br>
-            <button type="submit" class="btn btn-primary btn-sm" name="botuser">Aceptar</button>
+            <button type="submit" class="btn btn-primary btn-sm" name="editus">Aceptar</button>
           </div>
         <%end%>
         <div class="form-group">
@@ -34,12 +40,6 @@
             <button type="submit" class="btn btn-primary btn-sm" name="botemail">Editar Email</button>   
           </label>
         <%if @editmail%>
-          <% if @error %> 
-            <div class="alert alert-dismissible alert-danger justify-content-center">
-              <button type="button" class="close" data-dismiss="alert">&times;</button>
-              <%= @error %>
-            </div>
-          <% end %>
           <br>
           <label class="col-sm-auto col-form-label">Nuevo Email:</label>
           <div class="col-sm-auto">
@@ -52,12 +52,6 @@
         <br>
         <button type="submit" class="btn btn-outline-secondary" name="botpass">Editar Contraseña</button> 
         <%if @editpas%>
-          <% if @error %> 
-            <div class="alert alert-dismissible alert-danger justify-content-center">
-              <button type="button" class="close" data-dismiss="alert">&times;</button>
-              <%= @error %>
-            </div>
-          <% end %>
           <br>
           <label class="col-sm-auto col-form-label">Contraseña actual:</label>
           <div class="col-sm-auto">

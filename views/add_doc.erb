@@ -6,6 +6,18 @@
     </div>
     <br> 
     <form method="POST" action="/adddoc" enctype="multipart/form-data" >
+      <% if @error %>
+        <div class="alert alert-dismissible alert-danger justify-content-center" style="text-align: center;">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <%= @error %>
+          </div>
+      <% end %>
+      <% if @succes %>
+        <div class="alert alert-dismissible alert-success justify-content-center" style="text-align: center;">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <%= @succes %>
+          </div>
+      <% end %>
       <div class="form-group row align-items-center justify-content-center">
         <label class="col-sm-auto col-form-label">Titulo:</label>
          <div class="col-sm-auto">
@@ -17,6 +29,7 @@
         <label class="col-sm-auto col-form-label">Usuarios a etiquetar:</label>
          <div class="col-sm-auto">
           <input autocomplete="off" id="myInput" type="text" name="labelled" placeholder="Usuario/s" class="form-control form-control-sm">
+          <small id="emailHelp" class="form-text text-muted">Ingresar sin espacios y entre "@"</small>
           <script src = "autocomplete.js" ></script>
           <script>
             var myJSArray = <%=@users.to_json%>;
@@ -30,7 +43,7 @@
         <br>
         <div class="form-check">
           <% @categories.each do |category| %>
-            <label class="form-check-label" style="padding-left: 23%;">
+            <label class="form-check-label float-left">
               <input class="form-check-input" type="checkbox" name="<%=category.name%>" value="<%=category.name%>">
               <%=category.name%>
             </label>
@@ -46,12 +59,6 @@
         </div>
         <br>
       </div>
-      <% if @error %>
-        <div class="alert alert-dismissible alert-danger justify-content-center">
-          <button type="button" class="close" data-dismiss="alert">&times;</button>
-          <%= @error %>
-        </div>
-      <% end %>
       <br>
       <button type="submit" class="btn btn-primary">Cargar</button> 
     </form>

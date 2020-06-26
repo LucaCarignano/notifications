@@ -1,9 +1,9 @@
 # Software Requirements Specification
-## For <Análisis y Diseño de Algoritmos>
+## Análisis y Diseño de Algoritmos
 
 
-Prepared by <Luca Carignano  
-            Federico Gutierrez>
+Prepared by Luca Carignano  
+            Federico Gutierrez
   
 
 Table of Contents

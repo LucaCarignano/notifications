@@ -54,7 +54,7 @@
               <% else %>
                 <div class="form-group">
                   <select class="custom-select mr-sm-2" id="categories" name="tag">
-              			<option selected disabled value="">Select Tag</option>      
+              			<option selected disabled>Select Tag</option>      
                  		<% @categories.each do |category| %>
                    			<option value=<%=category.name%>><%=category.name%></option>
                  		<%end%>

@@ -190,7 +190,7 @@ class App < Sinatra::Base
             end
           end
         end
-      elsif params[:unsuscribe] && params[:unsuscribe] != ""
+      elsif params[:unsuscribe] && params[:tag]
         user1 = User.find(id: session[:user_id])
         user1.remove_tag(Tag.find(name: params[:tag]))
         if user1.save

@@ -1,10 +1,10 @@
 # Software Requirements Specification
-## For <project name>
+## For <Análisis y Diseño de Algoritmos>
 
-Version 0.1  
-Prepared by <author>  
-<organization>  
-<date created>  
+
+Prepared by <Luca Carignano  
+            Federico Gutierrez>
+  
 
 Table of Contents
 =================
@@ -177,7 +177,7 @@ This section specifies the requirements of functional effects that the software 
 
 UML Diagram |
 :-------------------------: |
-![Imgur](https://i.imgur.com/AY14C6M.png)  | 
+![Imgur](https://i.imgur.com/7kMHINc.png)  | 
 
 #### 3.2.2 User Class - The User
 

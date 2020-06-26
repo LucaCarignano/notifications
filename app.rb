@@ -88,34 +88,13 @@ class App < Sinatra::Base
       erb :view_doc, :layout=> false
     end
 
-    def cant_pages(cantdocs)
-      @docsperpage = 10
-      if cantdocs % @docsperpage == 0
-        @pagelimit = cantdocs / @docsperpage 
-      else
-        @pagelimit = cantdocs / @docsperpage + 1
-      end
-    end
-
-    def set_pages
-      if params[:page]
-        @page = params[:page].to_i
-      else @page = 1
-      end
-    end
-
-    def autocompleteDocs
-      @docsname = []
-      Document.each do |doc|
-        @docsname.push(doc.title)
-      end
-    end
+    
 
     get "/docs" do
       set_pages
       cant_pages(Document.where(delete: 'f').count)
       autocompleteDocs
-      @documents = Document.order(:date).reverse.where(delete: 'f').limit(@docsperpage, @page*@docsperpage-(@docsperpage-1))
+      @documents = Document.order(:date).reverse.where(delete: 'f').limit(2,(@page-1)*@docsperpage)
       @categories = Tag.all
       @users = User.all
       get_noti
@@ -128,10 +107,6 @@ class App < Sinatra::Base
       @documents = Document.order(:date).reverse.where(delete: 'f', id:( Labelled.select(:document_id).where(readed: 't', user_id: user.id))).all
       get_noti
       erb :undocs, :layout => :layout_main
-    end
-
-    get "/rp" do
-      erb :rp, :layout => :layout_sig
     end
 
     get "/profile" do
@@ -165,7 +140,7 @@ class App < Sinatra::Base
       @categories = Tag.select(:id).where(id: Subscription.select(:tag_id).where(user_id: session[:user_id]))
       @categories = Tag.where(id: @categories).all
       if @categories == []
-          @errorcat = "No esta suscripto a ninguna categoria" 
+        @errorcat = "No esta suscripto a ninguna categoria" 
       end
 
       @tags = Tag.select(:id).except(Subscription.select(:tag_id).where(user_id: session[:user_id]))
@@ -288,7 +263,7 @@ class App < Sinatra::Base
       if params[:datedoc] == "" && params[:tags] == "" && params[:users] == "" && params[:filter]
           redirect "/docs"
       end      
-      @documents = Document.all
+      @documents = Document.where(delete: 'f').all
       if params[:users] != ""
         user = User.find(username: params[:users])
         if user
@@ -543,6 +518,29 @@ class App < Sinatra::Base
       end
     end
 
+    def cant_pages(cantdocs)
+      @docsperpage = 10
+      if cantdocs % @docsperpage == 0
+        @pagelimit = cantdocs / @docsperpage 
+      else
+        @pagelimit = cantdocs / @docsperpage + 1
+      end
+    end
+
+    def set_pages
+      if params[:page]
+        @page = params[:page].to_i
+      else @page = 1
+      end
+    end
+
+    def autocompleteDocs
+      @docsname = []
+      Document.where(delete: 'f').each do |doc|
+        @docsname.push(doc.title)
+      end
+    end
+
     def doc_users( docsUsers)
       users = Array.new()
       docsUsers.each { |user| users <<user.username }
@@ -564,11 +562,13 @@ class App < Sinatra::Base
     end
 
     def path_only_admin?
-      !@currentUser.admin && ((request.path_info == '/adddoc') || (request.path_info == '/maketag'))
+      !@currentUser.admin && ((request.path_info == '/makeadmin') || (request.path_info == '/adddoc') || (request.path_info == '/maketag'))
     end
+
     def all_field_register?
       (params[:username] == "" || params[:name] == "" || params[:email] == "" || params[:password] == "" || params[:surname] == "")
     end
+
     def all_field_adddoc?
       (params[:title] == "" || params[:labelled] == "" || params[:document] == nil)
     end
@@ -577,9 +577,5 @@ class App < Sinatra::Base
       if @currentUser
         @noti = (Document.where(delete: 'f', id:( Labelled.select(:document_id).where(readed: 'f', user_id: @currentUser.id)))).count
       end
-    end
-
-    get "/prueba" do
-      erb :index, :layout => false
     end
 end

@@ -336,6 +336,14 @@ class App < Sinatra::Base
         tag = Tag.find(name: params[:deltag])
 
         if tag
+          users_tags = Subscription.where(tag_id: tag.id)
+          users_tags.each do |user_tag|
+            user_tag.delete
+          end
+          docs_tags = Category.where(tag_id: tag.id)
+          docs_tags.each do |doc_tag|
+            doc_tag.delete
+          end
           if tag.delete
             @succes ="Borrado correctamente"
             get_noti
@@ -428,7 +436,6 @@ class App < Sinatra::Base
 
     post '/adddoc' do
 
-      autocompleteDocs
       if all_field_adddoc?
         @error = "Complete todos los campos!!"
         @categories = Tag.all

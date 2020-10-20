@@ -1,20 +1,10 @@
 # frozen_string_literal: true
-<<<<<<< HEAD
-
-require File.expand_path '../test_helper.rb', __dir__
-
-class UserTest < MiniTest::Unit::TestCase
-  MiniTest::Unit::TestCase
-  def test_values_existence
-=======
 
 require File.expand_path '../test_helper.rb', __dir__
 
 # Test for user class
 class UserTest < MiniTest::Unit::TestCase
-  # MiniTest::Unit::TestCase
   def values_existence
->>>>>>> correccion_manual_de_errores
     # Arrange
     @user1 = User.new
 
@@ -26,44 +16,7 @@ class UserTest < MiniTest::Unit::TestCase
     @user1.password = '123456789'
 
     # Assert
-    all_ok = assert_equal @user1.valid?, true
-
-    # Act
-    @user1.name = nil
-
-    # Assert
-    name_check = assert_equal @user1.valid?, false
-
-    # Act
-    @user1.name = 'fede'
-    @user1.email = nil
-
-    # Assert
-    email_check = assert_equal @user1.valid?, false
-
-    # Act
-    @user1.email = 'fede@gmail.com'
-    @user1.surname = nil
-
-    # Assert
-    surname_check = assert_equal @user1.valid?, false
-
-    # Act
-    @user1.surname = 'fede'
-    @user1.username = nil
-
-    # Assert
-    user_check = assert_equal @user1.valid?, false
-
-    # Act
-    @user1.password = nil
-    @user1.username = 'fede'
-
-    # Assert
-    pass_check = assert_equal @user1.valid?, false
-
-    # Assert
-    assert_equal (all_ok || email_check || name_check || user_check || pass_check || surname_check), true
+    assert_equal @user1.valid?, true
   end
 
   def test_email_accurrancy
@@ -114,12 +67,7 @@ class UserTest < MiniTest::Unit::TestCase
     assert_equal (all_ok || pass_check), true
   end
 
-  # no puedo chequear que sean unicos
-<<<<<<< HEAD
-  def test_values_unique
-=======
-  def test_unique_true
->>>>>>> correccion_manual_de_errores
+  def test_unique_t
     # Arrange
     @user3 = User.new
     @user4 = User.new
@@ -131,59 +79,29 @@ class UserTest < MiniTest::Unit::TestCase
     @user3.email = 'fede3@gmail.com'
     @user3.password = '123456789'
 
-    @user4.name = 'fede'
-    @user4.surname = 'guti'
+    @user4 = @user3
     @user4.username = 'luca'
     @user4.email = 'luca@gmail.com'
-    @user4.password = '123456789'
 
     # Assert
-    @user3.save
-    @user4.save
-<<<<<<< HEAD
-    all_ok = assert_equal @user3.valid? && @user4.valid?, true
-
-    # Act
-    @user4.email = 'fede3@gmail.com'
-    @user4.save
-=======
-    assert_equal @user3.valid? && @user4.valid?, true
+    assert_equal (@user3.valid? && @user4.valid?), true
   end
->>>>>>> correccion_manual_de_errores
 
-  def test_unique_false
+  def test_unique_f
     # Arrange
     @user5 = User.new
     @user6 = User.new
 
     # Act
-<<<<<<< HEAD
-    @user4.email = 'luca@gmail.com'
-    @user4.username = 'fede3'
-    @user4.save
-
-    # Assert
-    user_check = assert_equal @user4.valid?, false
-
-    # Assert
-    assert_equal (all_ok || email_check || user_check), true
-=======
     @user5.name = 'fede'
     @user5.surname = 'guti'
     @user5.username = 'fede3'
     @user5.email = 'fede3@gmail.com'
     @user5.password = '123456789'
 
-    @user6.name = 'fede'
-    @user6.surname = 'guti'
-    @user6.username = 'luca'
-    @user6.email = 'luca@gmail.com'
-    @user6.password = '123456789'
+    @user6 = @user5
 
     # Assert
-    @user5.save
-    @user6.save
-    assert_equal @user5.valid? && @user6.valid?, false
->>>>>>> correccion_manual_de_errores
+    assert_equal (@user5.valid? && @user6.valid?), false
   end
 end

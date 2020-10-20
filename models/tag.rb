@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-<<<<<<< HEAD
-=======
 # Tag class
->>>>>>> correccion_manual_de_errores
 class Tag < Sequel::Model
   plugin :validation_helpers
   def validate

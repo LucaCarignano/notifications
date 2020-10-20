@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-<<<<<<< HEAD
-=======
 # Document class
->>>>>>> correccion_manual_de_errores
 class Document < Sequel::Model
   plugin :validation_helpers
   def validate

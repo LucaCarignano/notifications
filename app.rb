@@ -379,7 +379,11 @@ class App < Sinatra::Base
       request.body.rewind
       hash = Rack::Utils.parse_nested_query(request.body.read)
       params = JSON.parse hash.to_json
-      user = User.new(name: params['name'], surname: params['surname'], email: params['email'], username: params['username'], password: params['password'])
+      user = User.new(name: params['name'],
+                      surname: params['surname'],
+                      email: params['email'],
+                      username: params['username'],
+                      password: params['password'])
       if user.save
         session[:user_id] = user.id
         redirect '/docs'

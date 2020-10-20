@@ -43,16 +43,16 @@
 				    	<p> Su Email:
 				    		<input type="text" name="email" placeholder="name@example.com">
 				    	</p>
-						 <% if @errorMail %>
-						   <p class="error"><%= @errorMail %></p>
+						 <% if @error_mail %>
+						   <p class="error"><%= @error_mail %></p>
 						 <% end %>
 				    </td>
 				    <td class = "right">		
 						<p>	Nombre de Usuario:
 				    		<input type="text" name="username">
 				    	</p>
-						 <% if @errorUser %>
-						   <p class="error"><%= @errorUser %></p>
+						 <% if @error_user %>
+						   <p class="error"><%= @error_user %></p>
 						 <% end %>				    	
 				    </td>
 				  </tr>
@@ -63,16 +63,16 @@
 				    	</p>
 
 				    </td>
-						 <% if @errorPassLength %>
-						   <p class="error"><%= @errorPassLength %></p>
+						 <% if @error_pass_length %>
+						   <p class="error"><%= @error_pass_length %></p>
 						 <% end %>				    
 				    <td class = "right">		
 				    		<p> Repetir Contraseña:
 				    		<input type="password" name="password2">
 				    		</p>
 				    </td>
-						 <% if @errorPassDif %>
-						   <p class="error"><%= @errorPassDif %></p>
+						 <% if @error_pass_dif %>
+						   <p class="error"><%= @error_pass_dif %></p>
 						 <% end %>
 				  </tr>
 				</table>

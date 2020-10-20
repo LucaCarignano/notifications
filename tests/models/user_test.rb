@@ -1,10 +1,20 @@
 # frozen_string_literal: true
+<<<<<<< HEAD
 
 require File.expand_path '../test_helper.rb', __dir__
 
 class UserTest < MiniTest::Unit::TestCase
   MiniTest::Unit::TestCase
   def test_values_existence
+=======
+
+require File.expand_path '../test_helper.rb', __dir__
+
+# Test for user class
+class UserTest < MiniTest::Unit::TestCase
+  # MiniTest::Unit::TestCase
+  def values_existence
+>>>>>>> correccion_manual_de_errores
     # Arrange
     @user1 = User.new
 
@@ -105,7 +115,11 @@ class UserTest < MiniTest::Unit::TestCase
   end
 
   # no puedo chequear que sean unicos
+<<<<<<< HEAD
   def test_values_unique
+=======
+  def test_unique_true
+>>>>>>> correccion_manual_de_errores
     # Arrange
     @user3 = User.new
     @user4 = User.new
@@ -126,16 +140,24 @@ class UserTest < MiniTest::Unit::TestCase
     # Assert
     @user3.save
     @user4.save
+<<<<<<< HEAD
     all_ok = assert_equal @user3.valid? && @user4.valid?, true
 
     # Act
     @user4.email = 'fede3@gmail.com'
     @user4.save
+=======
+    assert_equal @user3.valid? && @user4.valid?, true
+  end
+>>>>>>> correccion_manual_de_errores
 
-    # Assert
-    email_check = assert_equal @user4.valid?, false
+  def test_unique_false
+    # Arrange
+    @user5 = User.new
+    @user6 = User.new
 
     # Act
+<<<<<<< HEAD
     @user4.email = 'luca@gmail.com'
     @user4.username = 'fede3'
     @user4.save
@@ -145,5 +167,23 @@ class UserTest < MiniTest::Unit::TestCase
 
     # Assert
     assert_equal (all_ok || email_check || user_check), true
+=======
+    @user5.name = 'fede'
+    @user5.surname = 'guti'
+    @user5.username = 'fede3'
+    @user5.email = 'fede3@gmail.com'
+    @user5.password = '123456789'
+
+    @user6.name = 'fede'
+    @user6.surname = 'guti'
+    @user6.username = 'luca'
+    @user6.email = 'luca@gmail.com'
+    @user6.password = '123456789'
+
+    # Assert
+    @user5.save
+    @user6.save
+    assert_equal @user5.valid? && @user6.valid?, false
+>>>>>>> correccion_manual_de_errores
   end
 end

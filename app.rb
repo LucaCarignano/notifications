@@ -7,9 +7,11 @@ require 'date'
 require 'tempfile'
 require 'sinatra'
 require 'sinatra-websocket'
-include FileUtils::Verbose
 
+# This is the main class of the system
 class App < Sinatra::Base
+  include FileUtils::Verbose
+
   configure :development, :production do
     enable :logging
     enable :sessions
@@ -22,8 +24,8 @@ class App < Sinatra::Base
   before do
     redirect '/log' if !user_logged? && restricted_path?
     if user_logged?
-      @currentUser = User.find(id: session[:user_id])
-      @admin = @currentUser.admin
+      @current_user = User.find(id: session[:user_id])
+      @admin = @current_user.admin
       @path = request.path_info
       redirect '/docs' if path_only_admin?
     end
@@ -68,7 +70,7 @@ class App < Sinatra::Base
     User.each do |user|
       @users.push(user.username)
     end
-    get_noti
+    view_noti
     erb :add_doc, layout: :layout_main
   end
 
@@ -88,23 +90,25 @@ class App < Sinatra::Base
     @documents = Document.order(:date).reverse.where(delete: 'f').limit(@docsperpage, (@page - 1) * @docsperpage)
     @categories = Tag.all
     @users = User.all
-    get_noti
+    view_noti
     erb :docs, layout: :layout_main
   end
 
   get '/unreaddocs' do
     user = User.find(id: session[:user_id])
-    @undocuments = Document.order(:date).reverse.where(delete: 'f', id: Labelled.select(:document_id).where(readed: 'f', user_id: user.id)).all
-    @documents = Document.order(:date).reverse.where(delete: 'f', id: Labelled.select(:document_id).where(readed: 't', user_id: user.id)).all
-    get_noti
+    id = Labelled.select(:document_id).where(readed: 'f', user_id: user.id)
+    @undocuments = Document.order(:date).reverse.where(delete: 'f', id: id).all
+    id2 = Labelled.select(:document_id).where(readed: 't', user_id: user.id)
+    @documents = Document.order(:date).reverse.where(delete: 'f', id: id2).all
+    view_noti
     erb :undocs, layout: :layout_main
   end
 
   get '/profile' do
     user = User.find(id: session[:user_id])
-    @Username = user.username
-    @Email = user.email
-    get_noti
+    @username = user.username
+    @email = user.email
+    view_noti
     erb :profile, layout: :layout_main
   end
 
@@ -113,7 +117,7 @@ class App < Sinatra::Base
   end
 
   get '/makeadmin' do
-    get_noti
+    view_noti
     @users = []
     User.where(admin: 'f').each do |u|
       @users.push(u.username)
@@ -122,12 +126,12 @@ class App < Sinatra::Base
   end
 
   get '/maketag' do
-    get_noti
+    view_noti
     erb :maketags, layout: :layout_main
   end
 
   get '/changeuser' do
-    get_noti
+    view_noti
     erb :maketags, layout: :layout_main
   end
 
@@ -139,7 +143,7 @@ class App < Sinatra::Base
     @tags = Tag.select(:id).except(Subscription.select(:tag_id).where(user_id: session[:user_id]))
     @tags = Tag.where(id: @tags).all
     @errortag = 'Esta suscripto a todas las categorias' if @tags == []
-    get_noti
+    view_noti
     erb :suscription, layout: :layout_main
   end
 
@@ -154,7 +158,7 @@ class App < Sinatra::Base
       next unless params[doc.location]
 
       reading = Labelled.find(document_id: doc.id, user_id: session[:user_id])
-      reading.update(readed: 't') if reading.readed = 'f'
+      reading.update(readed: 't') if reading.readed == 'f'
       redirect "/view?path=#{doc.location}"
     end
   end
@@ -225,20 +229,18 @@ class App < Sinatra::Base
     elsif @editpas != '' && params[:editpass]
       if params[:newpass] == '' || params[:repas] == '' || params[:oldpass] == ''
         @error = 'Ingrese contraseña'
+      elsif params[:oldpass] != user.password
+        @error = 'contraseña incorrecta'
+      elsif params[:newpass] != params[:repas]
+        @error = 'contraseñas distintas'
       else
-        if params[:oldpass] != user.password
-          @error = 'contraseña incorrecta'
-        elsif params[:newpass] != params[:repas]
-          @error = 'contraseñas distintas'
-        else
-          user.update(password: params[:newpass])
-          @succes = 'Contraseña cambiada correctamente'
-        end
+        user.update(password: params[:newpass])
+        @succes = 'Contraseña cambiada correctamente'
       end
     end
-    @Username = user.username
-    @Email = user.email
-    get_noti
+    @username = user.username
+    @email = user.email
+    view_noti
     erb :profile, layout: :layout_main
   end
 
@@ -287,7 +289,7 @@ class App < Sinatra::Base
     end
     @categories = Tag.all
     @users = User.all
-    get_noti
+    view_noti
     erb :docs, layout: :layout_main
   end
 
@@ -298,14 +300,12 @@ class App < Sinatra::Base
 
       if tag
         @error = 'El tag ya existe'
-        get_noti
-        erb :maketags, layout: :layout_main
+        view_noti
       else
         newtag = Tag.new(name: params['newtag'])
         if newtag.save
           @succes = 'Agregado correctamente'
-          get_noti
-          erb :maketags, layout: :layout_main
+          view_noti
         else
           [500, {}, 'Internal server Error']
         end
@@ -321,21 +321,19 @@ class App < Sinatra::Base
         docs_tags.each(&:delete)
         if tag.delete
           @succes = 'Borrado correctamente'
-          get_noti
-          erb :maketags, layout: :layout_main
+          view_noti
         else
           [500, {}, 'Internal server Error']
         end
       else
         @error = 'El tag no existe'
-        get_noti
-        erb :maketags, layout: :layout_main
+        view_noti
       end
     else
       @error = 'Inserte el nombre del tags'
-      get_noti
-      erb :maketags, layout: :layout_main
+      view_noti
     end
+    erb :maketags, layout: :layout_main
   end
 
   post '/makeadmin' do
@@ -346,18 +344,14 @@ class App < Sinatra::Base
       if useradmi
         useradmi.update(admin: 't')
         @succes = 'Promocion realizada'
-        get_noti
-        erb :makeAdmin, layout: :layout_main
       else
         @error = 'No existe ese usuario'
-        get_noti
-        erb :makeAdmin, layout: :layout_main
       end
     else
       @error = 'Inserte el nombre del usuario'
-      get_noti
-      erb :makeAdmin, layout: :layout_main
     end
+    view_noti
+    erb :makeAdmin, layout: :layout_main
   end
 
   post '/log' do
@@ -375,17 +369,21 @@ class App < Sinatra::Base
 
     # Register to the system part
     @error = 'Complete todos los campos!!' if all_field_register?
-    @errorUser = 'El nombre de usario ya esta registrado!!' if User.find(username: params[:username])
-    @errorEmail = 'El email ya esta registrado!!' if User.find(email: params[:email])
-    @errorPassLength = 'La contraseña tiene que tener mas de 5 caracteres!!' if params[:password].length < 6
-    @errorPassDif = 'Las contraseñas son diferentes!!' if params[:password] != params[:password2]
+    @error_user = 'El nombre de usario ya esta registrado!!' if User.find(username: params[:username])
+    @error_email = 'El email ya esta registrado!!' if User.find(email: params[:email])
+    @error_pass_length = 'La contraseña tiene que tener mas de 5 caracteres!!' if params[:password].length < 6
+    @error_pass_dif = 'Las contraseñas son diferentes!!' if params[:password] != params[:password2]
 
-    if !@errorPassLength && !@errorUser && !@error && !@errorEmail && !@errorPassDif
+    if !@error_pass_length && !@error_user && !@error && !@error_email && !@error_pass_dif
 
       request.body.rewind
       hash = Rack::Utils.parse_nested_query(request.body.read)
       params = JSON.parse hash.to_json
-      user = User.new(name: params['name'], surname: params['surname'], email: params['email'], username: params['username'], password: params['password'])
+      user = User.new(name: params['name'],
+                      surname: params['surname'],
+                      email: params['email'],
+                      username: params['username'],
+                      password: params['password'])
       if user.save
         session[:user_id] = user.id
         redirect '/docs'
@@ -401,7 +399,7 @@ class App < Sinatra::Base
     if all_field_adddoc?
       @error = 'Complete todos los campos!!'
       @categories = Tag.all
-      get_noti
+      view_noti
       erb :add_doc, layout: :layout_main
     else
 
@@ -424,13 +422,13 @@ class App < Sinatra::Base
 
         #----------- Actualizo tablas relaciones -----------#
 
-        usersInvolved = []
+        users_involved = []
         labelleds = params['labelled'].split('@')
         labelleds.each do |labelled|
           user = User.find(username: labelled)
           next unless user
 
-          usersInvolved << user.id
+          users_involved << user.id
           user.add_document(doc)
           user.save
         end
@@ -447,25 +445,26 @@ class App < Sinatra::Base
           subscription = Subscription.select(:user_id).where(tag_id: category.id)
           users = User.where(id: subscription.except(labelled)).all
           users.each do |user|
-            usersInvolved << user.id
+            users_involved << user.id
             user.add_document(doc)
             user.save
           end
         end
 
-        usersNotificated = []
+        users_notificated = []
 
         settings.sockets.each do |s|
-          usersNotificated << s if usersInvolved.include?(s[:user])
+          users_notificated << s if users_involved.include?(s[:user])
         end
-        usersNotificated.uniq
-        @cantUsers = settings.sockets.length
-        usersNotificated.each do |s|
-          @noti = Document.where(delete: 'f', id: Labelled.select(:document_id).where(readed: 'f', user_id: s[:user])).count
+        users_notificated.uniq
+        @cant_users = settings.sockets.length
+        users_notificated.each do |s|
+          id = Labelled.select(:document_id).where(readed: 'f', user_id: s[:user])
+          @noti = Document.where(delete: 'f', id: id).count
           s[:socket].send(@noti.to_s)
         end
         @categories = Tag.all
-        get_noti
+        view_noti
         @succes = 'Documento cargado correctamente'
         erb :add_doc, layout: :layout_main
 
@@ -511,15 +510,15 @@ class App < Sinatra::Base
     end
   end
 
-  def doc_users(docsUsers)
+  def doc_users(docs_users)
     users = []
-    docsUsers.each { |user| users << user.username }
+    docs_users.each { |user| users << user.username }
     users * ', '
   end
 
-  def doc_tags(docsTags)
+  def doc_tags(docs_tags)
     tags = []
-    docsTags.each { |tag| tags << tag.name }
+    docs_tags.each { |tag| tags << tag.name }
     tags * ', '
   end
 
@@ -532,24 +531,37 @@ class App < Sinatra::Base
   end
 
   def restricted_path?
-    request.path_info != '/log' && request.path_info != '/login' && request.path_info != '/rp' && request.path_info != '/docs' && request.path_info != '/view'
+    restricted_path_aux? && request.path_info != '/log' && request.path_info != '/login'
+  end
+
+  def restricted_path_aux?
+    request.path_info != '/rp' && request.path_info != '/docs' && request.path_info != '/view'
   end
 
   def path_only_admin?
-    !@currentUser.admin && ((request.path_info == '/makeadmin') || (request.path_info == '/adddoc') || (request.path_info == '/maketag'))
+    !@current_user.admin && request_path_admin
+  end
+
+  def request_path_admin
+    ((request.path_info == '/makeadmin') || (request.path_info == '/adddoc') || (request.path_info == '/maketag'))
   end
 
   def all_field_register?
-    (params[:username] == '' || params[:name] == '' || params[:email] == '' || params[:password] == '' || params[:surname] == '')
+    (user_no_empty || params[:password] == '' || params[:surname] == '')
+  end
+
+  def user_no_empty
+    (params[:username] == '' || params[:name] == '' || params[:email] == '')
   end
 
   def all_field_adddoc?
     (params[:title] == '' || params[:document].nil?)
   end
 
-  def get_noti
-    if @currentUser
-      @noti = Document.where(delete: 'f', id: Labelled.select(:document_id).where(readed: 'f', user_id: @currentUser.id)).count
+  def view_noti
+    if @current_user
+      id = Labelled.select(:document_id).where(readed: 'f', user_id: @current_user.id)
+      @noti = Document.where(delete: 'f', id: id).count
     end
   end
 end

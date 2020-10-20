@@ -96,8 +96,10 @@ class App < Sinatra::Base
 
   get '/unreaddocs' do
     user = User.find(id: session[:user_id])
-    @undocuments = Document.order(:date).reverse.where(delete: 'f', id: Labelled.select(:document_id).where(readed: 'f', user_id: user.id)).all
-    @documents = Document.order(:date).reverse.where(delete: 'f', id: Labelled.select(:document_id).where(readed: 't', user_id: user.id)).all
+    id = Labelled.select(:document_id).where(readed: 'f', user_id: user.id)
+    @undocuments = Document.order(:date).reverse.where(delete: 'f', id: id).all
+    id2 = Labelled.select(:document_id).where(readed: 't', user_id: user.id)
+    @documents = Document.order(:date).reverse.where(delete: 'f', id: id2).all
     view_noti
     erb :undocs, layout: :layout_main
   end
@@ -227,15 +229,13 @@ class App < Sinatra::Base
     elsif @editpas != '' && params[:editpass]
       if params[:newpass] == '' || params[:repas] == '' || params[:oldpass] == ''
         @error = 'Ingrese contraseña'
+      elsif params[:oldpass] != user.password
+        @error = 'contraseña incorrecta'
+      elsif params[:newpass] != params[:repas]
+        @error = 'contraseñas distintas'
       else
-        if params[:oldpass] != user.password
-          @error = 'contraseña incorrecta'
-        elsif params[:newpass] != params[:repas]
-          @error = 'contraseñas distintas'
-        else
-          user.update(password: params[:newpass])
-          @succes = 'Contraseña cambiada correctamente'
-        end
+        user.update(password: params[:newpass])
+        @succes = 'Contraseña cambiada correctamente'
       end
     end
     @username = user.username
@@ -455,7 +455,8 @@ class App < Sinatra::Base
         users_notificated.uniq
         @cant_users = settings.sockets.length
         users_notificated.each do |s|
-          @noti = Document.where(delete: 'f', id: Labelled.select(:document_id).where(readed: 'f', user_id: s[:user])).count
+          id = Labelled.select(:document_id).where(readed: 'f', user_id: s[:user])
+          @noti = Document.where(delete: 'f', id: id).count
           s[:socket].send(@noti.to_s)
         end
         @categories = Tag.all
@@ -526,15 +527,27 @@ class App < Sinatra::Base
   end
 
   def restricted_path?
-    request.path_info != '/log' && request.path_info != '/login' && request.path_info != '/rp' && request.path_info != '/docs' && request.path_info != '/view'
+    estricted_path_aux? && request.path_info != '/log' && request.path_info != '/login'
+  end
+
+  def restricted_path_aux?
+    equest.path_info != '/rp' && request.path_info != '/docs' && request.path_info != '/view'
   end
 
   def path_only_admin?
-    !@current_user.admin && ((request.path_info == '/makeadmin') || (request.path_info == '/adddoc') || (request.path_info == '/maketag'))
+    !@current_user.admin && request_path_admin
+  end
+
+  def request_path_admin
+    ((request.path_info == '/makeadmin') || (request.path_info == '/adddoc') || (request.path_info == '/maketag'))
   end
 
   def all_field_register?
-    (params[:username] == '' || params[:name] == '' || params[:email] == '' || params[:password] == '' || params[:surname] == '')
+    (user_no_empty || params[:password] == '' || params[:surname] == '')
+  end
+
+  def user_no_empty
+    (params[:username] == '' || params[:name] == '' || params[:email] == '')
   end
 
   def all_field_adddoc?
@@ -543,7 +556,8 @@ class App < Sinatra::Base
 
   def view_noti
     if @current_user
-      @noti = Document.where(delete: 'f', id: Labelled.select(:document_id).where(readed: 'f', user_id: @current_user.id)).count
+      id = Labelled.select(:document_id).where(readed: 'f', user_id: @current_user.id)
+      @noti = Document.where(delete: 'f', id: id).count
     end
   end
 end

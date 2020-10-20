@@ -527,11 +527,11 @@ class App < Sinatra::Base
   end
 
   def restricted_path?
-    estricted_path_aux? && request.path_info != '/log' && request.path_info != '/login'
+    restricted_path_aux? && request.path_info != '/log' && request.path_info != '/login'
   end
 
   def restricted_path_aux?
-    equest.path_info != '/rp' && request.path_info != '/docs' && request.path_info != '/view'
+    request.path_info != '/rp' && request.path_info != '/docs' && request.path_info != '/view'
   end
 
   def path_only_admin?

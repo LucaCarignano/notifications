@@ -7,22 +7,16 @@ require 'date'
 require 'tempfile'
 require 'sinatra'
 require 'sinatra-websocket'
+require './controllers/userController.rb'
 
 # This is the main class of the system
 class App < Sinatra::Base
   include FileUtils::Verbose
 
-  configure :development, :production do
-    enable :logging
-    enable :sessions
-    set :session_secret, 'una clave polenta'
-    set :sessions, true
-    set :server, 'thin'
-    set :sockets, []
-  end
+  use userController
 
   before do
-    redirect '/log' if !user_logged? && restricted_path?
+    use userController if !user_logged? && restricted_path?
     if user_logged?
       @current_user = User.find(id: session[:user_id])
       @admin = @current_user.admin
@@ -47,20 +41,6 @@ class App < Sinatra::Base
           settings.sockets.delete(ws)
         end
       end
-    end
-  end
-
-  get '/log' do
-    logger.info ''
-    logger.info session['session_id']
-    logger.info session.inspect
-    logger.info '-------------'
-    logger.info ''
-
-    if !user_logged?
-      erb :log, layout: :layout_sig
-    else
-      redirect '/docs'
     end
   end
 
@@ -352,47 +332,6 @@ class App < Sinatra::Base
     end
     view_noti
     erb :makeAdmin, layout: :layout_main
-  end
-
-  post '/log' do
-    # Login part
-    if params[:Login]
-      user1 = User.find(username: params[:user])
-      if user1 && user1.password == params[:pass]
-        session[:user_id] = user1.id
-        redirect '/docs'
-      elsif !user1 || params[:user] == '' || params[:pass] == '' || user1.password != params[:pass]
-        @error = 'Tu usuario o contraseña son incorrectos'
-        redirect '/login'
-      end
-    end
-
-    # Register to the system part
-    @error = 'Complete todos los campos!!' if all_field_register?
-    @error_user = 'El nombre de usario ya esta registrado!!' if User.find(username: params[:username])
-    @error_email = 'El email ya esta registrado!!' if User.find(email: params[:email])
-    @error_pass_length = 'La contraseña tiene que tener mas de 5 caracteres!!' if params[:password].length < 6
-    @error_pass_dif = 'Las contraseñas son diferentes!!' if params[:password] != params[:password2]
-
-    if !@error_pass_length && !@error_user && !@error && !@error_email && !@error_pass_dif
-
-      request.body.rewind
-      hash = Rack::Utils.parse_nested_query(request.body.read)
-      params = JSON.parse hash.to_json
-      user = User.new(name: params['name'],
-                      surname: params['surname'],
-                      email: params['email'],
-                      username: params['username'],
-                      password: params['password'])
-      if user.save
-        session[:user_id] = user.id
-        redirect '/docs'
-      else
-        [500, {}, 'Internal server Error']
-      end
-    else
-      erb :log, layout: :layout_sig
-    end
   end
 
   post '/adddoc' do

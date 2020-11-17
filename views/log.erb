@@ -22,8 +22,8 @@
 			<br><br>
 			<div class="register">
 				<table>
-				 <% if @error %>
-					   <p class="error"><%= @error %></p>
+				 <% if defined? errorMessage %>
+					   <p class="error"><%= errorMessage %></p>
 				 <% end %>
 				  <tr>
 				    <td>
@@ -40,40 +40,37 @@
 				  </tr>
 				  <tr>
 				    <td>
+				    	<% if defined? email %>
+					   		<p class="error"><%= email[0] %></p>
+				 		<% end %>
 				    	<p> Su Email:
 				    		<input type="text" name="email" placeholder="name@example.com">
 				    	</p>
-						 <% if @error_mail %>
-						   <p class="error"><%= @error_mail %></p>
-						 <% end %>
 				    </td>
 				    <td class = "right">		
+				    	<% if defined? username %>
+					   		<p class="error"><%= username[0] %></p>
+				 		<% end %>
 						<p>	Nombre de Usuario:
 				    		<input type="text" name="username">
 				    	</p>
-						 <% if @error_user %>
-						   <p class="error"><%= @error_user %></p>
-						 <% end %>				    	
 				    </td>
 				  </tr>
 				  <tr>
 				    <td>
+				    	<% if defined? password %>
+					   		<p class="error"><%= password[0] %></p>
+				 		<% end %>
 				    	<p> Contraseña:
 				    		<input type="password" name="password">
 				    	</p>
 
 				    </td>
-						 <% if @error_pass_length %>
-						   <p class="error"><%= @error_pass_length %></p>
-						 <% end %>				    
 				    <td class = "right">		
 				    		<p> Repetir Contraseña:
 				    		<input type="password" name="password2">
 				    		</p>
 				    </td>
-						 <% if @error_pass_dif %>
-						   <p class="error"><%= @error_pass_dif %></p>
-						 <% end %>
 				  </tr>
 				</table>
 				<br>

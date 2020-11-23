@@ -19,7 +19,7 @@ class DocumentService
 
     doc = Document.new(title: title, 
                        date: Date.today, 
-                       location: @src)
+                       location: src)
 
     unless user.valid?
       raise ValidationModelError.new("Datos para crear el usuario incorrectos", user.errors)

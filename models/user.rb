@@ -12,7 +12,7 @@ class User < Sequel::Model
     validates_presence :username, message: "Debe ingresar un nombre de usario"
     validates_unique :email, message: "ya existe un usuario registrado con ese email"
     validates_unique :username, message: "ya existe un usuario registrado con ese nombre de usuario"
-    validates_format (/ \A.*@.*\..*\z/), :email, message: 'invalid email'
+    validates_format (/\A.*@.*\..*\z/), :email, message: 'email invalido'
     validates_min_length 6, :password, message: 'password must have more than 5 caracters'
   end
   many_to_many :tags

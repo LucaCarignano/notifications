@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+all_field_adddoc# frozen_string_literal: true
 
 require 'json'
 require './models/init.rb'
@@ -23,16 +23,6 @@ class App < Sinatra::Base
       @path = request.path_info
       redirect '/docs' if path_only_admin?
     end
-  end
-
-  get '/adddoc' do
-    @categories = Tag.all
-    @users = []
-    User.each do |user|
-      @users.push(user.username)
-    end
-    view_noti
-    erb :add_doc, layout: :layout_main
   end
 
   get '/login' do

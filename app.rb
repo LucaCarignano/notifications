@@ -65,14 +65,6 @@ class App < Sinatra::Base
     erb :undocs, layout: :layout_main
   end
 
-  get '/profile' do
-    user = User.find(id: session[:user_id])
-    @username = user.username
-    @email = user.email
-    view_noti
-    erb :profile, layout: :layout_main
-  end
-
   get '/applyadmin' do
     'se envia un mail a los admin para que autoricen a modificar el estado del usuario'
   end
@@ -150,59 +142,6 @@ class App < Sinatra::Base
                end
     end
     redirect '/tags'
-  end
-
-  post '/profile' do
-    user = User.find(id: session[:user_id])
-
-    if params[:botuser]
-      @edituse = 'entro'
-    elsif params[:botemail]
-      @editmail = 'entro'
-    elsif params[:botpass]
-      @editpas = 'entro'
-    end
-
-    if @edituse != '' && params[:editus]
-      if params[:newuser] == ''
-        @error = 'Ingrese un nombre de usuario'
-      else
-        user1 = User.find(username: params[:newuser])
-        if user1
-          @error = 'Nombre de usuario no disponible '
-        else
-          user.update(username: params[:newuser])
-          @succes = 'Nombre cambiado correctamente'
-        end
-      end
-    elsif @editmail != '' && params[:editemail]
-      if params[:newemail] == ''
-        @error = 'Ingrese un email'
-      else
-        user1 = User.find(email: params[:newemail])
-        if user1
-          @error = 'Email ya registrado'
-        else
-          user.update(email: params[:newemail])
-          @succes = 'Email cambiado correctamente'
-        end
-      end
-    elsif @editpas != '' && params[:editpass]
-      if params[:newpass] == '' || params[:repas] == '' || params[:oldpass] == ''
-        @error = 'Ingrese contraseña'
-      elsif params[:oldpass] != user.password
-        @error = 'contraseña incorrecta'
-      elsif params[:newpass] != params[:repas]
-        @error = 'contraseñas distintas'
-      else
-        user.update(password: params[:newpass])
-        @succes = 'Contraseña cambiada correctamente'
-      end
-    end
-    @username = user.username
-    @email = user.email
-    view_noti
-    erb :profile, layout: :layout_main
   end
 
   post '/docs' do

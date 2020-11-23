@@ -84,4 +84,40 @@ class UserController < Sinatra::Base
     session[:user_id]
   end
 
+  get '/profile' do
+    user = User.find(id: session[:user_id])
+    @username = user.username
+    @email = user.email
+    UserService.view_noti user
+    erb :profile, layout: :layout_main
+  end
+
+  post '/profile' do
+    request.body.rewind
+    hash = Rack::Utils.parse_nested_query(request.body.read)
+    params = JSON.parse hash.to_json
+    user = User.find(id: session[:user_id])
+
+    botusername = params[:botuser]
+    botemail = params[:botemail]
+    botpass = params[:botpass]
+    editusername = params[:editus]
+    editemail = params[:editemail]
+    editpass = params[:editpass]
+    newusername = params[:newuser]
+    newemail = params[:newemail]
+    newpass = params[:newpass]
+    repass = params[:repas]
+    oldpass = params[:oldpass]
+
+    UserService.modifyUser user, editusername, editemail, editpass, 
+                           botusername, botemail, botpass, newusername, 
+                           newemail, newpass, repass, oldpass
+
+    @username = user.username
+    @email = user.email
+    UserService.view_noti user
+    erb :profile, layout: :layout_main
+  end
+
 end

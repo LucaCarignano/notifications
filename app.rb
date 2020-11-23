@@ -7,40 +7,21 @@ require 'date'
 require 'tempfile'
 require 'sinatra'
 require 'sinatra-websocket'
-require './controllers/userController.rb'
+require './controllers/UserController.rb'
 
 # This is the main class of the system
 class App < Sinatra::Base
   include FileUtils::Verbose
-
-  use userController
+  
+  use UserController
 
   before do
-    use userController if !user_logged? && restricted_path?
+    UserController if !user_logged? && restricted_path?
     if user_logged?
       @current_user = User.find(id: session[:user_id])
       @admin = @current_user.admin
       @path = request.path_info
       redirect '/docs' if path_only_admin?
-    end
-  end
-
-  get '/' do
-    if !request.websocket?
-      erb :log, layout: :layout_sig
-    else
-      request.websocket do |ws|
-        user = session[:user_id]
-        logger.info(user)
-        @connection = { user: user, socket: ws }
-        ws.onopen do
-          settings.sockets << @connection
-        end
-        ws.onclose do
-          warn('websocket closed')
-          settings.sockets.delete(ws)
-        end
-      end
     end
   end
 

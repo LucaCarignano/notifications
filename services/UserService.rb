@@ -27,18 +27,18 @@ class UserService
   def self.view_noti(user)
     if user
       id = Labelled.select(:document_id).where(readed: 'f', user_id: user.id)
-      @noti = Document.where(delete: 'f', id: id).count
+      return Document.where(delete: 'f', id: id).count
     end
   end
 
 	def self.modifyUser(user, editusername, editemail, editpass, 
                       botusername, botemail, botpass, newusername, 
                       newemail, newpass, repass, oldpass)    
-    if !botusername.empty?
+    if botusername
       @edituse = 'entro'
-    elsif !botemail.empty?
+    elsif botemail
       @editmail = 'entro'
-    elsif !botpass.empty?
+    elsif botpass
       @editpas = 'entro'
     end
 

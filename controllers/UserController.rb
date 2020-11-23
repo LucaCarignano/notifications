@@ -85,10 +85,10 @@ class UserController < Sinatra::Base
   end
 
   get '/profile' do
-    user = User.find(id: session[:user_id])
-    @username = user.username
-    @email = user.email
-    UserService.view_noti user
+    @current_user = User.find(id: session[:user_id])
+    @username = @current_user.username
+    @email = @current_user.email
+    @noti = UserService.view_noti @current_user
     erb :profile, layout: :layout_main
   end
 
@@ -96,7 +96,7 @@ class UserController < Sinatra::Base
     request.body.rewind
     hash = Rack::Utils.parse_nested_query(request.body.read)
     params = JSON.parse hash.to_json
-    user = User.find(id: session[:user_id])
+    @current_user = User.find(id: session[:user_id])
 
     botusername = params[:botuser]
     botemail = params[:botemail]
@@ -110,14 +110,24 @@ class UserController < Sinatra::Base
     repass = params[:repas]
     oldpass = params[:oldpass]
 
-    UserService.modifyUser user, editusername, editemail, editpass, 
+    
+    @username = @current_user.username
+    @email = @current_user.email
+    @noti = UserService.view_noti @current_user
+    
+    begin 
+      UserService.modifyUser @current_user, editusername, editemail, editpass, 
                            botusername, botemail, botpass, newusername, 
                            newemail, newpass, repass, oldpass
 
-    @username = user.username
-    @email = user.email
-    UserService.view_noti user
-    erb :profile, layout: :layout_main
+      @username = @current_user.username
+      @email = @current_user.email
+      erb :profile, layout: :layout_main
+    rescue ArgumentError => e
+       return erb :profile, :locals => {:errorMessage => e.message}, layout: :layout_main
+    rescue ValidationModelError => e
+      return erb :profile, :locals => e.errors, layout: :layout_main
+    end
   end
 
 end

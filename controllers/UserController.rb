@@ -93,9 +93,10 @@ class UserController < Sinatra::Base
   end
 
   post '/profile' do
+
     request.body.rewind
-    hash = Rack::Utils.parse_nested_query(request.body.read)
-    params = JSON.parse hash.to_json
+    #hash = Rack::Utils.parse_nested_query(request.body.read)
+    #params = JSON.parse hash.to_json
     @current_user = User.find(id: session[:user_id])
 
     botusername = params[:botuser]
@@ -110,7 +111,14 @@ class UserController < Sinatra::Base
     repass = params[:repas]
     oldpass = params[:oldpass]
 
-    
+    if botusername == "botuser" 
+      @edituse = 'entro'
+    elsif botemail
+      @editmail = 'entro'
+    elsif botpass
+      @editpas = 'entro'
+    end
+      
     @username = @current_user.username
     @email = @current_user.email
     @noti = UserService.view_noti @current_user

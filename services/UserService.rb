@@ -34,13 +34,7 @@ class UserService
 	def self.modifyUser(user, editusername, editemail, editpass, 
                       botusername, botemail, botpass, newusername, 
                       newemail, newpass, repass, oldpass)    
-    if botusername
-      @edituse = 'entro'
-    elsif botemail
-      @editmail = 'entro'
-    elsif botpass
-      @editpas = 'entro'
-    end
+    
 
     if @edituse != '' && editusername
       if newusername == ''

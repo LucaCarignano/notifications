@@ -1,8 +1,8 @@
 require 'sinatra/base'
-require './services/UserService'
+require './services/DocumentService'
 require './exceptions/ValidationModelError.rb'
 
-class UserController < Sinatra::Base
+class DocumentController < Sinatra::Base
 
   include FileUtils::Verbose
 
@@ -46,28 +46,21 @@ class UserController < Sinatra::Base
   end
 
   post '/adddoc' do
-    if all_field_adddoc?
-      @error = 'Complete todos los campos!!'
+
+    filename = params[:document][:filename]
+    file = params[:document][:tempfile]
+    title = params[:title]
+
+    begin 
+      DocumentService.addDocument filename, file, title
       @categories = Tag.all
       view_noti
-      erb :add_doc, layout: :layout_main
-    else
-
-      filename = params[:document][:filename]
-      file = params[:document][:tempfile]
-      title = params[:title]
-
-      begin 
-        DocumentService.addDocument filename, file, title
-        @categories = Tag.all
-        view_noti
-        @succes = 'Documento cargado correctamente'
-        return erb :add_doc, layout: :layout_main 
-      rescue ArgumentError => e
-        return erb :add_doc, :locals => {:errorMessage => e.message}, layout: :layout_sig
-      rescue ValidationModelError => e
-        return erb :add_doc, :locals => e.errors, layout: :layout_sig
-      end
+      @succes = 'Documento cargado correctamente'
+      return erb :add_doc, layout: :layout_main 
+    rescue ArgumentError => e
+      return erb :add_doc, :locals => {:errorMessage => e.message}, layout: :layout_sig
+    rescue ValidationModelError => e
+      return erb :add_doc, :locals => e.errors, layout: :layout_sig
     end
   end
 

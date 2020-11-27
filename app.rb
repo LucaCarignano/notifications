@@ -1,4 +1,4 @@
-all_field_adddoc# frozen_string_literal: true
+# frozen_string_literal: true
 
 require 'json'
 require './models/init.rb'
@@ -8,12 +8,14 @@ require 'tempfile'
 require 'sinatra'
 require 'sinatra-websocket'
 require './controllers/UserController.rb'
+require './controllers/DocumentController.rb'
 
 # This is the main class of the system
 class App < Sinatra::Base
   include FileUtils::Verbose
   
   use UserController
+  use DocumentController
 
   before do
     UserController if !user_logged? && restricted_path?

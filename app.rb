@@ -136,55 +136,6 @@ class App < Sinatra::Base
     redirect '/tags'
   end
 
-  post '/docs' do
-    set_pages
-    redirect '/docs' if not_filter?
-    @documents = Document.where(delete: 'f').all
-    if params[:users] != ''
-      user = User.find(username: params[:users])
-      if user
-        aux = user.documents_dataset
-        @documents &= aux.to_a
-      end
-    end
-    if params[:tags] != ''
-      tagg = Tag.find(name: params[:tags])
-      if tagg
-        aux2 = tagg.documents_dataset
-        @documents &= aux2.to_a
-      end
-    end
-    if params[:datedoc] != ''
-      aux3 = Document.where(date: params[:datedoc]).all
-      @documents &= aux3
-    end
-    if params[:docname] != ''
-      params[:docname] = '%' + params[:docname] + '%'
-      aux4 = Document.where(Sequel.like(:title, params[:docname])).all
-      @documents &= aux4
-    end
-    cant_pages(@documents.length)
-    @documents = @documents[((@page - 1) * @docsperpage)..(@page * @docsperpage) - 1]
-
-    unless params[:filter]
-
-      documents = Document.all
-      documents.each do |doc|
-        location = 'del' + doc.location
-        doc.update(delete: 't') if params[location]
-      end
-
-      set_pages
-      cant_pages(Document.where(delete: 'f').count)
-      @documents = Document.order(:date).reverse.where(delete: 'f').limit(@docsperpage, (@page - 1) * @docsperpage)
-
-    end
-    @categories = Tag.all
-    @users = User.all
-    view_noti
-    erb :docs, layout: :layout_main
-  end
-
   post '/maketag' do
     if params[:newtag] != '' && params[:add]
 
@@ -246,85 +197,6 @@ class App < Sinatra::Base
     erb :makeAdmin, layout: :layout_main
   end
 
-  post '/adddoc' do
-    if all_field_adddoc?
-      @error = 'Complete todos los campos!!'
-      @categories = Tag.all
-      view_noti
-      erb :add_doc, layout: :layout_main
-    else
-
-      @filename = params[:document][:filename]
-      file = params[:document][:tempfile]
-
-      File.open("./public/file/#{@filename}", 'wb') do |f|
-        f.write(file.read)
-      end
-
-      @time = Time.now.to_i
-      @name = "#{@time}#{params[:title]}".gsub(' ', '')
-      @src = "file/#{@name}.pdf"
-
-      # request.body.rewind
-
-      doc = Document.new(title: params['title'], date: Date.today, location: @src)
-      if doc.save
-        cp(file.path, "public/#{doc.location}")
-
-        #----------- Actualizo tablas relaciones -----------#
-
-        users_involved = []
-        labelleds = params['labelled'].split('@')
-        labelleds.each do |labelled|
-          user = User.find(username: labelled)
-          next unless user
-
-          users_involved << user.id
-          user.add_document(doc)
-          user.save
-        end
-
-        categories = Tag.all
-        categories.each do |category|
-          nombre = category.name
-
-          next unless params[nombre]
-
-          category.add_document(doc)
-          category.save
-          labelled = Labelled.select(:user_id).where(document_id: doc.id)
-          subscription = Subscription.select(:user_id).where(tag_id: category.id)
-          users = User.where(id: subscription.except(labelled)).all
-          users.each do |user|
-            users_involved << user.id
-            user.add_document(doc)
-            user.save
-          end
-        end
-
-        users_notificated = []
-
-        settings.sockets.each do |s|
-          users_notificated << s if users_involved.include?(s[:user])
-        end
-        users_notificated.uniq
-        @cant_users = settings.sockets.length
-        users_notificated.each do |s|
-          id = Labelled.select(:document_id).where(readed: 'f', user_id: s[:user])
-          @noti = Document.where(delete: 'f', id: id).count
-          s[:socket].send(@noti.to_s)
-        end
-        @categories = Tag.all
-        view_noti
-        @succes = 'Documento cargado correctamente'
-        erb :add_doc, layout: :layout_main
-
-      else
-        [500, {}, 'Internal server Error']
-      end
-    end
-  end
-
   post '/login' do
     # Login part
     user = User.find(username: params['us'])
@@ -338,39 +210,11 @@ class App < Sinatra::Base
     end
   end
 
-  def cant_pages(cantdocs)
-    @docsperpage = 10
-    @pagelimit = if (cantdocs % @docsperpage).zero?
-                   cantdocs / @docsperpage
-                 else
-                   cantdocs / @docsperpage + 1
-                 end
-  end
-
-  def set_pages
-    @page = if params[:page]
-              params[:page].to_i
-            else 1
-            end
-  end
-
   def autocompletea
     @docsname = []
     Document.where(delete: 'f').each do |doc|
       @docsname.push(doc.title)
     end
-  end
-
-  def doc_users(docs_users)
-    users = []
-    docs_users.each { |user| users << user.username }
-    users * ', '
-  end
-
-  def doc_tags(docs_tags)
-    tags = []
-    docs_tags.each { |tag| tags << tag.name }
-    tags * ', '
   end
 
   def not_filter?

@@ -59,4 +59,38 @@ class DocumentService
       end
       return users_involved
     end
+
+  def self.filterDoc users_filter, tags_filter, date_filter, name_filter, bot_filter, del_doc
+    @documents = Document.where(delete: 'f').all
+    if users_filter != ''
+      user = User.find(username: users_filter)
+      if user
+        aux = user.documents_dataset
+        @documents &= aux.to_a
+      end
+    end
+    if tags_filter != ''
+      tagg = Tag.find(name: tags_filter)
+      if tagg
+        aux2 = tagg.documents_dataset
+        @documents &= aux2.to_a
+      end
+    end
+    if date_filter != ''
+      aux3 = Document.where(date: date_filter).all
+      @documents &= aux3
+    end
+    if name_filter != ''
+      name_filter = '%' + name_filter + '%'
+      aux4 = Document.where(Sequel.like(:title, name_filter)).all
+      @documents &= aux4
+    end
+    unless bot_filter
+
+      del_doc.update(delete: 't')
+
+      @documents = Document.where(delete: 'f')
+    end
+    return @documents
 	end
+end

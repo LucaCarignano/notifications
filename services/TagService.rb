@@ -3,13 +3,14 @@ require './models/user.rb'
 
 class TagService
 
-  def self.manageTag(user, suscribe, unsuscribe, tag)
-     if suscribe
+  def self.manageTag(user, suscribe, unsuscribe, tag, tags)
+    if suscribe
       categories = Tag.all
       categories.each do |category|
         nombre = category.name
-        next unless params[nombre]
-        category.add_user(user)
+        next unless tags.include? nombre
+          category.add_user(user)
+      end
     elsif unsuscribe && tag
       user.remove_tag(Tag.find(name: tag))
     end
@@ -19,16 +20,16 @@ class TagService
     if createtag != '' && add
       newtag = Tag.new(name: createtag)
       unless newtag.valid?
-        raise ValidationModelError.new("Datos para crear el usuario incorrectos", tag.errors)
+        raise ValidationModelError.new("Datos para crear el usuario incorrectos", newtag.errors)
       end
       newtag.save
     elsif deltag != '' && delete
       tag = Tag.find(name: deltag)
       if tag
         users_tags = Subscription.where(tag_id: tag.id)
-        users_tags.each(&delete)
+        users_tags.each(&:delete)
         docs_tags = Category.where(tag_id: tag.id)
-        docs_tags.each(&delete)
+        docs_tags.each(&:delete)
         tag.delete
       else
         raise ArgumentError.new("El tag es inexistente")

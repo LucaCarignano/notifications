@@ -9,6 +9,7 @@ require 'sinatra'
 require 'sinatra-websocket'
 require './controllers/UserController.rb'
 require './controllers/DocumentController.rb'
+require './controllers/TagController.rb'
 
 # This is the main class of the system
 class App < Sinatra::Base
@@ -16,6 +17,7 @@ class App < Sinatra::Base
   
   use UserController
   use DocumentController
+  use TagController
 
   before do
     UserController if !user_logged? && restricted_path?

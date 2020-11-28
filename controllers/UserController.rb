@@ -84,4 +84,61 @@ class UserController < Sinatra::Base
     session[:user_id]
   end
 
+  get '/profile' do
+    @current_user = User.find(id: session[:user_id])
+    @username = @current_user.username
+    @email = @current_user.email
+    @noti = UserService.view_noti @current_user
+    erb :profile, layout: :layout_main
+  end
+
+  post '/profile' do
+
+    request.body.rewind
+    @current_user = User.find(id: session[:user_id])
+
+    botusername = params[:botuser]
+    botemail = params[:botemail]
+    botpass = params[:botpass]
+    editusername = params[:editus]
+    editemail = params[:editemail]
+    editpass = params[:editpass]
+    newusername = params[:newuser]
+    newemail = params[:newemail]
+    newpass = params[:newpass]
+    repass = params[:repas]
+    oldpass = params[:oldpass]
+
+    @username = @current_user.username
+    @email = @current_user.email
+    if botusername 
+      @edituse = 'entro'
+      return erb :profile, layout: :layout_main
+    elsif botemail
+      @editmail = 'entro'
+      return erb :profile, layout: :layout_main
+    elsif botpass
+      @editpas = 'entro'
+      return erb :profile, layout: :layout_main
+    end
+      
+    @noti = UserService.view_noti @current_user
+    
+    begin 
+      UserService.modifyUser @current_user, editusername, editemail, editpass, 
+                           botusername, botemail, botpass, newusername, 
+                           newemail, newpass, repass, oldpass
+
+      @username = @current_user.username
+      @email = @current_user.email
+      @succes = "datos actualizados correctamente"
+      return erb :profile, layout: :layout_main
+    rescue ArgumentError => e
+       return erb :profile, :locals => {:errorMessage => e.message}, layout: :layout_main
+    rescue ValidationModelError => e
+      return erb :profile, :locals => e.errors, layout: :layout_main
+      
+    end
+  end
+
 end

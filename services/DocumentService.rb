@@ -1,34 +1,37 @@
 require './exceptions/ValidationModelError.rb'
+require 'sinatra/base'
+require 'date'
+require 'tempfile'
+require 'sinatra'
 require './models/user.rb'
+require 'sinatra-websocket'
 
 class DocumentService
-  #def all_field_register?
-    #username.empty? or password.empty? or name.empty? or email.empty? or surname.empty?
-  #end
 
-	def self.addDocument(filename, file, title)
-		if filename.empty? or file.empty? or title.empty? 
+	def self.addDocument(filename, file, title, labelleds, tags)
+		if filename.empty? or title.empty? 
       raise ArgumentError.new("Complete todos los campos")
     end
-    File.open("./public/file/#{@filename}", 'wb') do |f|
+    File.open("./public/file/#{filename}", 'wb') do |f|
         f.write(file.read)
       end
     time = Time.now.to_i
-    name = "#{@time}#{params[:title]}".gsub(' ', '')
+    name = "#{time}#{title}".gsub(' ', '')
+
     src = "file/#{name}.pdf"
 
     doc = Document.new(title: title, 
                        date: Date.today, 
-                       location: src)
+                       location: src,
+                       delete: 'f')
 
-    unless user.valid?
-      raise ValidationModelError.new("Datos para crear el usuario incorrectos", user.errors)
+    unless doc.valid?
+      raise ValidationModelError.new("Datos para crear el documento incorrectos", doc.errors)
     end
     doc.save
-    cp(file.path, "public/#{doc.location}")
+    FileUtils.cp(file.path, "public/#{src}")
 
     users_involved = []
-    labelleds = params['labelled'].split('@')
     labelleds.each do |labelled|
     user = User.find(username: labelled)
       next unless user
@@ -41,7 +44,7 @@ class DocumentService
       categories = Tag.all
       categories.each do |category|
       nombre = category.name
-      next unless params[nombre]
+      next unless tags.include? nombre
 
         category.add_document(doc)
         category.save
@@ -54,22 +57,6 @@ class DocumentService
           user.save
         end
       end
-
-      users_notificated = []
-
-      settings.sockets.each do |s|
-        users_notificated << s if users_involved.include?(s[:user])
-      end
-      users_notificated.uniq
-      @cant_users = settings.sockets.length
-      users_notificated.each do |s|
-        id = Labelled.select(:document_id).where(readed: 'f', user_id: s[:user])
-        @noti = Document.where(delete: 'f', id: id).count
-        s[:socket].send(@noti.to_s)
-      end
-      @categories = Tag.all
-      view_noti
-      @succes = 'Documento cargado correctamente'
-      erb :add_doc, layout: :layout_main
+      return users_involved
     end
 	end

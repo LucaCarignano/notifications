@@ -6,6 +6,8 @@ class DocumentController < Sinatra::Base
 
   include FileUtils::Verbose
 
+  use UserController
+
   configure :development, :production do
     enable :logging
     enable :sessions
@@ -36,6 +38,8 @@ class DocumentController < Sinatra::Base
 #  end
 
   get '/adddoc' do
+    @current_user = User.find(id: session[:user_id])
+    @admin = @current_user.admin
     @categories = Tag.all
     @users = []
     User.each do |user|
@@ -50,17 +54,44 @@ class DocumentController < Sinatra::Base
     filename = params[:document][:filename]
     file = params[:document][:tempfile]
     title = params[:title]
+    labelleds = params['labelled'].split('@')
+    tags = []
+    categories = Tag.all
+    categories.each do |category|
+      nombre = category.name
+      if params[nombre]
+        tags << nombre
+      end
+    end
 
+    @current_user = User.find(id: session[:user_id])
+    @admin = @current_user.admin
     begin 
-      DocumentService.addDocument filename, file, title
+      users_involved = DocumentService.addDocument filename, file, title, labelleds, tags
+      users_notificated = []
+
+      settings.sockets.each do |s|
+        users_notificated << s if users_involved.include?(s[:user])
+      end
+      users_notificated.uniq
+      @cant_users = settings.sockets.length
+      users_notificated.each do |s|
+        id = Labelled.select(:document_id).where(readed: 'f', user_id: s[:user])
+        @noti = Document.where(delete: 'f', id: id).count
+        s[:socket].send(@noti.to_s)
+      end
       @categories = Tag.all
       view_noti
       @succes = 'Documento cargado correctamente'
       return erb :add_doc, layout: :layout_main 
     rescue ArgumentError => e
-      return erb :add_doc, :locals => {:errorMessage => e.message}, layout: :layout_sig
+      @categories = Tag.all
+      view_noti
+      return erb :add_doc, :locals => {:errorMessage => e.message}, layout: :layout_main
     rescue ValidationModelError => e
-      return erb :add_doc, :locals => e.errors, layout: :layout_sig
+      @categories = Tag.all
+      view_noti
+      return erb :add_doc, :locals => e.errors, layout: :layout_main
     end
   end
 

@@ -7,11 +7,17 @@
   <br>
   <form method="POST" action="/profile">
     <div style="text-align: center;" > 
-      <% if @error %>
-        <div class="alert alert-dismissible alert-danger justify-content-center" style="text-align: center;">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <%= @error %>
-          </div>
+      <% if defined? errorMessage %>
+        <p class="error"><%= errorMessage %></p>
+      <% end %>
+      <% if defined? username %>
+        <p class="error"><%= username[0] %></p>
+      <% end %>
+      <% if defined? password %>
+          <p class="error"><%= password[0] %></p>
+      <% end %>
+      <% if defined? email %>
+          <p class="error"><%= email[0] %></p>
       <% end %>
       <% if @succes %>
         <div class="alert alert-dismissible alert-success justify-content-center" style="text-align: center;">
@@ -22,7 +28,8 @@
       <div class="form-group row align-items-center justify-content-center">
         <div class="form-group">
           <label>
-            Nombre de usuario: <%= @Username %>
+            Nombre de usuario: <%= @username %>
+            <br>
             <button type="submit" class="btn btn-primary btn-sm" name="botuser" value="botuser">Editar nombre de usuario</button>   
           </label>
         <%if @edituse %>
@@ -36,7 +43,8 @@
         <%end%>
         <div class="form-group">
           <label>
-            Email: <%= @Email %>
+            Email: <%= @email %>
+            <br>
             <button type="submit" class="btn btn-primary btn-sm" name="botemail">Editar Email</button>   
           </label>
         <%if @editmail%>

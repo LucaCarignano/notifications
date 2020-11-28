@@ -95,8 +95,6 @@ class UserController < Sinatra::Base
   post '/profile' do
 
     request.body.rewind
-    #hash = Rack::Utils.parse_nested_query(request.body.read)
-    #params = JSON.parse hash.to_json
     @current_user = User.find(id: session[:user_id])
 
     botusername = params[:botuser]
@@ -111,16 +109,19 @@ class UserController < Sinatra::Base
     repass = params[:repas]
     oldpass = params[:oldpass]
 
-    if botusername == "botuser" 
-      @edituse = 'entro'
-    elsif botemail
-      @editmail = 'entro'
-    elsif botpass
-      @editpas = 'entro'
-    end
-      
     @username = @current_user.username
     @email = @current_user.email
+    if botusername 
+      @edituse = 'entro'
+      return erb :profile, layout: :layout_main
+    elsif botemail
+      @editmail = 'entro'
+      return erb :profile, layout: :layout_main
+    elsif botpass
+      @editpas = 'entro'
+      return erb :profile, layout: :layout_main
+    end
+      
     @noti = UserService.view_noti @current_user
     
     begin 
@@ -130,11 +131,13 @@ class UserController < Sinatra::Base
 
       @username = @current_user.username
       @email = @current_user.email
-      erb :profile, layout: :layout_main
+      @succes = "datos actualizados correctamente"
+      return erb :profile, layout: :layout_main
     rescue ArgumentError => e
        return erb :profile, :locals => {:errorMessage => e.message}, layout: :layout_main
     rescue ValidationModelError => e
       return erb :profile, :locals => e.errors, layout: :layout_main
+      
     end
   end
 

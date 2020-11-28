@@ -33,44 +33,34 @@ class UserService
 
 	def self.modifyUser(user, editusername, editemail, editpass, 
                       botusername, botemail, botpass, newusername, 
-                      newemail, newpass, repass, oldpass)    
-    
-
-    if @edituse != '' && editusername
-      if newusername == ''
-        @error = 'Ingrese un nombre de usuario'
-      else
-        user1 = User.find(username: params[:newuser])
-        if user1
-          @error = 'Nombre de usuario no disponible '
-        else
-          user.update(username: newusername)
-          @succes = 'Nombre cambiado correctamente'
-        end
-      end
-    elsif @editmail != '' && editemail
-      if newemail == ''
-        @error = 'Ingrese un email'
-      else
-        user1 = User.find(email: newemail)
-        if user1
-          @error = 'Email ya registrado'
-        else
-          user.update(email: newemail)
-          @succes = 'Email cambiado correctamente'
-        end
-      end
-    elsif @editpas != '' && editpass
+                      newemail, newpass, repass, oldpass)
+    if editusername
+      newpass = user.password
+      newemail = user.email
+    elsif editemail
+      newpass = user.password
+      newusername = user.username
+    elsif editpass
       if newpass.empty? or repass.empty? or oldpass.empty?
-        @error = 'Ingrese contraseña'
-      elsif oldpass != user.password
-        @error = 'contraseña incorrecta'
-      elsif newpass != repass
-        @error = 'contraseñas distintas'
-      else
-        user.update(password: newpass)
-        @succes = 'Contraseña cambiada correctamente'
+        raise ArgumentError.new("Complete todos los campos para cambiar contraseña")
       end
+      if oldpass != user.password
+        raise ArgumentError.new("Las contraseña anterior erronea")
+      end
+      if newpass != repass
+        raise ArgumentError.new("Las contraseñas no coinciden")
+      end
+      newusername = user.username
+      newemail = user.email
     end
+    user.username = newusername
+    user.password = newpass
+    user.email = newemail
+    unless user.valid?
+      raise ValidationModelError.new("Datos para modificar el usuario incorrectos", user.errors)
+    end
+    user.update(username: newusername,
+                password: newpass,
+                email: newemail)
   end
 end

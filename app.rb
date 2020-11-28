@@ -9,6 +9,7 @@ require 'sinatra'
 require 'sinatra-websocket'
 require './controllers/UserController.rb'
 require './controllers/DocumentController.rb'
+require './controllers/TagController.rb'
 
 # This is the main class of the system
 class App < Sinatra::Base
@@ -16,6 +17,7 @@ class App < Sinatra::Base
   
   use UserController
   use DocumentController
+  use TagController
 
   before do
     UserController if !user_logged? && restricted_path?
@@ -61,35 +63,9 @@ class App < Sinatra::Base
     'se envia un mail a los admin para que autoricen a modificar el estado del usuario'
   end
 
-  get '/makeadmin' do
-    view_noti
-    @users = []
-    User.where(admin: 'f').each do |u|
-      @users.push(u.username)
-    end
-    erb :makeAdmin, layout: :layout_main
-  end
-
-  get '/maketag' do
-    view_noti
-    erb :maketags, layout: :layout_main
-  end
-
   get '/changeuser' do
     view_noti
     erb :maketags, layout: :layout_main
-  end
-
-  get '/tags' do
-    @categories = Tag.select(:id).where(id: Subscription.select(:tag_id).where(user_id: session[:user_id]))
-    @categories = Tag.where(id: @categories).all
-    @errorcat = 'No esta suscripto a ninguna categoria' if @categories == []
-
-    @tags = Tag.select(:id).except(Subscription.select(:tag_id).where(user_id: session[:user_id]))
-    @tags = Tag.where(id: @tags).all
-    @errortag = 'Esta suscripto a todas las categorias' if @tags == []
-    view_noti
-    erb :suscription, layout: :layout_main
   end
 
   get '/logout' do
@@ -195,6 +171,7 @@ class App < Sinatra::Base
     end
     view_noti
     erb :makeAdmin, layout: :layout_main
+>>>>>>> develop
   end
 
   post '/login' do

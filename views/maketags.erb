@@ -11,6 +11,12 @@
           <%= @error %>
         </div>
     <% end %>
+    <% if defined? errorMessage %>
+      <p class="error" style="text-align: center;"><%= errorMessage %></p>
+    <% end %>
+    <% if defined? name %>
+      <p class="error" style="text-align: center;"><%= name[0] %></p>
+    <% end %>
     <% if @succes %>
       <div class="alert alert-dismissible alert-success justify-content-center" style="text-align: center;">
           <button type="button" class="close" data-dismiss="alert">&times;</button>

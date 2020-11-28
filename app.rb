@@ -61,35 +61,9 @@ class App < Sinatra::Base
     'se envia un mail a los admin para que autoricen a modificar el estado del usuario'
   end
 
-  get '/makeadmin' do
-    view_noti
-    @users = []
-    User.where(admin: 'f').each do |u|
-      @users.push(u.username)
-    end
-    erb :makeAdmin, layout: :layout_main
-  end
-
-  get '/maketag' do
-    view_noti
-    erb :maketags, layout: :layout_main
-  end
-
   get '/changeuser' do
     view_noti
     erb :maketags, layout: :layout_main
-  end
-
-  get '/tags' do
-    @categories = Tag.select(:id).where(id: Subscription.select(:tag_id).where(user_id: session[:user_id]))
-    @categories = Tag.where(id: @categories).all
-    @errorcat = 'No esta suscripto a ninguna categoria' if @categories == []
-
-    @tags = Tag.select(:id).except(Subscription.select(:tag_id).where(user_id: session[:user_id]))
-    @tags = Tag.where(id: @tags).all
-    @errortag = 'Esta suscripto a todas las categorias' if @tags == []
-    view_noti
-    erb :suscription, layout: :layout_main
   end
 
   get '/logout' do
@@ -155,67 +129,6 @@ class App < Sinatra::Base
     @users = User.all
     view_noti
     erb :docs, layout: :layout_main
-  end
-
-  post '/maketag' do
-    if params[:newtag] != '' && params[:add]
-
-      tag = Tag.find(name: params[:newtag])
-
-      if tag
-        @error = 'El tag ya existe'
-        view_noti
-      else
-        newtag = Tag.new(name: params['newtag'])
-        if newtag.save
-          @succes = 'Agregado correctamente'
-          view_noti
-        else
-          [500, {}, 'Internal server Error']
-        end
-      end
-    elsif params[:deltag] != '' && params[:delete]
-
-      tag = Tag.find(name: params[:deltag])
-
-      if tag
-        users_tags = Subscription.where(tag_id: tag.id)
-        users_tags.each(&:delete)
-        docs_tags = Category.where(tag_id: tag.id)
-        docs_tags.each(&:delete)
-        if tag.delete
-          @succes = 'Borrado correctamente'
-          view_noti
-        else
-          [500, {}, 'Internal server Error']
-        end
-      else
-        @error = 'El tag no existe'
-        view_noti
-      end
-    else
-      @error = 'Inserte el nombre del tags'
-      view_noti
-    end
-    erb :maketags, layout: :layout_main
-  end
-
-  post '/makeadmin' do
-    if params[:useradmin] != ''
-
-      useradmi = User.find(username: params[:useradmin])
-
-      if useradmi
-        useradmi.update(admin: 't')
-        @succes = 'Promocion realizada'
-      else
-        @error = 'No existe ese usuario'
-      end
-    else
-      @error = 'Inserte el nombre del usuario'
-    end
-    view_noti
-    erb :makeAdmin, layout: :layout_main
   end
 
   post '/adddoc' do

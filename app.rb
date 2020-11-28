@@ -108,34 +108,6 @@ class App < Sinatra::Base
     end
   end
 
-  post '/tags' do
-    if params[:suscribe]
-
-      user1 = User.find(id: session[:user_id])
-      categories = Tag.all
-      categories.each do |category|
-        nombre = category.name
-        next unless params[nombre]
-
-        category.add_user(user1)
-        @error = if category.save
-                   'Suscripto correctamente'
-                 else
-                   'Error'
-                 end
-      end
-    elsif params[:unsuscribe] && params[:tag]
-      user1 = User.find(id: session[:user_id])
-      user1.remove_tag(Tag.find(name: params[:tag]))
-      @error = if user1.save
-                 'Desuscripto correctamente'
-               else
-                 'Error'
-               end
-    end
-    redirect '/tags'
-  end
-
   post '/docs' do
     set_pages
     redirect '/docs' if not_filter?

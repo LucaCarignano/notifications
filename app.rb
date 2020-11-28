@@ -8,12 +8,14 @@ require 'tempfile'
 require 'sinatra'
 require 'sinatra-websocket'
 require './controllers/UserController.rb'
+require './controllers/DocumentController.rb'
 
 # This is the main class of the system
 class App < Sinatra::Base
   include FileUtils::Verbose
   
   use UserController
+  use DocumentController
 
   before do
     UserController if !user_logged? && restricted_path?
@@ -23,16 +25,6 @@ class App < Sinatra::Base
       @path = request.path_info
       redirect '/docs' if path_only_admin?
     end
-  end
-
-  get '/adddoc' do
-    @categories = Tag.all
-    @users = []
-    User.each do |user|
-      @users.push(user.username)
-    end
-    view_noti
-    erb :add_doc, layout: :layout_main
   end
 
   get '/login' do

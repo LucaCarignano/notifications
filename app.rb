@@ -39,16 +39,6 @@ class App < Sinatra::Base
     erb :view_doc, layout: false
   end
 
-  get '/docs' do
-    set_pages
-    cant_pages(Document.where(delete: 'f').count)
-    @documents = Document.order(:date).reverse.where(delete: 'f').limit(@docsperpage, (@page - 1) * @docsperpage)
-    @categories = Tag.all
-    @users = User.all
-    view_noti
-    erb :docs, layout: :layout_main
-  end
-
   get '/unreaddocs' do
     user = User.find(id: session[:user_id])
     id = Labelled.select(:document_id).where(readed: 'f', user_id: user.id)
@@ -59,13 +49,13 @@ class App < Sinatra::Base
     erb :undocs, layout: :layout_main
   end
 
-  get '/applyadmin' do
-    'se envia un mail a los admin para que autoricen a modificar el estado del usuario'
-  end
-
-  get '/changeuser' do
+  get '/makeadmin' do
     view_noti
-    erb :maketags, layout: :layout_main
+    @users = []
+    User.where(admin: 'f').each do |u|
+      @users.push(u.username)
+    end
+    erb :makeAdmin, layout: :layout_main
   end
 
   get '/logout' do
@@ -84,77 +74,6 @@ class App < Sinatra::Base
     end
   end
 
-  post '/tags' do
-    if params[:suscribe]
-
-      user1 = User.find(id: session[:user_id])
-      categories = Tag.all
-      categories.each do |category|
-        nombre = category.name
-        next unless params[nombre]
-
-        category.add_user(user1)
-        @error = if category.save
-                   'Suscripto correctamente'
-                 else
-                   'Error'
-                 end
-      end
-    elsif params[:unsuscribe] && params[:tag]
-      user1 = User.find(id: session[:user_id])
-      user1.remove_tag(Tag.find(name: params[:tag]))
-      @error = if user1.save
-                 'Desuscripto correctamente'
-               else
-                 'Error'
-               end
-    end
-    redirect '/tags'
-  end
-
-  post '/maketag' do
-    if params[:newtag] != '' && params[:add]
-
-      tag = Tag.find(name: params[:newtag])
-
-      if tag
-        @error = 'El tag ya existe'
-        view_noti
-      else
-        newtag = Tag.new(name: params['newtag'])
-        if newtag.save
-          @succes = 'Agregado correctamente'
-          view_noti
-        else
-          [500, {}, 'Internal server Error']
-        end
-      end
-    elsif params[:deltag] != '' && params[:delete]
-
-      tag = Tag.find(name: params[:deltag])
-
-      if tag
-        users_tags = Subscription.where(tag_id: tag.id)
-        users_tags.each(&:delete)
-        docs_tags = Category.where(tag_id: tag.id)
-        docs_tags.each(&:delete)
-        if tag.delete
-          @succes = 'Borrado correctamente'
-          view_noti
-        else
-          [500, {}, 'Internal server Error']
-        end
-      else
-        @error = 'El tag no existe'
-        view_noti
-      end
-    else
-      @error = 'Inserte el nombre del tags'
-      view_noti
-    end
-    erb :maketags, layout: :layout_main
-  end
-
   post '/makeadmin' do
     if params[:useradmin] != ''
 
@@ -171,7 +90,6 @@ class App < Sinatra::Base
     end
     view_noti
     erb :makeAdmin, layout: :layout_main
->>>>>>> develop
   end
 
   post '/login' do
@@ -192,10 +110,6 @@ class App < Sinatra::Base
     Document.where(delete: 'f').each do |doc|
       @docsname.push(doc.title)
     end
-  end
-
-  def not_filter?
-    params[:datedoc] == '' && params[:tags] == '' && params[:users] == '' && params[:filter] && params[:docname]
   end
 
   def user_logged?
@@ -224,10 +138,6 @@ class App < Sinatra::Base
 
   def user_no_empty
     (params[:username] == '' || params[:name] == '' || params[:email] == '')
-  end
-
-  def all_field_adddoc?
-    (params[:title] == '' || params[:document].nil?)
   end
 
   def view_noti

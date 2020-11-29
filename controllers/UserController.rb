@@ -86,6 +86,7 @@ class UserController < Sinatra::Base
 
   get '/profile' do
     @current_user = User.find(id: session[:user_id])
+    @admin = @current_user.admin
     @username = @current_user.username
     @email = @current_user.email
     @noti = UserService.view_noti @current_user
@@ -96,6 +97,7 @@ class UserController < Sinatra::Base
 
     request.body.rewind
     @current_user = User.find(id: session[:user_id])
+    @admin = @current_user.admin
 
     botusername = params[:botuser]
     botemail = params[:botemail]

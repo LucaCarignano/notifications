@@ -6,11 +6,8 @@
     </div>
     <br> 
     <form method="POST" action="/adddoc" enctype="multipart/form-data" >
-      <% if @error %>
-        <div class="alert alert-dismissible alert-danger justify-content-center" style="text-align: center;">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <%= @error %>
-          </div>
+      <% if defined? errorMessage %>
+        <p class="error"><%= errorMessage %></p>
       <% end %>
       <% if @succes %>
         <div class="alert alert-dismissible alert-success justify-content-center" style="text-align: center;">
@@ -55,7 +52,7 @@
       <div class="form-group row align-items-center justify-content-center">
         <label class="col-sm-auto col-form-label">Documento:</label>
          <div class="col-sm-auto">
-          <input type="file" name="document" accept="application/pdf" class="form-control form-control-sm">
+          <input type="file" name="document" accept="application/pdf" class="form-control form-control-sm" required>
         </div>
         <br>
       </div>
